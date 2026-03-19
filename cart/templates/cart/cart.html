@@ -1,0 +1,532 @@
+{% extends 'main/base.html' %}
+{% load static %}
+{% block content %}
+
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+
+<style>
+    :root {
+        --gold: #f3a000;
+        --gold-light: #ffc94a;
+        --gold-pale: #fff8ec;
+        --green: #387040;
+        --green-dark: #254d2b;
+        --green-light: #eef5ef;
+        --ink: #1a1a1a;
+        --muted: #6b6b6b;
+        --cream: #faf8f4;
+        --white: #ffffff;
+        --red: #c0392b;
+        --red-pale: #fff0ef;
+        --shadow: 0 8px 40px rgba(0,0,0,0.07);
+        --radius: 16px;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body { background: var(--cream) !important; }
+    main, .content, .page-content, .main-content {
+        padding: 0 !important; margin: 0 !important; width: 100% !important;
+    }
+
+    .zx-cart { font-family: 'DM Sans', sans-serif; color: var(--ink); }
+
+    /* ── HERO ── */
+    .zx-cart-hero {
+        position: relative;
+        background: var(--green-dark);
+        padding: 64px 6% 52px;
+        overflow: hidden;
+        display: flex;
+        align-items: flex-end;
+        min-height: 220px;
+    }
+
+    .zx-cart-hero__bg {
+        position: absolute; inset: 0;
+        background-image:
+            radial-gradient(circle at 10% 60%, rgba(243,160,0,0.15) 0%, transparent 50%),
+            radial-gradient(circle at 90% 10%, rgba(56,112,64,0.45) 0%, transparent 50%);
+        pointer-events: none;
+    }
+
+    .zx-cart-hero__deco {
+        position: absolute; right: -60px; top: -60px;
+        width: 340px; height: 340px; border-radius: 50%;
+        border: 70px solid rgba(243,160,0,0.07);
+        pointer-events: none;
+    }
+
+    .zx-cart-hero__content {
+        position: relative; z-index: 1;
+        animation: fadeUp 0.8s cubic-bezier(0.22,1,0.36,1) both;
+    }
+
+    @keyframes fadeUp {
+        from { opacity: 0; transform: translateY(24px); }
+        to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .zx-cart-hero__eyebrow {
+        display: inline-flex; align-items: center; gap: 10px;
+        font-size: 0.75rem; font-weight: 500; letter-spacing: 0.18em;
+        text-transform: uppercase; color: var(--gold); margin-bottom: 12px;
+    }
+    .zx-cart-hero__eyebrow::before {
+        content: ''; display: block; width: 28px; height: 2px; background: var(--gold);
+    }
+
+    .zx-cart-hero h1 {
+        font-family: 'Playfair Display', serif;
+        font-size: clamp(2.4rem, 5vw, 3.8rem);
+        font-weight: 900; color: var(--white);
+        line-height: 1.05; letter-spacing: -0.02em;
+    }
+    .zx-cart-hero h1 em { font-style: italic; color: var(--gold); }
+
+    /* ── BODY ── */
+    .zx-cart-body {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 60px 5% 96px;
+        display: grid;
+        grid-template-columns: 1fr 360px;
+        gap: 40px;
+        align-items: start;
+    }
+
+    /* ── ITEM CARDS ── */
+    .zx-cart-items { display: flex; flex-direction: column; gap: 16px; }
+
+    .zx-item-card {
+        background: var(--white);
+        border-radius: var(--radius);
+        padding: 20px;
+        display: flex;
+        align-items: center;
+        gap: 20px;
+        box-shadow: var(--shadow);
+        border: 1.5px solid transparent;
+        transition: border-color 0.25s, transform 0.25s, box-shadow 0.25s;
+        animation: fadeUp 0.6s cubic-bezier(0.22,1,0.36,1) both;
+    }
+
+    .zx-item-card:nth-child(1) { animation-delay: 0.05s; }
+    .zx-item-card:nth-child(2) { animation-delay: 0.1s; }
+    .zx-item-card:nth-child(3) { animation-delay: 0.15s; }
+    .zx-item-card:nth-child(4) { animation-delay: 0.2s; }
+    .zx-item-card:nth-child(5) { animation-delay: 0.25s; }
+
+    .zx-item-card:hover {
+        border-color: rgba(243,160,0,0.3);
+        transform: translateY(-3px);
+        box-shadow: 0 16px 48px rgba(0,0,0,0.1);
+    }
+
+    .zx-item-img {
+        width: 88px; height: 88px;
+        object-fit: cover;
+        border-radius: 12px;
+        flex-shrink: 0;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.12);
+    }
+
+    .zx-item-info { flex: 1; min-width: 0; }
+
+    .zx-item-name {
+        font-family: 'Playfair Display', serif;
+        font-size: 1.25rem; font-weight: 700;
+        color: var(--ink); margin-bottom: 6px;
+        white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+
+    .zx-item-meta {
+        font-size: 0.9rem; color: var(--muted); margin-bottom: 8px;
+    }
+
+    .zx-item-subtotal {
+        display: inline-flex; align-items: center; gap: 6px;
+        background: var(--gold-pale);
+        border: 1px solid rgba(243,160,0,0.25);
+        border-radius: 100px;
+        padding: 4px 14px;
+        font-size: 0.9rem; font-weight: 600; color: var(--green-dark);
+    }
+
+    .zx-item-subtotal::before { content: '₹'; opacity: 0.6; }
+
+    .zx-item-actions { display: flex; align-items: center; gap: 10px; flex-shrink: 0; }
+
+    /* Quantity Controls */
+    .zx-qty-control {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        background: var(--green-light);
+        border: 1px solid rgba(56, 112, 64, 0.16);
+        border-radius: 12px;
+        padding: 4px;
+    }
+
+    .zx-qty-btn {
+        width: 32px;
+        height: 32px;
+        border-radius: 8px;
+        border: none;
+        background: var(--white);
+        color: var(--green-dark);
+        font-size: 1.05rem;
+        font-weight: 700;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        line-height: 1;
+        transition: background 0.2s, color 0.2s, transform 0.12s;
+    }
+
+    .zx-qty-btn:hover {
+        background: var(--green);
+        color: var(--white);
+    }
+
+    .zx-qty-btn:active {
+        transform: scale(0.96);
+    }
+
+    .zx-qty-value {
+        min-width: 28px;
+        text-align: center;
+        font-size: 0.95rem;
+        font-weight: 700;
+        color: var(--green-dark);
+    }
+
+    /* Remove Button */
+    .zx-btn-remove {
+        display: flex; align-items: center; gap: 6px;
+        background: var(--red-pale);
+        border: 1.5px solid transparent;
+        color: var(--red);
+        font-family: 'DM Sans', sans-serif;
+        font-size: 0.82rem; font-weight: 500;
+        padding: 8px 14px; border-radius: 100px;
+        cursor: pointer;
+        transition: background 0.2s, border-color 0.2s, transform 0.15s;
+        letter-spacing: 0.02em;
+    }
+
+    .zx-btn-remove:hover {
+        background: #ffd9d9;
+        border-color: rgba(192,57,43,0.25);
+        transform: scale(1.03);
+    }
+
+    .zx-btn-remove svg { flex-shrink: 0; }
+
+    /* ── SUMMARY PANEL ── */
+    .zx-summary {
+        position: sticky; top: 30px;
+        animation: fadeInRight 0.8s 0.2s cubic-bezier(0.22,1,0.36,1) both;
+    }
+
+    @keyframes fadeInRight {
+        from { opacity: 0; transform: translateX(20px); }
+        to   { opacity: 1; transform: translateX(0); }
+    }
+
+    .zx-summary-box {
+        background: var(--white);
+        border-radius: var(--radius);
+        padding: 32px;
+        box-shadow: var(--shadow);
+        margin-bottom: 16px;
+    }
+
+    .zx-summary-label {
+        font-size: 0.72rem; font-weight: 500;
+        letter-spacing: 0.2em; text-transform: uppercase;
+        color: var(--muted); margin-bottom: 8px;
+    }
+
+    .zx-summary-title {
+        font-family: 'Playfair Display', serif;
+        font-size: 1.6rem; font-weight: 700;
+        color: var(--green-dark); margin-bottom: 28px;
+    }
+
+    .zx-summary-line {
+        display: flex; justify-content: space-between; align-items: center;
+        padding: 10px 0;
+        border-bottom: 1px solid #f0ece6;
+        font-size: 0.95rem; color: var(--muted);
+    }
+
+    .zx-summary-line:last-of-type { border-bottom: none; }
+    .zx-summary-line strong { color: var(--ink); font-weight: 600; }
+
+    .zx-summary-total-row {
+        display: flex; justify-content: space-between; align-items: center;
+        margin-top: 20px; padding-top: 20px;
+        border-top: 2px solid var(--green-light);
+    }
+
+    .zx-summary-total-label {
+        font-family: 'Playfair Display', serif;
+        font-size: 1.1rem; font-weight: 700; color: var(--green-dark);
+    }
+
+    .zx-summary-total-amount {
+        font-family: 'Playfair Display', serif;
+        font-size: 1.8rem; font-weight: 900; color: var(--green-dark);
+    }
+
+    .zx-summary-total-amount::before { content: '₹'; font-size: 1rem; vertical-align: super; margin-right: 2px; }
+
+    /* Delivery note */
+.zx-delivery-note {
+    display: flex;
+    gap: 10px;
+    background: var(--gold-pale);
+    border: 1px solid rgba(243,160,0,0.3);
+    border-radius: 12px;
+    padding: 14px 16px;
+    margin-top: 20px;
+
+    font-size: 0.85rem;
+    color: #7a5800;
+    line-height: 1.5;
+
+    width: 100%;
+    box-sizing: border-box;
+    overflow: hidden;
+}
+
+.zx-delivery-note span:last-child {
+    min-width: 0;
+    word-break: break-word;
+}
+
+    /* Checkout Button */
+    .zx-btn-checkout {
+        display: flex; align-items: center; justify-content: center; gap: 10px;
+        width: 100%; margin-top: 16px;
+        padding: 18px 24px;
+        background: var(--gold);
+        color: var(--white);
+        font-family: 'DM Sans', sans-serif;
+        font-size: 1rem; font-weight: 500;
+        border-radius: 100px; text-decoration: none;
+        transition: background 0.2s, transform 0.2s, box-shadow 0.2s;
+        letter-spacing: 0.03em;
+    }
+
+    .zx-btn-checkout:hover {
+        background: #d98f00;
+        transform: translateY(-2px);
+        box-shadow: 0 10px 32px rgba(243,160,0,0.35);
+        color: var(--white); text-decoration: none;
+    }
+
+    .zx-btn-checkout svg { transition: transform 0.2s; }
+    .zx-btn-checkout:hover svg { transform: translateX(4px); }
+
+    /* Continue Shopping */
+    .zx-continue {
+        display: flex; align-items: center; justify-content: center; gap: 6px;
+        margin-top: 12px;
+        font-size: 0.88rem; color: var(--muted); text-decoration: none;
+        transition: color 0.2s;
+    }
+    .zx-continue:hover { color: var(--green); text-decoration: none; }
+
+    /* ── EMPTY STATE ── */
+    .zx-empty {
+        grid-column: 1 / -1;
+        text-align: center;
+        padding: 80px 20px;
+        animation: fadeUp 0.7s cubic-bezier(0.22,1,0.36,1) both;
+    }
+
+    .zx-empty__bowl {
+        font-size: 5rem; margin-bottom: 24px;
+        display: block;
+        animation: wobble 3s ease-in-out infinite;
+    }
+
+    @keyframes wobble {
+        0%, 100% { transform: rotate(-4deg); }
+        50% { transform: rotate(4deg); }
+    }
+
+    .zx-empty h2 {
+        font-family: 'Playfair Display', serif;
+        font-size: 2.4rem; font-weight: 900;
+        color: var(--green-dark); margin-bottom: 12px;
+    }
+
+    .zx-empty h2 em { font-style: italic; color: var(--gold); }
+
+    .zx-empty p {
+        font-size: 1rem; color: var(--muted);
+        max-width: 360px; margin: 0 auto 32px; line-height: 1.7;
+    }
+
+    .zx-btn-browse {
+        display: inline-flex; align-items: center; gap: 10px;
+        padding: 16px 36px;
+        background: var(--green-dark); color: var(--white);
+        font-family: 'DM Sans', sans-serif;
+        font-size: 0.97rem; font-weight: 500;
+        border-radius: 100px; text-decoration: none;
+        transition: background 0.2s, transform 0.2s, box-shadow 0.2s;
+    }
+    .zx-btn-browse:hover {
+        background: var(--green);
+        transform: translateY(-2px);
+        box-shadow: 0 10px 32px rgba(37,77,43,0.25);
+        color: var(--white); text-decoration: none;
+    }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 900px) {
+        .zx-cart-body {
+            grid-template-columns: 1fr;
+            padding: 40px 5% 72px;
+        }
+        .zx-summary { position: static; }
+        .zx-item-card { flex-wrap: wrap; }
+    }
+
+    @media (max-width: 480px) {
+        .zx-item-actions { width: 100%; justify-content: flex-end; }
+    }
+</style>
+
+<section class="zx-cart">
+
+    <!-- HERO -->
+    <div class="zx-cart-hero">
+        <div class="zx-cart-hero__bg"></div>
+        <div class="zx-cart-hero__deco"></div>
+        <div class="zx-cart-hero__content">
+            <div class="zx-cart-hero__eyebrow">Your Selection</div>
+            <h1>Your <em>Cart</em></h1>
+        </div>
+    </div>
+
+    <div class="zx-cart-body">
+
+        {% if items %}
+
+        <!-- ITEMS COLUMN -->
+        <div class="zx-cart-items">
+            {% for cart in items %}
+            <div class="zx-item-card">
+
+                {% if cart.item.image %}
+                    <img src="{{ cart.item.image.url }}" class="zx-item-img" alt="{{ cart.item.name }}" loading="lazy" onerror="this.onerror=null;this.src='{% static 'images/default-food.svg' %}';">
+                {% else %}
+                    <img src="{% static 'images/default-food.svg' %}" class="zx-item-img" alt="{{ cart.item.name }}" loading="lazy">
+                {% endif %}
+
+                <div class="zx-item-info">
+                    <div class="zx-item-name">{{ cart.item.name }}</div>
+                    <div class="zx-item-meta">₹{{ cart.item.price }} per item</div>
+                    <div class="zx-item-subtotal">{{ cart.total_price }}</div>
+                </div>
+
+                <div class="zx-item-actions">
+                    <div class="zx-qty-control" title="Update quantity">
+                        <form method="POST" action="{% url 'update_cart_quantity' cart.item.id 'dec' %}">
+                            {% csrf_token %}
+                            <button type="submit" class="zx-qty-btn" aria-label="Decrease quantity">-</button>
+                        </form>
+
+                        <span class="zx-qty-value">{{ cart.quantity }}</span>
+
+                        <form method="POST" action="{% url 'update_cart_quantity' cart.item.id 'inc' %}">
+                            {% csrf_token %}
+                            <button type="submit" class="zx-qty-btn" aria-label="Increase quantity">+</button>
+                        </form>
+                    </div>
+
+                    <form method="POST" action="{% url 'remove_from_cart' cart.item.id %}">
+                        {% csrf_token %}
+                        <button type="submit" class="zx-btn-remove">
+                            <svg width="13" height="13" viewBox="0 0 13 13" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M1.5 1.5l10 10M11.5 1.5l-10 10" stroke="#c0392b" stroke-width="1.8" stroke-linecap="round"/>
+                            </svg>
+                            Remove
+                        </button>
+                    </form>
+                </div>
+
+            </div>
+            {% endfor %}
+        </div>
+
+        <!-- SUMMARY COLUMN -->
+        <div class="zx-summary">
+            <div class="zx-summary-box">
+                <div class="zx-summary-label">Order Summary</div>
+                <div class="zx-summary-title">Ready to order?</div>
+
+                <div class="zx-summary-line">
+                    <span>Items</span>
+                    <strong>{{ items|length }}</strong>
+                </div>
+                <div class="zx-summary-line">
+                    <span>Subtotal</span>
+                    <strong>₹{{ total }}</strong>
+                </div>
+                <div class="zx-summary-line">
+                    <span>Delivery</span>
+                    <strong>Calculated at checkout</strong>
+                </div>
+
+                <div class="zx-summary-total-row">
+                    <div class="zx-summary-total-label">Grand Total</div>
+                    <div class="zx-summary-total-amount">{{ total }}</div>
+                </div>
+
+                <div class="zx-delivery-note">
+                    <span>🛵</span>
+                    <span>Free delivery on orders above ₹499. Estimated time: 30–45 min.</span>
+                </div>
+            </div>
+
+            <a href="{% url 'checkout' %}" class="zx-btn-checkout">
+                Proceed to Checkout
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M3 8h10M9 4l4 4-4 4" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+            </a>
+
+            <a href="{% url 'home' %}" class="zx-continue">
+                ← Continue Shopping
+            </a>
+        </div>
+
+        {% else %}
+
+        <!-- EMPTY STATE -->
+        <div class="zx-empty">
+            <span class="zx-empty__bowl">🍱</span>
+            <h2>Your cart is <em>empty</em></h2>
+            <p>Looks like you haven't added anything yet. Explore our menu and find something delicious!</p>
+            <a href="{% url 'home' %}" class="zx-btn-browse">
+                Browse the Menu
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M3 8h10M9 4l4 4-4 4" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+            </a>
+        </div>
+
+        {% endif %}
+
+    </div>
+
+</section>
+
+{% endblock %}

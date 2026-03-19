@@ -1,0 +1,25 @@
+/* Dish Spotlight styles */
+.dish-spotlight { width: 100%; display: flex; justify-content: center; margin: 24px 0 40px; }
+.spotlight-card { display: flex; gap: 18px; max-width: 980px; width: 100%; background: linear-gradient(180deg, rgba(255,255,255,0.9), #fff); border-radius: 12px; box-shadow: 0 8px 30px rgba(30,30,30,0.08); padding: 14px; align-items: center; transform: translateY(8px); opacity: 0; animation: spotlight-in 600ms ease-out forwards; }
+
+.spotlight-image { position: relative; flex: 0 0 220px; height: 140px; border-radius: 10px; overflow: hidden; }
+.spotlight-image img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform 400ms ease; }
+.spotlight-image:hover img { transform: scale(1.06); }
+.spotlight-badge { position: absolute; left: 10px; top: 10px; background: linear-gradient(45deg, #ff8a00, #ff3d00); color: white; padding: 6px 10px; border-radius: 999px; font-weight: 700; font-size: 0.85rem; box-shadow: 0 6px 12px rgba(255,77,0,0.18); transform: rotate(-6deg); }
+
+.spotlight-body { padding-right: 12px; flex: 1 1 auto; }
+.spotlight-title { font-size: 1.4rem; margin: 2px 0 8px; color: #25313a; }
+.spotlight-desc { color: #4a5561; margin: 0 0 12px; }
+.spotlight-meta { display: flex; align-items: center; gap: 12px; }
+.spotlight-price { font-weight: 700; color: #b91c1c; font-size: 1.05rem; }
+.spotlight-cta { background: #0ea5a4; color: white; padding: 8px 12px; border-radius: 8px; border: none; cursor: pointer; font-weight: 600; }
+.spotlight-cta:active { transform: translateY(1px); }
+
+@keyframes spotlight-in { from { transform: translateY(24px) scale(.995); opacity: 0 } to { transform: translateY(0) scale(1); opacity: 1 } }
+
+/* Responsive: stack on small screens */
+@media (max-width: 640px) {
+  .spotlight-card { flex-direction: column; align-items: stretch; }
+  .spotlight-image { width: 100%; height: 200px; }
+  .spotlight-meta { justify-content: space-between; }
+}

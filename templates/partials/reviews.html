@@ -1,0 +1,33 @@
+{% load static %}
+
+<section class="reviews-section" aria-label="Customer reviews">
+  <div class="reviews-wrap">
+    <h2 class="reviews-heading">What our customers say</h2>
+    <div class="reviews-slider" id="reviews-slider">
+      {% for r in reviews %}
+      <article class="review-card">
+        <div class="review-avatar">
+          {% if r.avatar_url %}
+            <img src="{{ r.avatar_url }}" alt="{{ r.name }}">
+          {% else %}
+            <div class="avatar-fallback">{{ r.name|slice:":1" }}</div>
+          {% endif %}
+        </div>
+        <div class="review-body">
+          <div class="review-meta"><strong>{{ r.name }}</strong>
+            <span class="review-rating">{% for i in "12345"|slice:":r.rating" %}★{% endfor %}</span>
+          </div>
+          <p class="review-text">{{ r.text }}</p>
+        </div>
+      </article>
+      {% endfor %}
+    </div>
+
+    <div class="reviews-controls">
+      <button class="reviews-prev" aria-label="Previous">◀</button>
+      <button class="reviews-next" aria-label="Next">▶</button>
+    </div>
+  </div>
+  <link rel="stylesheet" href="{% static 'css/reviews.css' %}">
+  <script src="{% static 'js/reviews.js' %}" defer></script>
+</section>

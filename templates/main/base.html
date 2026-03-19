@@ -1,0 +1,123 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>ZaikaX</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+
+<body>
+<!-- Zaika Assistant Floating Button -->
+<div id="zaika-assistant-btn" title="Chat with Zaika Assistant">🤖</div>
+
+<style>
+/* Floating translucent button */
+#zaika-assistant-btn {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    width: 60px;
+    height: 60px;
+    background-color: rgba(255, 87, 34, 0.8); /* translucent orange */
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 30px;
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+    z-index: 9999;
+    transition: background-color 0.3s, transform 0.2s;
+}
+
+#zaika-assistant-btn:hover {
+    background-color: rgba(255, 87, 34, 1);
+    transform: scale(1.1);
+}
+
+/* Optional: iframe transition */
+#zaika-assistant-iframe {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    width: 350px;
+    height: 500px;
+    border: none;
+    z-index: 9998;
+    border-radius: 10px;
+    display: none; /* hidden initially */
+    box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+    transition: transform 0.3s, opacity 0.3s;
+}
+</style>
+
+<header>
+    <div class="navbar">
+        <a href="{% url 'home' %}" class="logo">Zaika<span>X</span></a>
+
+        <nav>
+            <a href="{% url 'menu_list' %}">Menu</a>
+            <a href="{% url 'about' %}">About</a>
+            <a href="{% url 'contact' %}">Contact</a>
+            <a href="{% url 'cart' %}">Cart
+                {% if cart_count %}
+                    <span class="cart-badge">{{ cart_count }}</span>
+                {% endif %}
+            </a>
+
+            {% if user.is_authenticated %}
+                <a href="{% url 'logout' %}">Logout</a>
+            {% else %}
+                <a href="{% url 'login' %}" class="login-btn">Login</a>
+            {% endif %}
+        </nav>
+    </div>
+</header>
+
+<main>
+    {% block content %}{% endblock content %}
+
+    {% if messages %}
+    <div class="messages">
+        {% for message in messages %}
+            <div class="alert alert-warning" style="padding: 10px; margin: 10px 0; background-color: #ffefc5; border-left: 5px solid #ff9900;">
+                {{ message }}
+            </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    <!-- Zaika Assistant Iframe -->
+    <iframe
+        id="zaika-assistant-iframe"
+        src="https://cdn.botpress.cloud/webchat/v3.6/shareable.html?configUrl=https://files.bpcontent.cloud/2026/03/19/07/20260319075258-W6CNPX7Q.json"
+        allow="microphone;"
+    ></iframe>
+</main>
+
+<footer>
+    © 2025 ZaikaX — All Rights Reserved.
+</footer>
+
+<script>
+  const button = document.getElementById('zaika-assistant-btn');
+  const iframe = document.getElementById('zaika-assistant-iframe');
+  let isOpen = false;
+
+  button.addEventListener('click', () => {
+    if (!isOpen) {
+      iframe.style.display = 'block';
+      iframe.style.opacity = 1;
+      iframe.style.transform = 'translateY(0)';
+      isOpen = true;
+    } else {
+      iframe.style.display = 'none';
+      isOpen = false;
+    }
+  });
+</script>
+</body>
+</html>

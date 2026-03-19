@@ -1,0 +1,23 @@
+<!-- {% load static %}
+
+<div class="dish-spotlight" role="region" aria-label="Dish spotlight">
+  <div class="spotlight-card">
+    <div class="spotlight-image">
+      {% if featured.image %}
+        <img src="{{ featured.image.url }}" alt="{{ featured.name }}" />
+      {% else %}
+        <img src="{% static 'images/default-food.png' %}" alt="{{ featured.name }}" />
+      {% endif %}
+      <div class="spotlight-badge">Chef's Pick</div>
+    </div>
+
+    <div class="spotlight-body">
+      <h3 class="spotlight-title">{{ featured.name }}</h3>
+      <p class="spotlight-desc">{{ featured.description|truncatechars:160 }}</p>
+      <div class="spotlight-meta">
+        <span class="spotlight-price">₹{{ featured.price }}</span>
+        <button class="spotlight-cta" data-name="{{ featured.name }}">View Dish</button>
+      </div>
+    </div>
+  </div>
+</div> -->

@@ -1,0 +1,39 @@
+{% load static %}
+
+<div class="zx-menu-card">
+
+    <div class="zx-card-img-wrap">
+        {% if item.image %}
+            <img src="{{ item.image.url }}" alt="{{ item.name }}" loading="lazy" onerror="this.onerror=null;this.src='{% static 'images/default-food.svg' %}';">
+        {% else %}
+            <img src="{% static 'images/default-food.svg' %}" alt="{{ item.name }}" loading="lazy">
+        {% endif %}
+
+        <div class="zx-veg-badge" title="Vegetarian"></div>
+    </div>
+
+    <div class="zx-card-body">
+        <div class="zx-card-name">{{ item.name }}</div>
+
+        {% if item.description %}
+        <p class="zx-card-desc">{{ item.description }}</p>
+        {% else %}
+        <p class="zx-card-desc">A delicious dish crafted with authentic spices and fresh ingredients.</p>
+        {% endif %}
+
+        <div class="zx-card-footer">
+            <div class="zx-price-block">
+                <span class="zx-price-label">Price</span>
+                <span class="zx-price-value">₹{{ item.price }}</span>
+            </div>
+
+            <a href="{% url 'add_to_cart' item.id %}" class="zx-add-btn" aria-label="Add {{ item.name }} to cart">
+                <svg width="15" height="15" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M7.5 1v13M1 7.5h13" stroke="white" stroke-width="2" stroke-linecap="round"/>
+                </svg>
+                Add
+            </a>
+        </div>
+    </div>
+
+</div>

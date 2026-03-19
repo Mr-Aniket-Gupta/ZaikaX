@@ -1,0 +1,113 @@
+{% extends 'main/base.html' %}
+{% block content %}
+
+<section class="register-section">
+    <div class="register-card">
+        <div class="register-visual">
+            <h3>Welcome to ZaikaX</h3>
+            <p>Create your account and save multiple delivery addresses for faster checkout.</p>
+            <img src="/static/images/register-illustration.svg" alt="register" style="width:220px; max-width:70%; opacity:0.95;">
+            <div class="small-note">We respect your privacy. Your data is secure with us.</div>
+        </div>
+
+        <div class="register-form">
+            <h2>Create account</h2>
+            <form method="POST" novalidate>
+                {% csrf_token %}
+                {% if form %}
+                    <div class="form-row">
+                        <div class="form-group">
+                            {{ form.username.label_tag }}
+                            {{ form.username }}
+                            {% if form.username.errors %}<div class="field-errors">{{ form.username.errors|striptags }}</div>{% endif %}
+                        </div>
+
+                        <div class="form-group">
+                            {{ form.email.label_tag }}
+                            {{ form.email }}
+                            {% if form.email.errors %}<div class="field-errors">{{ form.email.errors|striptags }}</div>{% endif %}
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            {{ form.password.label_tag }}
+                            {{ form.password }}
+                            {% if form.password.errors %}<div class="field-errors">{{ form.password.errors|striptags }}</div>{% endif %}
+                        </div>
+                        <div class="form-group">
+                            {{ form.confirm.label_tag }}
+                            {{ form.confirm }}
+                            {% if form.confirm.errors %}<div class="field-errors">{{ form.confirm.errors|striptags }}</div>{% endif %}
+                        </div>
+                    </div>
+
+                    <div style="height:8px"></div>
+                    <h3 style="font-size:16px; margin-bottom:8px; color:#355a4a;">Delivery address</h3>
+
+                    <div class="form-group">
+                        {{ form.full_name.label_tag }}
+                        {{ form.full_name }}
+                        {% if form.full_name.errors %}<div class="field-errors">{{ form.full_name.errors|striptags }}</div>{% endif %}
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            {{ form.phone.label_tag }}
+                            {{ form.phone }}
+                            {% if form.phone.errors %}<div class="field-errors">{{ form.phone.errors|striptags }}</div>{% endif %}
+                        </div>
+                        <div class="form-group">
+                            {{ form.pincode.label_tag }}
+                            {{ form.pincode }}
+                            {% if form.pincode.errors %}<div class="field-errors">{{ form.pincode.errors|striptags }}</div>{% endif %}
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        {{ form.address_line1.label_tag }}
+                        {{ form.address_line1 }}
+                        {% if form.address_line1.errors %}<div class="field-errors">{{ form.address_line1.errors|striptags }}</div>{% endif %}
+                    </div>
+
+                    <div class="form-group">
+                        {{ form.address_line2.label_tag }}
+                        {{ form.address_line2 }}
+                        {% if form.address_line2.errors %}<div class="field-errors">{{ form.address_line2.errors|striptags }}</div>{% endif %}
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            {{ form.city.label_tag }}
+                            {{ form.city }}
+                            {% if form.city.errors %}<div class="field-errors">{{ form.city.errors|striptags }}</div>{% endif %}
+                        </div>
+                        <div class="form-group">
+                            {{ form.state.label_tag }}
+                            {{ form.state }}
+                            {% if form.state.errors %}<div class="field-errors">{{ form.state.errors|striptags }}</div>{% endif %}
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group" style="grid-column:1/3">
+                            {{ form.country.label_tag }}
+                            {{ form.country }}
+                            {% if form.country.errors %}<div class="field-errors">{{ form.country.errors|striptags }}</div>{% endif %}
+                        </div>
+                    </div>
+
+                {% else %}
+                    <!-- Fallback simple fields -->
+                    <div class="form-group"><input class="form-control" name="username" placeholder="Username"></div>
+                {% endif %}
+
+                <button class="submit-btn" type="submit">Create account</button>
+            </form>
+
+            <p class="small-note">Already have an account? <a href="{% url 'login' %}">Login</a></p>
+        </div>
+    </div>
+</section>
+
+{% endblock %}

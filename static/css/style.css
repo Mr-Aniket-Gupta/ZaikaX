@@ -1,0 +1,750 @@
+/* --------------------- GLOBAL STYLES --------------------- */
+
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Poppins', sans-serif;
+}
+
+body {
+    background: #f8f9f3;
+    color: #333;
+}
+
+/* Theme Colors */
+:root {
+    --green: #1b8a5a;
+    --orange: #ff7b00;
+    --light-green: #e9f7f1;
+}
+
+
+
+/* --------------------- NAVBAR --------------------- */
+
+.navbar {
+    width: 100%;
+    padding: 18px 50px;
+    background: #ffffffd7;
+    backdrop-filter: blur(10px);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+}
+
+.logo {
+    font-size: 26px;
+    font-weight: 700;
+    color: var(--green);
+}
+
+.logo span {
+    color: var(--orange);
+}
+
+.navbar nav a {
+    margin-left: 24px;
+    text-decoration: none;
+    font-weight: 500;
+    color: #333;
+    transition: .3s;
+}
+
+.navbar nav a:hover {
+    color: var(--orange);
+}
+
+.login-btn {
+    padding: 8px 16px;
+    background: var(--orange);
+    color: #fff !important;
+    border-radius: 6px;
+}
+
+.login-btn:hover {
+    background: #e06800;
+}
+
+/* Cart badge */
+.cart-badge {
+    display: inline-block;
+    background: var(--orange);
+    color: #fff;
+    padding: 2px 8px;
+    border-radius: 999px;
+    margin-left: 8px;
+    font-size: 13px;
+    font-weight: 700;
+    vertical-align: middle;
+    box-shadow: 0 6px 18px rgba(255,123,0,0.15);
+    transform-origin: center;
+    animation: badgePop .35s ease;
+}
+
+@keyframes badgePop {
+    0% { transform: scale(.6); opacity: 0; }
+    60% { transform: scale(1.08); opacity: 1; }
+    100% { transform: scale(1); }
+}
+
+
+
+/* --------------------- HERO SECTION – NO IMAGE, MODERN LOOK --------------------- */
+
+.hero {
+    height: 80vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 40px;
+    position: relative;
+    background: linear-gradient(135deg, #f8fff7, #e9f7f1, #ffffff);
+    overflow: hidden;
+}
+
+/* Smooth floating shapes */
+.hero::before,
+.hero::after {
+    content: "";
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(45px);
+    opacity: 0.45;
+    animation: float 6s infinite ease-in-out;
+}
+
+.hero::before {
+    width: 380px;
+    height: 380px;
+    background: #1b8a5a;
+    top: -80px;
+    left: -80px;
+    animation-duration: 8s;
+}
+
+.hero::after {
+    width: 320px;
+    height: 320px;
+    background: #ff7b00;
+    bottom: -60px;
+    right: -60px;
+    animation-duration: 10s;
+}
+
+/* Floating animation */
+@keyframes float {
+    0%, 100% { transform: translateY(0px); }
+    50% { transform: translateY(-25px); }
+}
+
+.hero-content {
+    position: relative;
+    z-index: 10;
+    text-align: center;
+    max-width: 650px;
+    padding: 40px;
+    background: rgba(255, 255, 255, 0.5);
+    border-radius: 20px;
+    backdrop-filter: blur(12px);
+    box-shadow: 0 8px 30px rgba(0,0,0,0.08);
+    animation: fadeIn 1.2s ease-in-out;
+}
+
+.hero-content h1 {
+    font-size: 52px;
+    font-weight: 700;
+    color: #1b8a5a;
+    margin-bottom: 15px;
+}
+
+.hero-content p {
+    font-size: 18px;
+    margin-bottom: 25px;
+    color: #444;
+}
+
+.cta-btn {
+    background: var(--orange);
+    padding: 14px 28px;
+    color: #fff;
+    border-radius: 10px;
+    text-decoration: none;
+    font-size: 20px;
+    font-weight: 600;
+    transition: .3s;
+}
+
+.cta-btn:hover {
+    background: #e06800;
+    transform: scale(1.05);
+}
+
+/* --------------------- CATEGORIES --------------------- */
+
+.categories {
+    padding: 60px 50px;
+    text-align: center;
+}
+
+.categories h2 {
+    font-size: 32px;
+    margin-bottom: 40px;
+}
+
+.cat-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+    gap: 25px;
+}
+
+.cat-card {
+    background: #fff;
+    padding: 25px;
+    border-radius: 16px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    transition: .3s;
+    cursor: pointer;
+}
+
+.cat-card img {
+    width: 70px;
+    margin-bottom: 15px;
+}
+
+.cat-card:hover {
+    transform: translateY(-8px);
+    background: var(--light-green);
+}
+
+
+
+/* --------------------- POPULAR DISHES --------------------- */
+
+.popular {
+    padding: 60px 50px;
+    text-align: center;
+}
+
+.popular-container {
+    margin-top: 30px;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 30px;
+}
+
+.dish-card {
+    background: #fff;
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.12);
+    transition: .3s;
+}
+
+.dish-card:hover {
+    transform: translateY(-6px);
+}
+
+.dish-card img {
+    width: 100%;
+    height: 180px;
+    object-fit: cover;
+}
+
+.dish-info {
+    padding: 15px;
+    text-align: left;
+}
+
+.price {
+    color: var(--green);
+    font-size: 18px;
+    font-weight: 600;
+}
+
+
+
+/* --------------------- ABOUT --------------------- */
+
+.about {
+    padding: 60px 40px;
+    text-align: center;
+    background: #fff;
+}
+
+.about p {
+    max-width: 700px;
+    margin: 15px auto;
+    font-size: 17px;
+}
+
+
+
+/* --------------------- CONTACT --------------------- */
+
+.contact {
+    padding: 60px 40px;
+    text-align: center;
+    background: var(--light-green);
+}
+
+.contact p {
+    margin: 5px 0;
+    font-size: 16px;
+}
+
+
+
+/* --------------------- FOOTER --------------------- */
+
+footer {
+    background: var(--green);
+    color: #fff;
+    padding: 18px 0;
+    text-align: center;
+}
+
+
+/* --------------------- ANIMATIONS --------------------- */
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+
+/* --------------------- RESPONSIVE --------------------- */
+
+@media(max-width: 768px) {
+
+    .navbar {
+        padding: 18px 20px;
+    }
+
+    .hero {
+        padding-left: 20px;
+        justify-content: center;
+        text-align: center;
+    }
+
+    .hero-content h1 {
+        font-size: 34px;
+    }
+
+    .hero-content p {
+        font-size: 16px;
+    }
+
+}
+
+/* ========================
+    MENU SECTION
+======================== */
+.menu-section {
+    padding: 120px 40px 80px;
+    text-align: center;
+}
+
+.menu-title {
+    font-size: 42px;
+    margin-bottom: 10px;
+    font-weight: 700;
+}
+
+/* =========================
+   Registration / Auth UI
+   ========================= */
+
+.register-section {
+    padding: 80px 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.register-card {
+    width: 820px;
+    max-width: 95%;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0;
+    background: linear-gradient(180deg, rgba(255,255,255,0.9), #ffffff);
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 20px 60px rgba(11, 45, 30, 0.12);
+    animation: slideUp .9s cubic-bezier(.2,.9,.2,1);
+}
+
+.register-visual {
+    background: linear-gradient(135deg, rgba(27,138,90,0.12), rgba(255,123,0,0.06));
+    padding: 40px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 18px;
+}
+
+.register-visual h3 {
+    color: var(--green);
+    font-size: 26px;
+    margin-bottom: 6px;
+}
+
+.register-visual p {
+    color: #366b53;
+    max-width: 320px;
+    text-align: center;
+    font-size: 14px;
+}
+
+.register-form {
+    padding: 34px 36px;
+}
+
+.register-form h2 {
+    font-size: 22px;
+    margin-bottom: 6px;
+    color: #153926;
+}
+
+.form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+}
+
+.form-group {
+    margin-bottom: 12px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 6px;
+    font-size: 13px;
+    color: #355a4a;
+}
+
+.form-control {
+    width: 100%;
+    padding: 12px 14px;
+    border-radius: 10px;
+    border: 1px solid #e6ebe6;
+    background: #fff;
+    transition: box-shadow .18s ease, transform .15s ease, border-color .12s ease;
+    font-size: 14px;
+}
+
+.form-control:focus {
+    outline: none;
+    border-color: var(--green);
+    box-shadow: 0 6px 20px rgba(27,138,90,0.08);
+    transform: translateY(-2px);
+}
+
+.submit-btn {
+    display: inline-block;
+    background: linear-gradient(90deg, var(--green), #18a25a);
+    color: #fff;
+    padding: 12px 18px;
+    border-radius: 10px;
+    border: none;
+    font-weight: 600;
+    cursor: pointer;
+    width: 100%;
+    margin-top: 6px;
+    transition: transform .15s ease, box-shadow .15s ease;
+}
+
+.submit-btn:hover {
+    transform: translateY(-3px) scale(1.01);
+    box-shadow: 0 14px 40px rgba(24,162,90,0.12);
+}
+
+.small-note {
+    font-size: 13px;
+    color: #5b6b63;
+    margin-top: 10px;
+}
+
+.field-errors {
+    color: #c84b4b;
+    font-size: 12px;
+    margin-bottom: 6px;
+}
+
+@keyframes slideUp {
+    from { opacity: 0; transform: translateY(20px) scale(.995); }
+    to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+@media (max-width: 880px) {
+    .register-card { grid-template-columns: 1fr; }
+    .register-visual { padding: 30px; }
+}
+
+.menu-subtitle {
+    font-size: 18px;
+    color: #555;
+    margin-bottom: 40px;
+}
+
+.menu-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 25px;
+    padding: 20px 0;
+}
+
+.menu-card {
+    background: #ffffff;
+    border-radius: 18px;
+    padding: 25px;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+    transition: all .3s ease;
+    border: 1px solid #eee;
+    cursor: pointer;
+}
+
+.menu-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 12px 30px rgba(0,0,0,0.12);
+}
+
+.menu-card-content h3 {
+    font-size: 22px;
+    margin-bottom: 10px;
+    font-weight: 600;
+}
+
+.menu-card-content p {
+    color: #666;
+    font-size: 15px;
+    margin-bottom: 15px;
+}
+
+.price {
+    display: inline-block;
+    margin-top: 5px;
+    font-weight: 700;
+    font-size: 18px;
+    color: #ff6b00;
+}
+
+
+/* =============================
+    ZAikax Menu Page Animations <-- EDIT STARTS HERE
+    ============================= */
+
+/* Section layout */
+.menu-section {
+    padding: 100px 40px 80px;
+    max-width: 1200px;
+    margin: auto;
+    text-align: center;
+}
+
+/* Titles */
+.menu-title {
+    font-size: 40px;
+    margin-bottom: 8px;
+    font-weight: 700;
+    color: var(--green);
+}
+
+.menu-subtitle {
+    font-size: 18px;
+    color: #5b5b5b;
+    margin-bottom: 40px;
+}
+
+/* Category heading animation */
+.category-heading {
+    font-size: 26px;
+    text-align: left;
+    margin: 40px 0 16px;
+    position: relative;
+    /* --- FIX: Keep visible and in place initially --- */
+    opacity: 1;                 
+    transform: translateY(0);   
+    /* ----------------------------------------------- */
+}
+
+.category-heading::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: -8px;
+    width: 50px;
+    height: 4px;
+    background: var(--orange);
+    border-radius: 10px;
+    transform-origin: left;
+    transform: scaleX(0);
+}
+
+/* Menu grid */
+.menu-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 25px;
+}
+
+.menu-card {
+    background: #fff;
+    border-radius: 18px;
+    padding: 20px;
+    box-shadow: 0 6px 16px rgba(0,0,0,0.08);
+    border: 1px solid #eee;
+    cursor: pointer;
+    transition: 0.3s ease;
+    /* --- FIX: Keep visible and in place initially --- */
+    opacity: 1;
+    transform: translateY(0);
+    /* ----------------------------------------------- */
+}
+
+/* Hover effect */
+.menu-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 14px 32px rgba(0,0,0,0.14);
+}
+
+/* Text inside card */
+.menu-card h3 {
+    font-size: 22px;
+    margin-bottom: 10px;
+    color: #222;
+}
+
+.menu-card p {
+    font-size: 15px;
+    color: #666;
+    margin-bottom: 12px;
+}
+
+/* Price badge animation */
+.price {
+    display: inline-block;
+    padding: 6px 14px;
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--orange);
+    background: #fff5ec;
+    border-radius: 10px;
+    border: 1px solid #ffd8ba;
+    animation: softPulse 2.5s infinite ease-in-out;
+}
+
+/* Pulse animation */
+@keyframes softPulse {
+    0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(255, 123, 0, 0.3); }
+    50% { transform: scale(1.05); box-shadow: 0 0 10px 4px rgba(255, 123, 0, 0.15); }
+    100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(255, 123, 0, 0.3); }
+}
+
+/* Reveal animations applied via JS - Kept for future JS use */
+.reveal-visible .menu-card {
+    animation: fadeCard 0.6s forwards;
+}
+
+.reveal-visible .category-heading {
+    animation: fadeCategory 0.7s forwards;
+}
+
+.reveal-visible .category-heading::after {
+    animation: underlineIn 0.6s forwards;
+}
+
+/* Card reveal animation */
+@keyframes fadeCard {
+    from { opacity: 0; transform: translateY(25px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* Category reveal */
+@keyframes fadeCategory {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes underlineIn {
+    from { transform: scaleX(0); }
+    to { transform: scaleX(1); }
+}
+
+
+
+
+/*---------- Checkout  ---------------*/
+.checkout-container {
+    max-width: 700px;
+    margin: 40px auto;
+}
+
+.checkout-card {
+    background: #fff;
+    padding: 25px;
+    border-radius: 12px;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.1);
+}
+
+.checkout-form .form-group {
+    margin-bottom: 18px;
+}
+
+.checkout-form label {
+    font-weight: 600;
+    margin-bottom: 6px;
+    display: block;
+}
+
+.checkout-form input,
+.checkout-form textarea {
+    width: 100%;
+    padding: 14px;
+    border-radius: 10px;
+    border: 2px solid #ddd;
+    font-size: 15px;
+}
+
+.checkout-form input:focus,
+.checkout-form textarea:focus {
+    border-color: #28a745;
+    box-shadow: 0 6px 16px rgba(40,167,69,0.25);
+    outline: none;
+}
+
+.checkout-form .form-row {
+    display: flex;
+    gap: 15px;
+}
+
+.place-order-btn {
+    width: 100%;
+    padding: 16px;
+    background: #28a745;
+    color: white;
+    font-size: 18px;
+    border-radius: 10px;
+    border: none;
+    cursor: pointer;
+}
+
+.secondary-btn {
+    margin-top: 10px;
+    background-color: transparent;
+    border: 2px solid #ff6b6b;
+    color: #ff6b6b;
+}
+
+.secondary-btn:hover {
+    background-color: #ff6b6b;
+    color: white;
+}

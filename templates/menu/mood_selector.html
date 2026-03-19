@@ -1,0 +1,677 @@
+{% extends "main/base.html" %}
+{% load static %}
+{% block content %}
+
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+
+<style>
+    :root {
+        --gold: #f3a000;
+        --gold-light: #ffc94a;
+        --gold-pale: #fff8ec;
+        --green: #387040;
+        --green-dark: #254d2b;
+        --green-light: #eef5ef;
+        --ink: #1a1a1a;
+        --muted: #6b6b6b;
+        --cream: #faf8f4;
+        --white: #ffffff;
+        --shadow: 0 8px 40px rgba(0,0,0,0.07);
+        --shadow-hover: 0 20px 56px rgba(0,0,0,0.12);
+        --radius: 16px;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body { background: var(--cream) !important; }
+    main, .content, .page-content, .main-content {
+        padding: 0 !important; margin: 0 !important; width: 100% !important;
+    }
+
+    .zx-ai { font-family: 'DM Sans', sans-serif; color: var(--ink); }
+
+    /* ── HERO ── */
+    .zx-ai-hero {
+        position: relative;
+        background: var(--green-dark);
+        min-height: 280px;
+        display: flex; align-items: flex-end;
+        padding: 0 6% 60px;
+        overflow: hidden;
+    }
+
+    .zx-ai-hero__bg {
+        position: absolute; inset: 0;
+        background-image:
+            radial-gradient(circle at 10% 65%, rgba(243,160,0,0.18) 0%, transparent 50%),
+            radial-gradient(circle at 85% 10%, rgba(56,112,64,0.5) 0%, transparent 50%);
+        pointer-events: none;
+    }
+
+    .zx-ai-hero__deco {
+        position: absolute; right: -60px; top: -60px;
+        width: 380px; height: 380px; border-radius: 50%;
+        border: 72px solid rgba(243,160,0,0.07);
+        pointer-events: none;
+    }
+
+    /* AI sparkle badge */
+    .zx-ai-hero__spark {
+        position: absolute; right: 6%; top: 50%; transform: translateY(-50%);
+        background: rgba(255,255,255,0.06);
+        border: 1px solid rgba(255,255,255,0.14);
+        backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+        border-radius: 18px; padding: 22px 28px;
+        text-align: center;
+        animation: fadeInRight 0.9s 0.4s cubic-bezier(0.22,1,0.36,1) both;
+    }
+
+    @keyframes fadeInRight {
+        from { opacity: 0; transform: translateY(-50%) translateX(20px); }
+        to   { opacity: 1; transform: translateY(-50%) translateX(0); }
+    }
+
+    .zx-ai-hero__spark-icon { font-size: 2.4rem; display: block; margin-bottom: 8px; }
+    .zx-ai-hero__spark p {
+        font-size: 0.8rem; color: rgba(255,255,255,0.7);
+        line-height: 1.5; max-width: 160px;
+    }
+    .zx-ai-hero__spark p strong { color: var(--gold); font-weight: 500; }
+
+    .zx-ai-hero__content {
+        position: relative; z-index: 1;
+        animation: fadeUp 0.8s cubic-bezier(0.22,1,0.36,1) both;
+    }
+
+    @keyframes fadeUp {
+        from { opacity: 0; transform: translateY(24px); }
+        to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .zx-ai-hero__eyebrow {
+        display: inline-flex; align-items: center; gap: 10px;
+        font-size: 0.75rem; font-weight: 500; letter-spacing: 0.2em;
+        text-transform: uppercase; color: var(--gold); margin-bottom: 14px;
+    }
+    .zx-ai-hero__eyebrow::before {
+        content: ''; display: block; width: 28px; height: 2px; background: var(--gold);
+    }
+
+    .zx-ai-hero h1 {
+        font-family: 'Playfair Display', serif;
+        font-size: clamp(2.2rem, 5vw, 3.8rem);
+        font-weight: 900; color: var(--white);
+        line-height: 1.05; letter-spacing: -0.02em;
+    }
+    .zx-ai-hero h1 em { font-style: italic; color: var(--gold); }
+
+    .zx-ai-hero__sub {
+        font-size: 1rem; color: rgba(255,255,255,0.58);
+        font-weight: 300; margin-top: 12px; max-width: 420px; line-height: 1.65;
+    }
+
+    /* ── BODY ── */
+    .zx-ai-body {
+        max-width: 1100px; margin: 0 auto;
+        padding: 64px 5% 96px;
+        display: grid;
+        grid-template-columns: 340px 1fr;
+        gap: 40px; align-items: start;
+    }
+
+    /* ── FILTER PANEL ── */
+    .zx-filter-panel {
+        background: var(--white);
+        border-radius: var(--radius);
+        padding: 36px 30px;
+        box-shadow: var(--shadow);
+        position: sticky; top: 30px;
+        animation: fadeInLeft 0.7s 0.1s cubic-bezier(0.22,1,0.36,1) both;
+    }
+
+    @keyframes fadeInLeft {
+        from { opacity: 0; transform: translateX(-18px); }
+        to   { opacity: 1; transform: translateX(0); }
+    }
+
+    .zx-filter-title {
+        font-family: 'Playfair Display', serif;
+        font-size: 1.4rem; font-weight: 700;
+        color: var(--green-dark); margin-bottom: 28px;
+        display: flex; align-items: center; gap: 9px;
+    }
+
+    /* Field */
+    .zx-fp-field { margin-bottom: 24px; }
+
+    .zx-fp-label {
+        font-size: 0.75rem; font-weight: 500;
+        letter-spacing: 0.12em; text-transform: uppercase;
+        color: var(--green-dark); margin-bottom: 10px;
+        display: block;
+    }
+
+    /* Mood chips */
+    .zx-mood-chips { display: flex; flex-direction: column; gap: 8px; }
+
+    .zx-mood-chip {
+        display: flex; align-items: center; gap: 12px;
+        padding: 12px 16px; border-radius: 12px;
+        border: 1.5px solid #e2ddd6;
+        background: var(--cream);
+        cursor: pointer; font-family: 'DM Sans', sans-serif;
+        font-size: 0.92rem; color: var(--muted);
+        transition: all 0.2s; position: relative;
+    }
+
+    .zx-mood-chip input[type="radio"] {
+        position: absolute; opacity: 0; pointer-events: none;
+    }
+
+    .zx-mood-chip:hover { border-color: var(--gold); color: var(--ink); background: var(--gold-pale); }
+    .zx-mood-chip.selected {
+        border-color: var(--gold); background: var(--gold-pale);
+        color: var(--ink); font-weight: 500;
+    }
+    .zx-mood-chip.selected::after {
+        content: '✓';
+        margin-left: auto; color: var(--gold); font-weight: 700; font-size: 0.9rem;
+    }
+
+    .zx-mood-chip__emoji { font-size: 1.3rem; flex-shrink: 0; }
+    .zx-mood-chip__text strong { display: block; font-size: 0.93rem; }
+    .zx-mood-chip__text span { font-size: 0.78rem; opacity: 0.7; }
+
+    /* Toggle (Veg / All) */
+    .zx-toggle { display: flex; gap: 8px; }
+
+    .zx-toggle-btn {
+        flex: 1; padding: 10px 0; border-radius: 10px;
+        border: 1.5px solid #e2ddd6; background: var(--cream);
+        font-family: 'DM Sans', sans-serif; font-size: 0.88rem;
+        font-weight: 500; color: var(--muted); cursor: pointer;
+        transition: all 0.2s; text-align: center;
+    }
+    .zx-toggle-btn:hover { border-color: var(--gold); color: var(--ink); }
+    .zx-toggle-btn.active {
+        background: var(--green-dark); border-color: var(--green-dark);
+        color: var(--white);
+    }
+
+    /* Budget input */
+    .zx-budget-wrap {
+        position: relative;
+    }
+    .zx-budget-wrap::before {
+        content: '₹';
+        position: absolute; left: 14px; top: 50%; transform: translateY(-50%);
+        font-size: 1rem; color: var(--muted); font-weight: 500;
+        pointer-events: none;
+    }
+    .zx-budget-input {
+        width: 100%; padding: 13px 16px 13px 30px;
+        font-family: 'DM Sans', sans-serif; font-size: 1rem;
+        color: var(--ink); background: var(--cream);
+        border: 1.5px solid #e2ddd6; border-radius: 10px;
+        outline: none;
+        transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    .zx-budget-input:focus {
+        border-color: var(--gold); background: var(--white);
+        box-shadow: 0 0 0 3px rgba(243,160,0,0.12);
+    }
+
+    /* Budget slider */
+    .zx-slider {
+        width: 100%; margin-top: 10px;
+        -webkit-appearance: none; appearance: none;
+        height: 4px; border-radius: 2px;
+        background: linear-gradient(to right, var(--gold) 0%, var(--gold) 60%, #e2ddd6 60%);
+        outline: none; cursor: pointer;
+    }
+    .zx-slider::-webkit-slider-thumb {
+        -webkit-appearance: none; appearance: none;
+        width: 18px; height: 18px; border-radius: 50%;
+        background: var(--gold); cursor: pointer;
+        box-shadow: 0 2px 8px rgba(243,160,0,0.4);
+        border: 3px solid var(--white);
+    }
+
+    /* Suggest button */
+    .zx-suggest-btn {
+        width: 100%; margin-top: 8px;
+        padding: 16px; border: none;
+        background: var(--gold); color: var(--white);
+        font-family: 'DM Sans', sans-serif;
+        font-size: 1rem; font-weight: 500;
+        border-radius: 100px; cursor: pointer;
+        display: flex; align-items: center; justify-content: center; gap: 10px;
+        transition: background 0.2s, transform 0.2s, box-shadow 0.2s;
+        letter-spacing: 0.02em;
+    }
+    .zx-suggest-btn:hover {
+        background: #d98f00; transform: translateY(-2px);
+        box-shadow: 0 10px 32px rgba(243,160,0,0.35);
+    }
+    .zx-suggest-btn:active { transform: translateY(0); }
+    .zx-suggest-btn:disabled { background: #ccc; cursor: not-allowed; transform: none; box-shadow: none; }
+
+    /* Spinner inside button */
+    .zx-spinner {
+        width: 18px; height: 18px; border-radius: 50%;
+        border: 2.5px solid rgba(255,255,255,0.35);
+        border-top-color: white;
+        animation: spin 0.7s linear infinite; display: none;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .zx-suggest-btn.loading .zx-spinner { display: block; }
+    .zx-suggest-btn.loading .zx-btn-label { display: none; }
+
+    /* ── RESULTS PANEL ── */
+    .zx-results-panel {
+        animation: fadeInRight2 0.7s 0.15s cubic-bezier(0.22,1,0.36,1) both;
+    }
+
+    @keyframes fadeInRight2 {
+        from { opacity: 0; transform: translateX(18px); }
+        to   { opacity: 1; transform: translateX(0); }
+    }
+
+    /* Empty / Idle state */
+    .zx-results-idle {
+        background: var(--white);
+        border-radius: var(--radius);
+        padding: 72px 40px;
+        text-align: center;
+        box-shadow: var(--shadow);
+    }
+
+    .zx-results-idle__icon {
+        font-size: 3.6rem; margin-bottom: 20px; display: block;
+        animation: gentleFloat 3s ease-in-out infinite;
+    }
+
+    @keyframes gentleFloat {
+        0%, 100% { transform: translateY(0); }
+        50% { transform: translateY(-8px); }
+    }
+
+    .zx-results-idle h3 {
+        font-family: 'Playfair Display', serif;
+        font-size: 1.7rem; font-weight: 700;
+        color: var(--green-dark); margin-bottom: 10px;
+    }
+    .zx-results-idle h3 em { font-style: italic; color: var(--gold); }
+    .zx-results-idle p { font-size: 0.95rem; color: var(--muted); line-height: 1.65; }
+
+    /* Results header */
+    .zx-results-header {
+        display: flex; align-items: center; justify-content: space-between;
+        margin-bottom: 20px; display: none;
+    }
+
+    .zx-results-header h2 {
+        font-family: 'Playfair Display', serif;
+        font-size: 1.5rem; font-weight: 700; color: var(--green-dark);
+    }
+    .zx-results-header h2 em { font-style: italic; color: var(--gold); }
+
+    .zx-results-count {
+        font-size: 0.82rem; color: var(--muted);
+        background: var(--green-light); border-radius: 100px;
+        padding: 5px 14px; font-weight: 500;
+    }
+
+    /* Result cards grid */
+    .zx-results-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+        gap: 20px;
+    }
+
+    .zx-result-card {
+        background: var(--white);
+        border-radius: var(--radius);
+        overflow: hidden;
+        box-shadow: var(--shadow);
+        border: 1.5px solid transparent;
+        transition: transform 0.28s cubic-bezier(0.22,1,0.36,1),
+                    border-color 0.28s, box-shadow 0.28s;
+        animation: cardIn 0.5s cubic-bezier(0.22,1,0.36,1) both;
+    }
+
+    @keyframes cardIn {
+        from { opacity: 0; transform: translateY(20px) scale(0.97); }
+        to   { opacity: 1; transform: translateY(0) scale(1); }
+    }
+
+    .zx-result-card:hover {
+        transform: translateY(-5px);
+        border-color: rgba(243,160,0,0.3);
+        box-shadow: var(--shadow-hover);
+    }
+
+    /* Card top accent bar */
+    .zx-result-card__bar {
+        height: 5px;
+        background: linear-gradient(to right, var(--green-dark), var(--gold));
+    }
+
+    .zx-result-card__body { padding: 22px 20px 20px; }
+
+    .zx-result-card__name {
+        font-family: 'Playfair Display', serif;
+        font-size: 1.15rem; font-weight: 700;
+        color: var(--ink); margin-bottom: 10px; line-height: 1.25;
+    }
+
+    .zx-result-card__meta {
+        display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 12px;
+    }
+
+    .zx-result-chip {
+        display: inline-flex; align-items: center; gap: 5px;
+        padding: 4px 12px; border-radius: 100px;
+        font-size: 0.78rem; font-weight: 500;
+    }
+
+    .zx-chip-price {
+        background: var(--gold-pale); color: #7a5800;
+        border: 1px solid rgba(243,160,0,0.25);
+    }
+
+    .zx-chip-cal {
+        background: var(--green-light); color: var(--green-dark);
+        border: 1px solid rgba(56,112,64,0.2);
+    }
+
+    .zx-result-card__desc {
+        font-size: 0.87rem; color: var(--muted);
+        line-height: 1.65;
+        display: -webkit-box;
+        -webkit-line-clamp: 3;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+        margin-bottom: 18px;
+    }
+
+    .zx-result-card__cta {
+        display: flex; align-items: center; justify-content: center; gap: 7px;
+        width: 100%; padding: 11px;
+        background: var(--green-dark); color: var(--white);
+        font-family: 'DM Sans', sans-serif;
+        font-size: 0.88rem; font-weight: 500;
+        border: none; border-radius: 10px; cursor: pointer;
+        text-decoration: none;
+        transition: background 0.2s, transform 0.15s;
+    }
+    .zx-result-card__cta:hover {
+        background: var(--green); transform: translateY(-1px);
+        color: var(--white); text-decoration: none;
+    }
+
+    /* Error state */
+    .zx-error-msg {
+        background: #fff0ef; border: 1.5px solid rgba(192,57,43,0.2);
+        border-radius: var(--radius); padding: 20px 24px;
+        font-size: 0.92rem; color: #c0392b; display: none;
+        align-items: center; gap: 12px;
+    }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 860px) {
+        .zx-ai-body {
+            grid-template-columns: 1fr;
+            padding: 40px 5% 72px;
+        }
+        .zx-filter-panel { position: static; }
+        .zx-ai-hero__spark { display: none; }
+        .zx-mood-chips { flex-direction: row; flex-wrap: wrap; }
+        .zx-mood-chip { flex: 1; min-width: 120px; }
+    }
+</style>
+
+<section class="zx-ai">
+
+    <!-- ── HERO ── -->
+    <div class="zx-ai-hero">
+        <div class="zx-ai-hero__bg"></div>
+        <div class="zx-ai-hero__deco"></div>
+
+        <div class="zx-ai-hero__spark">
+            <span class="zx-ai-hero__spark-icon">🤖</span>
+            <p>Powered by <strong>AI</strong> — personalised picks just for you</p>
+        </div>
+
+        <div class="zx-ai-hero__content">
+            <div class="zx-ai-hero__eyebrow">AI Recommender</div>
+            <h1>Find Your<br><em>Perfect Meal</em></h1>
+            <p class="zx-ai-hero__sub">Tell us your mood, preference and budget — our AI picks the best dishes for you.</p>
+        </div>
+    </div>
+
+    <!-- ── BODY ── -->
+    <div class="zx-ai-body">
+
+        <!-- ── FILTER PANEL ── -->
+        <aside class="zx-filter-panel">
+            <div class="zx-filter-title">✨ Your Preferences</div>
+
+            <!-- Mood -->
+            <div class="zx-fp-field">
+                <label class="zx-fp-label">I'm feeling…</label>
+                <div class="zx-mood-chips">
+                    <label class="zx-mood-chip selected" data-value="hungry">
+                        <input type="radio" id="mood" name="mood" value="hungry" checked>
+                        <span class="zx-mood-chip__emoji">😋</span>
+                        <div class="zx-mood-chip__text">
+                            <strong>Hungry</strong>
+                            <span>Fill me up</span>
+                        </div>
+                    </label>
+                    <label class="zx-mood-chip" data-value="healthy">
+                        <input type="radio" name="mood" value="healthy">
+                        <span class="zx-mood-chip__emoji">🥗</span>
+                        <div class="zx-mood-chip__text">
+                            <strong>Healthy</strong>
+                            <span>Light & nutritious</span>
+                        </div>
+                    </label>
+                    <label class="zx-mood-chip" data-value="chill">
+                        <input type="radio" name="mood" value="chill">
+                        <span class="zx-mood-chip__emoji">😌</span>
+                        <div class="zx-mood-chip__text">
+                            <strong>Chill</strong>
+                            <span>Comfort food vibes</span>
+                        </div>
+                    </label>
+                </div>
+            </div>
+
+            <!-- Veg toggle -->
+            <div class="zx-fp-field">
+                <label class="zx-fp-label">Preference</label>
+                <div class="zx-toggle">
+                    <button class="zx-toggle-btn active" data-veg="all" type="button">🍽️ All</button>
+                    <button class="zx-toggle-btn" data-veg="veg" type="button">🌿 Veg Only</button>
+                </div>
+                <!-- Hidden input for JS to read -->
+                <input type="hidden" id="veg" value="all">
+            </div>
+
+            <!-- Budget -->
+            <div class="zx-fp-field">
+                <label class="zx-fp-label">Budget</label>
+                <div class="zx-budget-wrap">
+                    <input type="number" id="budget" class="zx-budget-input"
+                           placeholder="300" value="300" min="50" max="2000">
+                </div>
+                <input type="range" id="budgetSlider" class="zx-slider"
+                       min="50" max="2000" value="300" step="50">
+            </div>
+
+            <!-- Submit -->
+            <button class="zx-suggest-btn" onclick="getSuggestions()" id="suggestBtn">
+                <div class="zx-spinner"></div>
+                <span class="zx-btn-label">
+                    ✨ Suggest My Meal
+                </span>
+            </button>
+        </aside>
+
+        <!-- ── RESULTS ── -->
+        <div class="zx-results-panel">
+
+            <!-- Error -->
+            <div class="zx-error-msg" id="errorMsg">
+                ⚠️ Something went wrong. Please try again.
+            </div>
+
+            <!-- Results header (shown after fetch) -->
+            <div class="zx-results-header" id="resultsHeader">
+                <h2>We found <em>these</em> for you</h2>
+                <span class="zx-results-count" id="resultsCount">0 dishes</span>
+            </div>
+
+            <!-- Cards grid -->
+            <div class="zx-results-grid" id="results">
+                <!-- Idle placeholder -->
+                <div class="zx-results-idle" id="idleState" style="grid-column:1/-1">
+                    <span class="zx-results-idle__icon">🍽️</span>
+                    <h3>Tell us what you're <em>craving</em></h3>
+                    <p>Set your mood, preference and budget — then hit Suggest to let our AI pick the perfect dishes for you.</p>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+</section>
+
+<script>
+    /* ── Mood chip selection ── */
+    document.querySelectorAll('.zx-mood-chip').forEach(chip => {
+        chip.addEventListener('click', () => {
+            document.querySelectorAll('.zx-mood-chip').forEach(c => c.classList.remove('selected'));
+            chip.classList.add('selected');
+        });
+    });
+
+    /* ── Veg toggle ── */
+    document.querySelectorAll('.zx-toggle-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            document.querySelectorAll('.zx-toggle-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            document.getElementById('veg').value = btn.dataset.veg;
+        });
+    });
+
+    /* ── Budget slider <-> input sync ── */
+    const budgetInput  = document.getElementById('budget');
+    const budgetSlider = document.getElementById('budgetSlider');
+
+    budgetSlider.addEventListener('input', () => {
+        budgetInput.value = budgetSlider.value;
+        updateSliderFill();
+    });
+
+    budgetInput.addEventListener('input', () => {
+        budgetSlider.value = Math.min(2000, Math.max(50, budgetInput.value));
+        updateSliderFill();
+    });
+
+    function updateSliderFill() {
+        const pct = ((budgetSlider.value - 50) / (2000 - 50)) * 100;
+        budgetSlider.style.background =
+            `linear-gradient(to right, var(--gold) 0%, var(--gold) ${pct}%, #e2ddd6 ${pct}%)`;
+    }
+
+    /* ── getSuggestions — original backend logic untouched ── */
+    async function getSuggestions() {
+        const mood   = document.querySelector('input[name="mood"]:checked')?.value || 'hungry';
+        const veg    = document.getElementById("veg").value;
+        const budget = document.getElementById("budget").value || 500;
+
+        const btn = document.getElementById('suggestBtn');
+        const errorMsg = document.getElementById('errorMsg');
+        const resultsHeader = document.getElementById('resultsHeader');
+        const resultsCount  = document.getElementById('resultsCount');
+        const container     = document.getElementById("results");
+
+        /* Loading state */
+        btn.classList.add('loading');
+        btn.disabled = true;
+        errorMsg.style.display = 'none';
+
+        try {
+            const res = await fetch("/menu/mood/suggest/", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "X-CSRFToken": document.cookie.split('csrftoken=')[1]?.split(';')[0]
+                },
+                body: JSON.stringify({ mood, veg, budget })
+            });
+
+            if (!res.ok) {
+                console.error("Server error");
+                errorMsg.style.display = 'flex';
+                return;
+            }
+
+            const data = await res.json();
+            console.log(data);
+
+            /* Clear idle + render results */
+            container.innerHTML = "";
+
+            if (!data.items || data.items.length === 0) {
+                container.innerHTML = `
+                    <div class="zx-results-idle" style="grid-column:1/-1">
+                        <span class="zx-results-idle__icon">😕</span>
+                        <h3>No dishes <em>found</em></h3>
+                        <p>Try increasing your budget or changing your mood preference.</p>
+                    </div>`;
+                resultsHeader.style.display = 'none';
+                return;
+            }
+
+            /* Show header + count */
+            resultsHeader.style.display = 'flex';
+            resultsCount.textContent = `${data.items.length} dish${data.items.length !== 1 ? 'es' : ''}`;
+
+            data.items.forEach((item, i) => {
+                const card = document.createElement('div');
+                card.className = 'zx-result-card';
+                card.style.animationDelay = `${i * 0.07}s`;
+                card.innerHTML = `
+                    <div class="zx-result-card__bar"></div>
+                    <div class="zx-result-card__body">
+                        <div class="zx-result-card__name">${item.name}</div>
+                        <div class="zx-result-card__meta">
+                            <span class="zx-result-chip zx-chip-price">₹${item.price}</span>
+                            ${item.calories ? `<span class="zx-result-chip zx-chip-cal">🔥 ${item.calories}</span>` : ''}
+                        </div>
+                        <p class="zx-result-card__desc">${item.desc || 'A delicious dish crafted with fresh ingredients and authentic spices.'}</p>
+                        <a href="/menu/" class="zx-result-card__cta">
+                            View on Menu
+                            <svg width="13" height="13" viewBox="0 0 16 16" fill="none">
+                                <path d="M3 8h10M9 4l4 4-4 4" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                        </a>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+
+        } catch (err) {
+            console.error(err);
+            errorMsg.style.display = 'flex';
+        } finally {
+            btn.classList.remove('loading');
+            btn.disabled = false;
+        }
+    }
+</script>
+
+{% endblock %}

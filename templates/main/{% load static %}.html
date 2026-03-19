@@ -1,0 +1,19 @@
+{% load static %}
+
+<div class="menu-card">
+
+    {% if item.image %}
+        <img src="{{ item.image.url }}" alt="{{ item.name }}" class="dish-img">
+    {% else %}
+        <img src="{% static 'images/default-food.png' %}" class="dish-img">
+    {% endif %}
+
+    <h3>{{ item.name }}</h3>
+    <p>{{ item.description }}</p>
+    <span class="price">₹{{ item.price }}</span>
+
+    <a href="{% url 'add_to_cart' item.id %}" class="add-cart-btn">
+        Add to Cart
+    </a>
+
+</div>

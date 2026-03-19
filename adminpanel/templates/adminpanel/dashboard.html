@@ -1,0 +1,264 @@
+{% extends 'adminpanel/base_admin.html' %}
+{% block content %}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2><i class="fas fa-chart-line"></i> Dashboard</h2>
+</div>
+
+<!-- Quick Stats -->
+<div class="row mb-4">
+    <div class="col-md-3 mb-3">
+        <a href="{% url 'admin_orders' %}?status=Pending" class="text-decoration-none">
+            <div class="summary-card">
+                <div class="d-flex justify-content-between align-items-start">
+                    <div>
+                        <h6>Pending Orders</h6>
+                        <p class="display-6 mb-0" style="color: #f59e0b;">{{ pending_orders }}</p>
+                    </div>
+                    <i class="fas fa-hourglass-half" style="font-size: 32px; color: #f59e0b; opacity: 0.2;"></i>
+                </div>
+            </div>
+        </a>
+    </div>
+
+    <div class="col-md-3 mb-3">
+        <a href="{% url 'admin_orders' %}?status=Delivered" class="text-decoration-none">
+            <div class="summary-card">
+                <div class="d-flex justify-content-between align-items-start">
+                    <div>
+                        <h6>Completed Orders</h6>
+                        <p class="display-6 mb-0" style="color: #10b981;">{{ completed_orders }}</p>
+                    </div>
+                    <i class="fas fa-check-circle" style="font-size: 32px; color: #10b981; opacity: 0.2;"></i>
+                </div>
+            </div>
+        </a>
+    </div>
+
+    <div class="col-md-3 mb-3">
+        <a href="{% url 'admin_orders' %}?status=Cancelled" class="text-decoration-none">
+            <div class="summary-card">
+                <div class="d-flex justify-content-between align-items-start">
+                    <div>
+                        <h6>Cancelled Orders</h6>
+                        <p class="display-6 mb-0" style="color: #ef4444;">{{ cancelled_orders }}</p>
+                    </div>
+                    <i class="fas fa-times-circle" style="font-size: 32px; color: #ef4444; opacity: 0.2;"></i>
+                </div>
+            </div>
+        </a>
+    </div>
+
+    <div class="col-md-3 mb-3">
+        <a href="{% url 'admin_users' %}" class="text-decoration-none">
+            <div class="summary-card">
+                <div class="d-flex justify-content-between align-items-start">
+                    <div>
+                        <h6>Total Users</h6>
+                        <p class="display-6 mb-0" style="color: #3b82f6;">{{ total_users }}</p>
+                    </div>
+                    <i class="fas fa-users" style="font-size: 32px; color: #3b82f6; opacity: 0.2;"></i>
+                </div>
+            </div>
+        </a>
+    </div>
+</div>
+
+<!-- Sales Chart -->
+<div class="card mb-4">
+    <div class="card-header d-flex justify-content-between align-items-center">
+        <h5 class="mb-0"><i class="fas fa-chart-line me-2"></i>Sales Analytics</h5>
+        <div class="d-flex gap-2">
+            <select id="chart-type" class="form-select form-select-sm" style="width: 150px;">
+                <option value="daily">Daily (Last 7 Days)</option>
+                <option value="monthly">Monthly (Last 6 Months)</option>
+            </select>
+            <button id="refresh-chart" class="btn btn-sm btn-primary"><i class="fas fa-sync-alt me-1"></i>Refresh</button>
+        </div>
+    </div>
+    <div class="card-body">
+        <canvas id="salesChart" height="80"></canvas>
+    </div>
+</div>
+
+<div class="row mb-4">
+    <div class="col-md-6 mb-3">
+        <div class="card">
+            <div class="card-header">
+                <h6 class="mb-0"><i class="fas fa-fire me-2"></i>Top Purchased Items</h6>
+            </div>
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-hover mb-0">
+                        <thead>
+                            <tr>
+                                <th>Item</th>
+                                <th>Qty</th>
+                                <th>Revenue</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for item in top_items %}
+                            <tr>
+                                <td><strong>{{ item.item__name }}</strong></td>
+                                <td><span class="badge badge-secondary">{{ item.total_qty }}</span></td>
+                                <td><strong style="color: #f59e0b;">₹{{ item.total_revenue|floatformat:0 }}</strong></td>
+                            </tr>
+                            {% empty %}
+                            <tr><td colspan="3" class="text-center text-secondary py-4">No data available</td></tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-6 mb-3">
+        <div class="card">
+            <div class="card-header">
+                <h6 class="mb-0"><i class="fas fa-crown me-2"></i>Top Spending Users</h6>
+            </div>
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-hover mb-0">
+                        <thead>
+                            <tr>
+                                <th>User</th>
+                                <th>Orders</th>
+                                <th>Spent</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for u in top_users %}
+                            <tr>
+                                <td><strong>{{ u.user__username }}</strong></td>
+                                <td><span class="badge" style="background: #dbeafe; color: #1e40af;">{{ u.total_orders }}</span></td>
+                                <td><strong style="color: #f59e0b;">₹{{ u.total_spent|floatformat:0 }}</strong></td>
+                            </tr>
+                            {% empty %}
+                            <tr><td colspan="3" class="text-center text-secondary py-4">No data available</td></tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Recent Activity -->
+<div class="card">
+    <div class="card-header">
+        <h6 class="mb-0"><i class="fas fa-history me-2"></i>Recent User Activity</h6>
+    </div>
+    <div class="card-body p-0">
+        <div class="table-responsive">
+            <table class="table table-hover mb-0">
+                <thead>
+                    <tr>
+                        <th>User</th>
+                        <th>Email</th>
+                        <th>Last Order</th>
+                        <th>Amount</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for u in recent_users %}
+                    <tr>
+                        <td><strong>{{ u.username }}</strong></td>
+                        <td><small>{{ u.email }}</small></td>
+                        <td><small>{{ u.last_order_date|default:"Never" }}</small></td>
+                        <td><strong style="color: #f59e0b;">₹{{ u.order_amount|floatformat:0|default:"0" }}</strong></td>
+                        <td>
+                            <a href="{% url 'admin_users' %}" class="btn btn-sm btn-outline-primary"><i class="fas fa-eye"></i></a>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr><td colspan="5" class="text-center text-secondary py-4">No recent activity</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- Chart.js Library -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js@3.9.1/dist/chart.min.js"></script>
+<script>
+    let salesChart = null;
+    const salesCtx = document.getElementById('salesChart').getContext('2d');
+
+    function fetchAndRender() {
+        const type = document.getElementById('chart-type').value;
+        const range = type === 'monthly' ? 6 : 7;
+        
+        fetch(`{% url 'admin_sales_data' %}?type=${type}&range=${range}`)
+            .then(res => res.json())
+            .then(json => {
+                const labels = json.labels || [];
+                const data = json.data || [];
+                
+                const config = {
+                    type: 'line',
+                    data: {
+                        labels: labels,
+                        datasets: [{
+                            label: 'Revenue (₹)',
+                            data: data,
+                            backgroundColor: 'rgba(59, 130, 246, 0.08)',
+                            borderColor: '#3b82f6',
+                            borderWidth: 2,
+                            fill: true,
+                            tension: 0.4,
+                            pointBackgroundColor: '#3b82f6',
+                            pointBorderColor: '#fff',
+                            pointBorderWidth: 2,
+                            pointRadius: 4,
+                            pointHoverRadius: 6
+       }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: true,
+                        plugins: {
+                            legend: { display: false },
+                            tooltip: {
+                                backgroundColor: '#1f2937',
+                                padding: 12,
+                                titleFont: { size: 13 },
+                                bodyFont: { size: 12 },
+                                borderColor: '#e5e7eb',
+                                borderWidth: 1
+                            }
+                        },
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                grid: { color: '#f3f4f6' },
+                                ticks: { color: '#6b7280' }
+                            },
+                            x: {
+                                grid: { display: false },
+                                ticks: { color: '#6b7280' }
+                            }
+                        }
+                    }
+                };
+                
+                if (salesChart) salesChart.destroy();
+                salesChart = new Chart(salesCtx, config);
+            })
+            .catch(err => console.error('Error fetching sales data:', err));
+    }
+
+    // Event listeners
+    document.getElementById('refresh-chart').addEventListener('click', fetchAndRender);
+    document.getElementById('chart-type').addEventListener('change', fetchAndRender);
+    
+    // Initial render
+    fetchAndRender();
+</script>
+
+{% endblock %}
