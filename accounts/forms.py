@@ -3,6 +3,17 @@ from django.contrib.auth.models import User
 from .models import Address
 
 
+class UserProfileForm(forms.ModelForm):
+    class Meta:
+        model = User
+        fields = ['first_name', 'last_name', 'email']
+        widgets = {
+            'first_name': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'First name'}),
+            'last_name': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Last name'}),
+            'email': forms.EmailInput(attrs={'class': 'form-control', 'placeholder': 'Email'}),
+        }
+
+
 class RegistrationForm(forms.Form):
     username = forms.CharField(max_length=150, label='Username', widget=forms.TextInput(attrs={'placeholder': 'Username', 'class':'form-control'}))
     email = forms.EmailField(label='Email', widget=forms.EmailInput(attrs={'placeholder':'Email','class':'form-control'}))
@@ -37,7 +48,7 @@ class RegistrationForm(forms.Form):
 class AddressForm(forms.ModelForm):
     class Meta:
         model = Address
-        fields = ['full_name','email','phone','address_line1','address_line2','city','state','pincode','country']
+        fields = ['full_name','email','phone','address_line1','address_line2','city','state','pincode','country','is_default']
         widgets = {
             'full_name': forms.TextInput(attrs={'class':'form-control'}),
             'email': forms.EmailInput(attrs={'class':'form-control'}),
@@ -48,4 +59,5 @@ class AddressForm(forms.ModelForm):
             'state': forms.TextInput(attrs={'class':'form-control'}),
             'pincode': forms.TextInput(attrs={'class':'form-control'}),
             'country': forms.TextInput(attrs={'class':'form-control'}),
+            'is_default': forms.CheckboxInput(attrs={'class':'form-check-input'}),
         }

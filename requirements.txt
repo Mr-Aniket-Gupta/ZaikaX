@@ -1,0 +1,6 @@
+Django>=5.0,<6.0
+Pillow>=10.0.0
+python-dotenv>=1.0.0
+requests>=2.31.0
+gunicorn>=21.2.0  # Production WSGI
+psycopg2-binary>=2.9.9  # PostgreSQL adapter (optional, for prod)

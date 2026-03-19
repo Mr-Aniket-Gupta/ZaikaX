@@ -1,8 +1,10 @@
 from django.shortcuts import render, redirect
+from django.shortcuts import get_object_or_404
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
 from django.contrib import messages
-from accounts.forms import RegistrationForm
+from django.contrib.auth.decorators import login_required
+from accounts.forms import RegistrationForm, UserProfileForm, AddressForm
 from accounts.models import Address
 import random
 
@@ -79,6 +81,105 @@ def register_user(request):
 def logout_user(request):
     logout(request)
     return redirect('home')
+
+
+@login_required(login_url='login')
+def user_profile(request):
+    addresses = Address.objects.filter(user=request.user).order_by('-is_default', '-created_at')
+
+    profile_form = UserProfileForm(instance=request.user)
+    address_form = AddressForm(initial={
+        'full_name': f"{request.user.first_name} {request.user.last_name}".strip() or request.user.username,
+        'email': request.user.email,
+    })
+
+    edit_address = None
+    edit_address_form = None
+    edit_id = request.GET.get('edit')
+    if edit_id:
+        edit_address = get_object_or_404(Address, id=edit_id, user=request.user)
+        edit_address_form = AddressForm(instance=edit_address)
+
+    if request.method == 'POST':
+        form_type = request.POST.get('form_type')
+
+        if form_type == 'profile':
+            profile_form = UserProfileForm(request.POST, instance=request.user)
+            if profile_form.is_valid():
+                profile_form.save()
+                messages.success(request, 'Profile updated successfully.')
+                return redirect('user_profile')
+            messages.error(request, 'Please fix profile form errors.')
+
+        elif form_type == 'address_add':
+            address_form = AddressForm(request.POST)
+            if address_form.is_valid():
+                new_address = address_form.save(commit=False)
+                new_address.user = request.user
+                if not addresses.exists():
+                    new_address.is_default = True
+                new_address.save()
+
+                if new_address.is_default:
+                    Address.objects.filter(user=request.user).exclude(id=new_address.id).update(is_default=False)
+
+                messages.success(request, 'Address added successfully.')
+                return redirect('user_profile')
+            messages.error(request, 'Please fix address form errors.')
+
+        elif form_type == 'address_edit':
+            address_id = request.POST.get('address_id')
+            edit_address = get_object_or_404(Address, id=address_id, user=request.user)
+            edit_address_form = AddressForm(request.POST, instance=edit_address)
+            if edit_address_form.is_valid():
+                updated_address = edit_address_form.save()
+                if updated_address.is_default:
+                    Address.objects.filter(user=request.user).exclude(id=updated_address.id).update(is_default=False)
+                elif not Address.objects.filter(user=request.user, is_default=True).exists():
+                    updated_address.is_default = True
+                    updated_address.save(update_fields=['is_default'])
+
+                messages.success(request, 'Address updated successfully.')
+                return redirect('user_profile')
+            messages.error(request, 'Please fix address edit form errors.')
+
+    context = {
+        'profile_user': request.user,
+        'profile_form': profile_form,
+        'address_form': address_form,
+        'addresses': addresses,
+        'edit_address': edit_address,
+        'edit_address_form': edit_address_form,
+    }
+    return render(request, 'main/profile.html', context)
+
+
+@login_required(login_url='login')
+def delete_address(request, address_id):
+    if request.method == 'POST':
+        address = get_object_or_404(Address, id=address_id, user=request.user)
+        was_default = address.is_default
+        address.delete()
+
+        if was_default:
+            next_default = Address.objects.filter(user=request.user).first()
+            if next_default:
+                next_default.is_default = True
+                next_default.save(update_fields=['is_default'])
+
+        messages.success(request, 'Address deleted successfully.')
+    return redirect('user_profile')
+
+
+@login_required(login_url='login')
+def set_default_address(request, address_id):
+    if request.method == 'POST':
+        address = get_object_or_404(Address, id=address_id, user=request.user)
+        Address.objects.filter(user=request.user).update(is_default=False)
+        address.is_default = True
+        address.save(update_fields=['is_default'])
+        messages.success(request, 'Default address updated.')
+    return redirect('user_profile')
 
 
 

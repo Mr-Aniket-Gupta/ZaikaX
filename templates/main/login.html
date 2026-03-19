@@ -1,20 +1,135 @@
 {% extends 'main/base.html' %}
+{% load static %}
 {% block content %}
 
-<section class="contact" style="padding: 60px 40px;">
-    <h2>Login</h2>
+<section class="zx-auth zx-auth-login">
+    <div class="zx-login-wrap">
+        <div class="zx-login-intro">
+            <p class="zx-auth-kicker">Welcome Back</p>
+            <h1>Login to ZaikaX</h1>
+            <p>Access your profile, saved addresses and cart in one click.</p>
+            <img src="{% static 'images/auth-login.svg' %}" alt="Login illustration" class="zx-login-art" onerror="this.style.display='none'; this.parentElement.classList.add('zx-login-intro-noimg');">
+        </div>
 
-    <form method="POST" style="max-width: 350px; margin: 20px auto;">
-        {% csrf_token %}
-        <input type="text" name="username" placeholder="Username" required
-               style="width:100%; padding:12px; border-radius:8px; margin-bottom:12px; border:1px solid #ccc;">
-        <input type="password" name="password" placeholder="Password" required
-               style="width:100%; padding:12px; border-radius:8px; margin-bottom:12px; border:1px solid #ccc;">
-        
-        <button class="cta-btn" style="width: 100%;">Login</button>
-    </form>
+        <div class="zx-login-panel">
+            <h2>Sign in</h2>
+            <form method="POST" novalidate>
+                {% csrf_token %}
+                <div class="zx-form-group">
+                    <label for="id_username">Username</label>
+                    <input id="id_username" type="text" name="username" class="form-control" placeholder="Enter your username" required>
+                </div>
 
-    <p>Don't have an account? <a href="{% url 'register' %}">Register</a></p>
+                <div class="zx-form-group">
+                    <label for="id_password">Password</label>
+                    <input id="id_password" type="password" name="password" class="form-control" placeholder="Enter your password" required>
+                </div>
+
+                <button class="submit-btn" type="submit">Login</button>
+            </form>
+
+            <p class="small-note" style="margin-top:12px;">Don't have an account? <a href="{% url 'register' %}">Create one</a></p>
+        </div>
+    </div>
 </section>
+
+<style>
+    .zx-auth-login {
+        padding: 56px 16px 76px;
+        background: linear-gradient(180deg, #f7fbf8 0%, #f8f9f3 100%);
+        min-height: calc(100vh - 160px);
+        display: flex;
+        align-items: center;
+    }
+
+    .zx-login-wrap {
+        max-width: 980px;
+        width: 100%;
+        margin: 0 auto;
+        display: grid;
+        grid-template-columns: 1fr 420px;
+        gap: 18px;
+    }
+
+    .zx-login-intro,
+    .zx-login-panel {
+        background: #fff;
+        border: 1px solid #e4ebe5;
+        border-radius: 16px;
+        box-shadow: 0 10px 30px rgba(20, 40, 25, 0.06);
+    }
+
+    .zx-login-intro {
+        padding: 30px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+    }
+
+    .zx-auth-kicker {
+        margin: 0 0 10px;
+        font-size: 12px;
+        font-weight: 700;
+        letter-spacing: 0.12em;
+        color: #1b8a5a;
+        text-transform: uppercase;
+    }
+
+    .zx-login-intro h1 {
+        margin: 0;
+        font-size: 38px;
+        line-height: 1.15;
+        color: #153926;
+    }
+
+    .zx-login-intro p {
+        margin: 14px 0 0;
+        color: #50645b;
+        line-height: 1.6;
+    }
+
+    .zx-login-art {
+        margin-top: 18px;
+        width: 100%;
+        max-width: 320px;
+        display: block;
+    }
+
+    .zx-login-intro-noimg {
+        background-image: radial-gradient(circle at bottom left, rgba(243, 160, 0, 0.12), transparent 45%);
+    }
+
+    .zx-login-panel {
+        padding: 26px;
+    }
+
+    .zx-login-panel h2 {
+        margin: 0 0 16px;
+        color: #153926;
+        font-size: 30px;
+    }
+
+    .zx-form-group {
+        margin-bottom: 12px;
+    }
+
+    .zx-form-group label {
+        display: block;
+        margin-bottom: 6px;
+        font-size: 14px;
+        color: #355a4a;
+    }
+
+    .zx-form-group .form-control {
+        width: 100%;
+    }
+
+    @media (max-width: 900px) {
+        .zx-login-wrap {
+            grid-template-columns: 1fr;
+            max-width: 560px;
+        }
+    }
+</style>
 
 {% endblock %}

@@ -13,6 +13,9 @@ urlpatterns = [
     path('login/', views.login_user, name='login'),
     path('register/', views.register_user, name='register'),
     path('logout/', views.logout_user, name='logout'),
+    path('profile/', views.user_profile, name='user_profile'),
+    path('profile/address/<int:address_id>/delete/', views.delete_address, name='delete_address'),
+    path('profile/address/<int:address_id>/default/', views.set_default_address, name='set_default_address'),
     # path('verify-otp/', views.verify_otp, name='verify_otp'),
 
     

@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="640" height="420" viewBox="0 0 640 420" fill="none">
+  <rect width="640" height="420" rx="28" fill="#F4F9F5"/>
+  <circle cx="92" cy="322" r="80" fill="#E4F3EA"/>
+  <circle cx="546" cy="88" r="74" fill="#EAF6EF"/>
+  <rect x="158" y="74" width="326" height="272" rx="20" fill="#FFFFFF" stroke="#DDEADF" stroke-width="4"/>
+  <rect x="188" y="116" width="150" height="16" rx="8" fill="#1B8A5A" opacity="0.18"/>
+  <rect x="188" y="156" width="266" height="42" rx="10" fill="#F5F8F6" stroke="#E3ECE5"/>
+  <rect x="188" y="212" width="266" height="42" rx="10" fill="#F5F8F6" stroke="#E3ECE5"/>
+  <rect x="188" y="274" width="266" height="40" rx="12" fill="#1B8A5A"/>
+  <circle cx="442" cy="124" r="22" fill="#F3A000" opacity="0.25"/>
+  <text x="188" y="106" fill="#153926" font-family="Arial, sans-serif" font-size="18" font-weight="700">Sign In</text>
+  <text x="300" y="299" fill="#FFFFFF" font-family="Arial, sans-serif" font-size="15" font-weight="700">Login</text>
+</svg>

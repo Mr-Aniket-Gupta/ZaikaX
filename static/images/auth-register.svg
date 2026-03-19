@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="640" height="420" viewBox="0 0 640 420" fill="none">
+  <rect width="640" height="420" rx="28" fill="#F4F9F5"/>
+  <circle cx="92" cy="88" r="66" fill="#E4F3EA"/>
+  <circle cx="566" cy="352" r="88" fill="#EAF6EF"/>
+  <rect x="144" y="76" width="356" height="268" rx="18" fill="#FFFFFF" stroke="#DDEADF" stroke-width="4"/>
+  <rect x="176" y="114" width="188" height="16" rx="8" fill="#1B8A5A" opacity="0.18"/>
+  <rect x="176" y="150" width="292" height="12" rx="6" fill="#E9F1EB"/>
+  <rect x="176" y="176" width="292" height="12" rx="6" fill="#E9F1EB"/>
+  <rect x="176" y="202" width="292" height="12" rx="6" fill="#E9F1EB"/>
+  <rect x="176" y="236" width="124" height="38" rx="10" fill="#F3A000"/>
+  <rect x="312" y="236" width="156" height="38" rx="10" fill="#1B8A5A" opacity="0.14"/>
+  <circle cx="516" cy="122" r="40" fill="#1B8A5A" opacity="0.12"/>
+  <circle cx="516" cy="122" r="22" fill="#1B8A5A" opacity="0.24"/>
+  <text x="176" y="104" fill="#153926" font-family="Arial, sans-serif" font-size="18" font-weight="700">Create Account</text>
+  <text x="205" y="260" fill="#FFFFFF" font-family="Arial, sans-serif" font-size="14" font-weight="700">Sign Up</text>
+</svg>
