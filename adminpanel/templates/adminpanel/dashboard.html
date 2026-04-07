@@ -1,264 +1,632 @@
 {% extends 'adminpanel/base_admin.html' %}
 {% block content %}
 
-<div class="d-flex justify-content-between align-items-center mb-4">
-    <h2><i class="fas fa-chart-line"></i> Dashboard</h2>
-</div>
-
-<!-- Quick Stats -->
-<div class="row mb-4">
-    <div class="col-md-3 mb-3">
-        <a href="{% url 'admin_orders' %}?status=Pending" class="text-decoration-none">
-            <div class="summary-card">
-                <div class="d-flex justify-content-between align-items-start">
-                    <div>
-                        <h6>Pending Orders</h6>
-                        <p class="display-6 mb-0" style="color: #f59e0b;">{{ pending_orders }}</p>
-                    </div>
-                    <i class="fas fa-hourglass-half" style="font-size: 32px; color: #f59e0b; opacity: 0.2;"></i>
-                </div>
-            </div>
-        </a>
-    </div>
-
-    <div class="col-md-3 mb-3">
-        <a href="{% url 'admin_orders' %}?status=Delivered" class="text-decoration-none">
-            <div class="summary-card">
-                <div class="d-flex justify-content-between align-items-start">
-                    <div>
-                        <h6>Completed Orders</h6>
-                        <p class="display-6 mb-0" style="color: #10b981;">{{ completed_orders }}</p>
-                    </div>
-                    <i class="fas fa-check-circle" style="font-size: 32px; color: #10b981; opacity: 0.2;"></i>
-                </div>
-            </div>
-        </a>
-    </div>
-
-    <div class="col-md-3 mb-3">
-        <a href="{% url 'admin_orders' %}?status=Cancelled" class="text-decoration-none">
-            <div class="summary-card">
-                <div class="d-flex justify-content-between align-items-start">
-                    <div>
-                        <h6>Cancelled Orders</h6>
-                        <p class="display-6 mb-0" style="color: #ef4444;">{{ cancelled_orders }}</p>
-                    </div>
-                    <i class="fas fa-times-circle" style="font-size: 32px; color: #ef4444; opacity: 0.2;"></i>
-                </div>
-            </div>
-        </a>
-    </div>
-
-    <div class="col-md-3 mb-3">
-        <a href="{% url 'admin_users' %}" class="text-decoration-none">
-            <div class="summary-card">
-                <div class="d-flex justify-content-between align-items-start">
-                    <div>
-                        <h6>Total Users</h6>
-                        <p class="display-6 mb-0" style="color: #3b82f6;">{{ total_users }}</p>
-                    </div>
-                    <i class="fas fa-users" style="font-size: 32px; color: #3b82f6; opacity: 0.2;"></i>
-                </div>
-            </div>
-        </a>
-    </div>
-</div>
-
-<!-- Sales Chart -->
-<div class="card mb-4">
-    <div class="card-header d-flex justify-content-between align-items-center">
-        <h5 class="mb-0"><i class="fas fa-chart-line me-2"></i>Sales Analytics</h5>
-        <div class="d-flex gap-2">
-            <select id="chart-type" class="form-select form-select-sm" style="width: 150px;">
-                <option value="daily">Daily (Last 7 Days)</option>
-                <option value="monthly">Monthly (Last 6 Months)</option>
-            </select>
-            <button id="refresh-chart" class="btn btn-sm btn-primary"><i class="fas fa-sync-alt me-1"></i>Refresh</button>
-        </div>
-    </div>
-    <div class="card-body">
-        <canvas id="salesChart" height="80"></canvas>
-    </div>
-</div>
-
-<div class="row mb-4">
-    <div class="col-md-6 mb-3">
-        <div class="card">
-            <div class="card-header">
-                <h6 class="mb-0"><i class="fas fa-fire me-2"></i>Top Purchased Items</h6>
-            </div>
-            <div class="card-body p-0">
-                <div class="table-responsive">
-                    <table class="table table-hover mb-0">
-                        <thead>
-                            <tr>
-                                <th>Item</th>
-                                <th>Qty</th>
-                                <th>Revenue</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {% for item in top_items %}
-                            <tr>
-                                <td><strong>{{ item.item__name }}</strong></td>
-                                <td><span class="badge badge-secondary">{{ item.total_qty }}</span></td>
-                                <td><strong style="color: #f59e0b;">₹{{ item.total_revenue|floatformat:0 }}</strong></td>
-                            </tr>
-                            {% empty %}
-                            <tr><td colspan="3" class="text-center text-secondary py-4">No data available</td></tr>
-                            {% endfor %}
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="col-md-6 mb-3">
-        <div class="card">
-            <div class="card-header">
-                <h6 class="mb-0"><i class="fas fa-crown me-2"></i>Top Spending Users</h6>
-            </div>
-            <div class="card-body p-0">
-                <div class="table-responsive">
-                    <table class="table table-hover mb-0">
-                        <thead>
-                            <tr>
-                                <th>User</th>
-                                <th>Orders</th>
-                                <th>Spent</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {% for u in top_users %}
-                            <tr>
-                                <td><strong>{{ u.user__username }}</strong></td>
-                                <td><span class="badge" style="background: #dbeafe; color: #1e40af;">{{ u.total_orders }}</span></td>
-                                <td><strong style="color: #f59e0b;">₹{{ u.total_spent|floatformat:0 }}</strong></td>
-                            </tr>
-                            {% empty %}
-                            <tr><td colspan="3" class="text-center text-secondary py-4">No data available</td></tr>
-                            {% endfor %}
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-
-<!-- Recent Activity -->
-<div class="card">
-    <div class="card-header">
-        <h6 class="mb-0"><i class="fas fa-history me-2"></i>Recent User Activity</h6>
-    </div>
-    <div class="card-body p-0">
-        <div class="table-responsive">
-            <table class="table table-hover mb-0">
-                <thead>
-                    <tr>
-                        <th>User</th>
-                        <th>Email</th>
-                        <th>Last Order</th>
-                        <th>Amount</th>
-                        <th>Action</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for u in recent_users %}
-                    <tr>
-                        <td><strong>{{ u.username }}</strong></td>
-                        <td><small>{{ u.email }}</small></td>
-                        <td><small>{{ u.last_order_date|default:"Never" }}</small></td>
-                        <td><strong style="color: #f59e0b;">₹{{ u.order_amount|floatformat:0|default:"0" }}</strong></td>
-                        <td>
-                            <a href="{% url 'admin_users' %}" class="btn btn-sm btn-outline-primary"><i class="fas fa-eye"></i></a>
-                        </td>
-                    </tr>
-                    {% empty %}
-                    <tr><td colspan="5" class="text-center text-secondary py-4">No recent activity</td></tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-        </div>
-    </div>
-</div>
-
-<!-- Chart.js Library -->
-<script src="https://cdn.jsdelivr.net/npm/chart.js@3.9.1/dist/chart.min.js"></script>
-<script>
-    let salesChart = null;
-    const salesCtx = document.getElementById('salesChart').getContext('2d');
-
-    function fetchAndRender() {
-        const type = document.getElementById('chart-type').value;
-        const range = type === 'monthly' ? 6 : 7;
-        
-        fetch(`{% url 'admin_sales_data' %}?type=${type}&range=${range}`)
-            .then(res => res.json())
-            .then(json => {
-                const labels = json.labels || [];
-                const data = json.data || [];
-                
-                const config = {
-                    type: 'line',
-                    data: {
-                        labels: labels,
-                        datasets: [{
-                            label: 'Revenue (₹)',
-                            data: data,
-                            backgroundColor: 'rgba(59, 130, 246, 0.08)',
-                            borderColor: '#3b82f6',
-                            borderWidth: 2,
-                            fill: true,
-                            tension: 0.4,
-                            pointBackgroundColor: '#3b82f6',
-                            pointBorderColor: '#fff',
-                            pointBorderWidth: 2,
-                            pointRadius: 4,
-                            pointHoverRadius: 6
-       }]
-                    },
-                    options: {
-                        responsive: true,
-                        maintainAspectRatio: true,
-                        plugins: {
-                            legend: { display: false },
-                            tooltip: {
-                                backgroundColor: '#1f2937',
-                                padding: 12,
-                                titleFont: { size: 13 },
-                                bodyFont: { size: 12 },
-                                borderColor: '#e5e7eb',
-                                borderWidth: 1
-                            }
-                        },
-                        scales: {
-                            y: {
-                                beginAtZero: true,
-                                grid: { color: '#f3f4f6' },
-                                ticks: { color: '#6b7280' }
-                            },
-                            x: {
-                                grid: { display: false },
-                                ticks: { color: '#6b7280' }
-                            }
-                        }
-                    }
-                };
-                
-                if (salesChart) salesChart.destroy();
-                salesChart = new Chart(salesCtx, config);
-            })
-            .catch(err => console.error('Error fetching sales data:', err));
+<style>
+    .zx-range-switch {
+        display: inline-flex;
+        gap: 8px;
+        padding: 6px;
+        border-radius: 999px;
+        background: rgba(33, 77, 52, 0.08);
     }
 
-    // Event listeners
-    document.getElementById('refresh-chart').addEventListener('click', fetchAndRender);
-    document.getElementById('chart-type').addEventListener('change', fetchAndRender);
-    
-    // Initial render
-    fetchAndRender();
+    .zx-range-btn {
+        border: none;
+        border-radius: 999px;
+        padding: 9px 14px;
+        background: transparent;
+        color: var(--zx-admin-muted);
+        font: inherit;
+        font-size: 0.84rem;
+        font-weight: 800;
+        cursor: pointer;
+    }
+
+    .zx-range-btn.is-active {
+        background: linear-gradient(135deg, var(--zx-admin-gold) 0%, var(--zx-admin-gold-deep) 100%);
+        color: #fff;
+    }
+
+    .zx-kpi-card {
+        padding: 22px;
+        border-radius: var(--zx-admin-radius-xl);
+        background: var(--zx-admin-surface);
+        border: 1px solid rgba(255, 255, 255, 0.68);
+        box-shadow: var(--zx-admin-shadow-soft);
+        backdrop-filter: blur(14px);
+    }
+
+    .zx-kpi-label {
+        color: var(--zx-admin-muted);
+        font-size: 0.78rem;
+        font-weight: 800;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        margin-bottom: 10px;
+    }
+
+    .zx-kpi-value {
+        font-family: 'Playfair Display', serif;
+        font-size: 2rem;
+        color: var(--zx-admin-green);
+        line-height: 1;
+        margin-bottom: 12px;
+    }
+
+    .zx-kpi-trend {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 7px 10px;
+        border-radius: 999px;
+        background: rgba(33, 77, 52, 0.08);
+        color: var(--zx-admin-green);
+        font-size: 0.8rem;
+        font-weight: 800;
+    }
+
+    .zx-kpi-trend.is-negative {
+        background: rgba(200, 75, 75, 0.1);
+        color: var(--zx-admin-red);
+    }
+
+    .zx-chart-grid {
+        display: grid;
+        grid-template-columns: minmax(0, 1.45fr) minmax(320px, 0.9fr);
+        gap: 24px;
+        margin-bottom: 24px;
+    }
+
+    .zx-insight-list {
+        display: grid;
+        gap: 12px;
+    }
+
+    .zx-insight-item {
+        display: flex;
+        justify-content: space-between;
+        gap: 14px;
+        padding: 14px 16px;
+        border-radius: 18px;
+        background: rgba(33, 77, 52, 0.04);
+    }
+
+    .zx-insight-item strong {
+        display: block;
+        color: var(--zx-admin-text);
+    }
+
+    .zx-insight-item span {
+        color: var(--zx-admin-muted);
+        font-size: 0.88rem;
+    }
+
+    .zx-mini-section-title {
+        margin-bottom: 14px;
+        color: var(--zx-admin-green);
+        font-size: 1rem;
+        font-weight: 800;
+    }
+
+    .zx-recent-card .table tbody td {
+        white-space: nowrap;
+    }
+
+    .zx-micro-grid {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 18px;
+        margin-bottom: 24px;
+    }
+
+    .zx-micro-card {
+        padding: 18px 20px;
+        border-radius: 20px;
+        background: rgba(33, 77, 52, 0.05);
+        border: 1px solid rgba(33, 77, 52, 0.08);
+    }
+
+    .zx-micro-card small {
+        display: block;
+        margin-bottom: 8px;
+        color: var(--zx-admin-muted);
+        font-size: 0.76rem;
+        font-weight: 800;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+    }
+
+    .zx-micro-card strong {
+        font-size: 1.45rem;
+        color: var(--zx-admin-green);
+        line-height: 1;
+    }
+
+    .zx-analysis-grid {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 24px;
+        margin-bottom: 24px;
+    }
+
+    .zx-analysis-card {
+        padding: 22px;
+        border-radius: var(--zx-admin-radius-xl);
+        background: var(--zx-admin-surface);
+        border: 1px solid rgba(255, 255, 255, 0.68);
+        box-shadow: var(--zx-admin-shadow-soft);
+    }
+
+    .zx-analysis-card h3 {
+        margin: 0 0 16px;
+        color: var(--zx-admin-green);
+        font-size: 1rem;
+        font-weight: 800;
+    }
+
+    .zx-analysis-stat {
+        display: flex;
+        justify-content: space-between;
+        gap: 14px;
+        padding: 12px 0;
+        border-bottom: 1px solid rgba(35, 56, 38, 0.08);
+    }
+
+    .zx-analysis-stat:last-child {
+        border-bottom: none;
+        padding-bottom: 0;
+    }
+
+    .zx-analysis-stat span {
+        color: var(--zx-admin-muted);
+        font-weight: 700;
+    }
+
+    .zx-analysis-stat strong {
+        color: var(--zx-admin-text);
+    }
+
+    @media (max-width: 1100px) {
+        .zx-chart-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .zx-micro-grid,
+        .zx-analysis-grid {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+    }
+
+    @media (max-width: 700px) {
+        .zx-micro-grid,
+        .zx-analysis-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>
+
+<div class="zx-page-head">
+    <div>
+        <div class="zx-page-eyebrow">Analytics</div>
+        <h1 class="zx-page-title">Dynamic Dashboard</h1>
+        <p class="zx-page-subtitle">Analyze revenue, orders, customer activity, category performance, and status movement with live dashboard insights.</p>
+    </div>
+    <div class="zx-page-actions">
+        <div class="zx-range-switch" id="rangeSwitch">
+            <button class="zx-range-btn" data-days="7">7D</button>
+            <button class="zx-range-btn is-active" data-days="30">30D</button>
+            <button class="zx-range-btn" data-days="90">90D</button>
+        </div>
+    </div>
+</div>
+
+<div class="row g-4 mb-4">
+    <div class="col-md-6 col-xl-3">
+        <div class="zx-kpi-card">
+            <div class="zx-kpi-label">Revenue</div>
+            <div class="zx-kpi-value" id="kpiRevenue">&#8377;{{ dashboard_analytics.revenue|floatformat:0 }}</div>
+            <div class="zx-kpi-trend" id="trendRevenue">+{{ dashboard_analytics.revenue_change }}% vs previous period</div>
+        </div>
+    </div>
+    <div class="col-md-6 col-xl-3">
+        <div class="zx-kpi-card">
+            <div class="zx-kpi-label">Orders</div>
+            <div class="zx-kpi-value" id="kpiOrders">{{ dashboard_analytics.orders }}</div>
+            <div class="zx-kpi-trend" id="trendOrders">+{{ dashboard_analytics.orders_change }}% vs previous period</div>
+        </div>
+    </div>
+    <div class="col-md-6 col-xl-3">
+        <div class="zx-kpi-card">
+            <div class="zx-kpi-label">Active Customers</div>
+            <div class="zx-kpi-value" id="kpiCustomers">{{ dashboard_analytics.active_customers }}</div>
+            <div class="zx-kpi-trend" id="trendCustomers">+{{ dashboard_analytics.active_customers_change }}% vs previous period</div>
+        </div>
+    </div>
+    <div class="col-md-6 col-xl-3">
+        <div class="zx-kpi-card">
+            <div class="zx-kpi-label">Average Order Value</div>
+            <div class="zx-kpi-value" id="kpiAverage">&#8377;{{ dashboard_analytics.average_order|floatformat:0 }}</div>
+            <div class="zx-kpi-trend" id="trendAverage">+{{ dashboard_analytics.average_order_change }}% vs previous period</div>
+        </div>
+    </div>
+</div>
+
+<div class="zx-micro-grid">
+    <div class="zx-micro-card">
+        <small>Total Categories</small>
+        <strong id="kpiCategories">{{ dashboard_analytics.total_categories }}</strong>
+    </div>
+    <div class="zx-micro-card">
+        <small>Total Menu Items</small>
+        <strong id="kpiItems">{{ dashboard_analytics.total_items }}</strong>
+    </div>
+    <div class="zx-micro-card">
+        <small>Total Users</small>
+        <strong id="kpiUsers">{{ dashboard_analytics.total_users }}</strong>
+    </div>
+    <div class="zx-micro-card">
+        <small>Items Sold</small>
+        <strong id="kpiItemsSold">{{ dashboard_analytics.items_sold }}</strong>
+    </div>
+</div>
+
+<div class="zx-chart-grid">
+    <div class="card">
+        <div class="card-header d-flex justify-content-between align-items-center gap-3 flex-wrap">
+            <span><i class="fas fa-chart-line me-2"></i>Revenue vs Orders</span>
+            <select id="chartMetric" class="form-select form-select-sm" style="min-width: 180px;">
+                <option value="revenue">Revenue Trend</option>
+                <option value="orders">Orders Trend</option>
+            </select>
+        </div>
+        <div class="card-body">
+            <canvas id="salesChart" height="90"></canvas>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-header"><i class="fas fa-chart-pie me-2"></i>Status Breakdown</div>
+        <div class="card-body">
+            <canvas id="statusChart" height="220"></canvas>
+        </div>
+    </div>
+</div>
+
+<div class="zx-analysis-grid">
+    <div class="zx-analysis-card">
+        <h3><i class="fas fa-store me-2"></i>Catalog Snapshot</h3>
+        <div class="zx-analysis-stat">
+            <span>Veg items</span>
+            <strong id="statVegItems">{{ dashboard_analytics.veg_items }}</strong>
+        </div>
+        <div class="zx-analysis-stat">
+            <span>Non-veg items</span>
+            <strong id="statNonVegItems">{{ dashboard_analytics.non_veg_items }}</strong>
+        </div>
+        <div class="zx-analysis-stat">
+            <span>Items per category</span>
+            <strong id="statItemsPerCategory">
+                {% if dashboard_analytics.total_categories %}{{ dashboard_analytics.total_items|floatformat:0 }} / {{ dashboard_analytics.total_categories }}{% else %}0{% endif %}
+            </strong>
+        </div>
+    </div>
+
+    <div class="zx-analysis-card">
+        <h3><i class="fas fa-truck-fast me-2"></i>Order Health</h3>
+        <div class="zx-analysis-stat">
+            <span>Delivered orders</span>
+            <strong id="statDelivered">{{ dashboard_analytics.delivered_orders }}</strong>
+        </div>
+        <div class="zx-analysis-stat">
+            <span>Pending pipeline</span>
+            <strong id="statPending">{{ dashboard_analytics.pending_orders }}</strong>
+        </div>
+        <div class="zx-analysis-stat">
+            <span>Completion rate</span>
+            <strong id="statCompletion">{{ dashboard_analytics.order_completion_rate }}%</strong>
+        </div>
+        <div class="zx-analysis-stat">
+            <span>Cancellation rate</span>
+            <strong id="statCancellation">{{ dashboard_analytics.cancellation_rate }}%</strong>
+        </div>
+    </div>
+
+    <div class="zx-analysis-card">
+        <h3><i class="fas fa-user-check me-2"></i>Customer Signals</h3>
+        <div class="zx-analysis-stat">
+            <span>Repeat customers</span>
+            <strong id="statRepeatCustomers">{{ dashboard_analytics.repeat_customers }}</strong>
+        </div>
+        <div class="zx-analysis-stat">
+            <span>Repeat customer rate</span>
+            <strong id="statRepeatRate">{{ dashboard_analytics.repeat_customer_rate }}%</strong>
+        </div>
+        <div class="zx-analysis-stat">
+            <span>Avg items per order</span>
+            <strong id="statItemsPerOrder">{{ dashboard_analytics.avg_items_per_order }}</strong>
+        </div>
+    </div>
+</div>
+
+<div class="row g-4 mb-4">
+    <div class="col-lg-4">
+        <div class="card h-100">
+            <div class="card-header"><i class="fas fa-layer-group me-2"></i>Top Categories</div>
+            <div class="card-body">
+                <div class="zx-insight-list" id="topCategoriesList">
+                    {% for category in dashboard_analytics.top_categories %}
+                    <div class="zx-insight-item">
+                        <div>
+                            <strong>{{ category.name }}</strong>
+                            <span>{{ category.qty }} items sold</span>
+                        </div>
+                        <strong>&#8377;{{ category.revenue|floatformat:0 }}</strong>
+                    </div>
+                    {% empty %}
+                    <div class="zx-admin-empty"><i class="fas fa-tags"></i><div>No category data yet.</div></div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-4">
+        <div class="card h-100">
+            <div class="card-header"><i class="fas fa-fire me-2"></i>Top Purchased Items</div>
+            <div class="card-body">
+                <div class="zx-insight-list" id="topItemsList">
+                    {% for item in dashboard_analytics.top_items %}
+                    <div class="zx-insight-item">
+                        <div>
+                            <strong>{{ item.name }}</strong>
+                            <span>{{ item.qty }} quantities sold</span>
+                        </div>
+                        <strong>&#8377;{{ item.revenue|floatformat:0 }}</strong>
+                    </div>
+                    {% empty %}
+                    <div class="zx-admin-empty"><i class="fas fa-bowl-food"></i><div>No item data yet.</div></div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-4">
+        <div class="card h-100">
+            <div class="card-header"><i class="fas fa-users me-2"></i>Top Customers</div>
+            <div class="card-body">
+                <div class="zx-insight-list" id="topUsersList">
+                    {% for user in dashboard_analytics.top_users %}
+                    <div class="zx-insight-item">
+                        <div>
+                            <strong>{{ user.username }}</strong>
+                            <span>{{ user.orders }} orders</span>
+                        </div>
+                        <strong>&#8377;{{ user.spent|floatformat:0 }}</strong>
+                    </div>
+                    {% empty %}
+                    <div class="zx-admin-empty"><i class="fas fa-user-group"></i><div>No customer data yet.</div></div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="card zx-recent-card">
+    <div class="card-header"><i class="fas fa-clock-rotate-left me-2"></i>Recent Orders In Selected Range</div>
+    <div class="table-responsive">
+        <table class="table table-hover mb-0">
+            <thead>
+                <tr>
+                    <th>Order</th>
+                    <th>Customer</th>
+                    <th>Status</th>
+                    <th>Total</th>
+                    <th>Placed At</th>
+                </tr>
+            </thead>
+            <tbody id="recentOrdersBody">
+                {% for order in dashboard_analytics.recent_orders %}
+                <tr>
+                    <td><strong>#{{ order.id }}</strong></td>
+                    <td>{{ order.user.username }}</td>
+                    <td><span class="badge badge-secondary">{{ order.status }}</span></td>
+                    <td><strong style="color:#bf7e14;">&#8377;{{ order.total_price|floatformat:0 }}</strong></td>
+                    <td>{{ order.created_at|date:"d M Y, h:i A" }}</td>
+                </tr>
+                {% empty %}
+                <tr><td colspan="5"><div class="zx-admin-empty"><i class="fas fa-clock"></i><div>No recent orders in this range.</div></div></td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js@3.9.1/dist/chart.min.js"></script>
+<script>
+const salesCtx = document.getElementById('salesChart').getContext('2d');
+const statusCtx = document.getElementById('statusChart').getContext('2d');
+let salesChart = null;
+let statusChart = null;
+let currentAnalytics = null;
+let currentDays = 30;
+
+function currency(value) {
+    return '\u20B9' + Number(value || 0).toFixed(0);
+}
+
+function trendText(value) {
+    const num = Number(value || 0);
+    const sign = num > 0 ? '+' : '';
+    return `${sign}${num}% vs previous period`;
+}
+
+function setTrend(el, value) {
+    if (!el) return;
+    const num = Number(value || 0);
+    el.textContent = trendText(num);
+    el.classList.toggle('is-negative', num < 0);
+}
+
+function renderInsightList(targetId, items, emptyIcon, emptyText, labelFn) {
+    const container = document.getElementById(targetId);
+    if (!container) return;
+    if (!items || !items.length) {
+        container.innerHTML = `<div class="zx-admin-empty"><i class="${emptyIcon}"></i><div>${emptyText}</div></div>`;
+        return;
+    }
+    container.innerHTML = items.map(item => `
+        <div class="zx-insight-item">
+            <div>
+                <strong>${item.name || item.username}</strong>
+                <span>${labelFn(item)}</span>
+            </div>
+            <strong>${currency(item.revenue ?? item.spent ?? 0)}</strong>
+        </div>
+    `).join('');
+}
+
+function renderRecentOrders(orders) {
+    const tbody = document.getElementById('recentOrdersBody');
+    if (!tbody) return;
+    if (!orders || !orders.length) {
+        tbody.innerHTML = `<tr><td colspan="5"><div class="zx-admin-empty"><i class="fas fa-clock"></i><div>No recent orders in this range.</div></div></td></tr>`;
+        return;
+    }
+    tbody.innerHTML = orders.map(order => `
+        <tr>
+            <td><strong>#${order.id}</strong></td>
+            <td>${order.user}</td>
+            <td><span class="badge badge-secondary">${order.status}</span></td>
+            <td><strong style="color:#bf7e14;">${currency(order.total)}</strong></td>
+            <td>${order.created_at}</td>
+        </tr>
+    `).join('');
+}
+
+function renderCharts(data) {
+    const metric = document.getElementById('chartMetric').value;
+    const series = metric === 'orders' ? data.order_series : data.revenue_series;
+    const label = metric === 'orders' ? 'Orders' : 'Revenue';
+    const borderColor = metric === 'orders' ? '#214d34' : '#bf7e14';
+    const bgColor = metric === 'orders' ? 'rgba(33, 77, 52, 0.12)' : 'rgba(223, 154, 46, 0.12)';
+
+    const salesConfig = {
+        type: 'line',
+        data: {
+            labels: data.labels || [],
+            datasets: [{
+                label,
+                data: series || [],
+                backgroundColor: bgColor,
+                borderColor: borderColor,
+                borderWidth: 2,
+                fill: true,
+                tension: 0.35,
+                pointBackgroundColor: '#214d34',
+                pointBorderColor: '#fff',
+                pointBorderWidth: 2,
+                pointRadius: 4
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: true,
+            plugins: { legend: { display: false } },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    grid: { color: 'rgba(35, 56, 38, 0.08)' },
+                    ticks: { color: '#687267' }
+                },
+                x: {
+                    grid: { display: false },
+                    ticks: { color: '#687267' }
+                }
+            }
+        }
+    };
+
+    const statusEntries = Object.entries(data.status_counts || {}).filter(([, value]) => Number(value) > 0);
+    const statusConfig = {
+        type: 'doughnut',
+        data: {
+            labels: statusEntries.map(([key]) => key),
+            datasets: [{
+                data: statusEntries.map(([, value]) => value),
+                backgroundColor: ['#bf7e14', '#214d34', '#356dbe', '#b35f2f', '#c84b4b', '#7b6f63'],
+                borderWidth: 0
+            }]
+        },
+        options: {
+            plugins: {
+                legend: {
+                    position: 'bottom',
+                    labels: { usePointStyle: true, color: '#687267', padding: 16 }
+                }
+            }
+        }
+    };
+
+    if (salesChart) salesChart.destroy();
+    if (statusChart) statusChart.destroy();
+    salesChart = new Chart(salesCtx, salesConfig);
+    statusChart = new Chart(statusCtx, statusConfig);
+}
+
+function renderDashboard(data) {
+    currentAnalytics = data;
+    document.getElementById('kpiRevenue').textContent = currency(data.revenue);
+    document.getElementById('kpiOrders').textContent = data.orders;
+    document.getElementById('kpiCustomers').textContent = data.active_customers;
+    document.getElementById('kpiAverage').textContent = currency(data.average_order);
+    document.getElementById('kpiCategories').textContent = data.total_categories;
+    document.getElementById('kpiItems').textContent = data.total_items;
+    document.getElementById('kpiUsers').textContent = data.total_users;
+    document.getElementById('kpiItemsSold').textContent = data.items_sold;
+    document.getElementById('statVegItems').textContent = data.veg_items;
+    document.getElementById('statNonVegItems').textContent = data.non_veg_items;
+    document.getElementById('statItemsPerCategory').textContent = data.total_categories ? `${data.total_items} / ${data.total_categories}` : '0';
+    document.getElementById('statDelivered').textContent = data.delivered_orders;
+    document.getElementById('statPending').textContent = data.pending_orders;
+    document.getElementById('statCompletion').textContent = `${Number(data.order_completion_rate || 0).toFixed(1)}%`;
+    document.getElementById('statCancellation').textContent = `${Number(data.cancellation_rate || 0).toFixed(1)}%`;
+    document.getElementById('statRepeatCustomers').textContent = data.repeat_customers;
+    document.getElementById('statRepeatRate').textContent = `${Number(data.repeat_customer_rate || 0).toFixed(1)}%`;
+    document.getElementById('statItemsPerOrder').textContent = Number(data.avg_items_per_order || 0).toFixed(1);
+    setTrend(document.getElementById('trendRevenue'), data.revenue_change);
+    setTrend(document.getElementById('trendOrders'), data.orders_change);
+    setTrend(document.getElementById('trendCustomers'), data.active_customers_change);
+    setTrend(document.getElementById('trendAverage'), data.average_order_change);
+    renderInsightList('topCategoriesList', data.top_categories, 'fas fa-tags', 'No category data yet.', item => `${item.qty} items sold`);
+    renderInsightList('topItemsList', data.top_items, 'fas fa-bowl-food', 'No item data yet.', item => `${item.qty} quantities sold`);
+    renderInsightList('topUsersList', data.top_users, 'fas fa-user-group', 'No customer data yet.', item => `${item.orders} orders`);
+    renderRecentOrders(data.recent_orders);
+    renderCharts(data);
+}
+
+function fetchDashboard(days) {
+    currentDays = days;
+    fetch(`{% url 'admin_dashboard_data' %}?days=${days}`)
+        .then(res => res.json())
+        .then(renderDashboard)
+        .catch(err => console.error('Error fetching dashboard analytics:', err));
+}
+
+document.querySelectorAll('.zx-range-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+        document.querySelectorAll('.zx-range-btn').forEach(item => item.classList.remove('is-active'));
+        btn.classList.add('is-active');
+        fetchDashboard(btn.dataset.days);
+    });
+});
+
+document.getElementById('chartMetric').addEventListener('change', () => {
+    if (currentAnalytics) renderCharts(currentAnalytics);
+});
+
+fetchDashboard(currentDays);
 </script>
 
 {% endblock %}

@@ -2,74 +2,880 @@
 {% load static %}
 
 {% block content %}
+<link
+    href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700;800&family=Manrope:wght@400;500;600;700;800&display=swap"
+    rel="stylesheet">
 
-<section class="hero">
-    <div class="hero-content">
-        <h1>Fresh. Fast. Delicious.</h1>
-        <p>Your favourite dishes delivered right to your doorstep.</p>
+<style>
+    :root {
+        --zx-home-bg: #f6f1e8;
+        --zx-home-surface: rgba(255, 255, 255, 0.8);
+        --zx-home-card: #ffffff;
+        --zx-home-line: rgba(49, 65, 43, 0.12);
+        --zx-home-text: #1d231c;
+        --zx-home-muted: #677064;
+        --zx-home-green: #204c34;
+        --zx-home-green-2: #2f6a46;
+        --zx-home-green-soft: #e9f1ea;
+        --zx-home-gold: #df9a2e;
+        --zx-home-gold-deep: #bf7e14;
+        --zx-home-shadow: 0 18px 46px rgba(23, 30, 21, 0.08);
+        --zx-home-shadow-soft: 0 12px 26px rgba(23, 30, 21, 0.05);
+    }
 
-        <a href="{% url 'menu_list' %}" class="cta-btn">Order Now</a>
+    body {
+        background:
+            radial-gradient(circle at top left, rgba(223, 154, 46, 0.12), transparent 24%),
+            radial-gradient(circle at top right, rgba(32, 76, 52, 0.08), transparent 20%),
+            linear-gradient(180deg, #f8f4ec 0%, #f4eee5 100%) !important;
+    }
 
-        <!-- New Button -->
-        <a href="/menu/mood" class="cta-btn secondary-btn">Choose by Mood</a>
+    .zx-home {
+        font-family: 'Manrope', sans-serif;
+        color: var(--zx-home-text);
+        padding: 34px 0 90px;
+    }
+
+    .zx-home-shell {
+        width: min(1320px, calc(100% - 48px));
+        margin: 0 auto;
+    }
+
+    .zx-home-hero {
+        position: relative;
+        overflow: hidden;
+        border-radius: 34px;
+        padding: clamp(28px, 5vw, 62px);
+        background:
+            radial-gradient(circle at 85% 15%, rgba(223, 154, 46, 0.2), transparent 18%),
+            radial-gradient(circle at 0% 100%, rgba(255, 255, 255, 0.08), transparent 28%),
+            linear-gradient(135deg, #183a27 0%, #28553a 50%, #3d714c 100%);
+        border: 1px solid rgba(255, 255, 255, 0.35);
+        box-shadow: var(--zx-home-shadow);
+        isolation: isolate;
+    }
+
+    .zx-home-hero::before,
+    .zx-home-hero::after {
+        content: '';
+        position: absolute;
+        border-radius: 999px;
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        z-index: -1;
+    }
+
+    .zx-home-hero::before {
+        width: 280px;
+        height: 280px;
+        top: -80px;
+        right: -50px;
+    }
+
+    .zx-home-hero::after {
+        width: 180px;
+        height: 180px;
+        bottom: -40px;
+        right: 180px;
+    }
+
+    .zx-home-hero__grid {
+        display: grid;
+        grid-template-columns: minmax(0, 1.35fr) minmax(290px, 0.9fr);
+        gap: 28px;
+        align-items: center;
+    }
+
+    .zx-home-hero__eyebrow {
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        padding: 9px 14px;
+        border-radius: 999px;
+        background: rgba(255, 255, 255, 0.1);
+        color: #f4ca7e;
+        font-size: 0.8rem;
+        font-weight: 800;
+        letter-spacing: 0.16em;
+        text-transform: uppercase;
+        margin-bottom: 18px;
+    }
+
+    .zx-home-hero__eyebrow::before {
+        content: '';
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: currentColor;
+    }
+
+    .zx-home-hero h1 {
+        margin: 0 0 16px;
+        font-family: 'Playfair Display', serif;
+        font-size: clamp(3rem, 5.6vw, 5.8rem);
+        line-height: 0.96;
+        letter-spacing: -0.05em;
+        color: #fffdf7;
+    }
+
+    .zx-home-hero h1 em {
+        font-style: normal;
+        color: #f4ca7e;
+    }
+
+    .zx-home-hero p {
+        max-width: 650px;
+        margin: 0 0 28px;
+        color: rgba(255, 255, 255, 0.76);
+        line-height: 1.85;
+        font-size: 1.03rem;
+    }
+
+    .zx-home-hero__actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 14px;
+        margin-bottom: 30px;
+    }
+
+    .zx-home-btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        min-height: 54px;
+        padding: 0 22px;
+        border-radius: 16px;
+        text-decoration: none;
+        font-weight: 800;
+        transition: transform 0.18s ease, box-shadow 0.18s ease, background 0.18s ease;
+    }
+
+    .zx-home-btn--primary {
+        background: linear-gradient(135deg, var(--zx-home-gold) 0%, var(--zx-home-gold-deep) 100%);
+        color: #fff;
+        box-shadow: 0 14px 28px rgba(191, 126, 20, 0.22);
+    }
+
+    .zx-home-btn--secondary {
+        background: rgba(255, 255, 255, 0.12);
+        color: #fff;
+        border: 1px solid rgba(255, 255, 255, 0.16);
+        backdrop-filter: blur(10px);
+    }
+
+    .zx-home-btn:hover {
+        transform: translateY(-2px);
+    }
+
+    .zx-home-btn--primary:hover {
+        color: #fff;
+    }
+
+    .zx-home-btn--secondary:hover {
+        color: #fff;
+        background: rgba(255, 255, 255, 0.18);
+    }
+
+    .zx-home-hero__metrics {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 14px;
+    }
+
+    .zx-home-hero__metric {
+        padding: 14px 16px;
+        border-radius: 18px;
+        min-width: 130px;
+        background: rgba(255, 255, 255, 0.08);
+        border: 1px solid rgba(255, 255, 255, 0.09);
+    }
+
+    .zx-home-hero__metric strong {
+        display: block;
+        margin-bottom: 6px;
+        color: #fff;
+        font-size: 1.15rem;
+    }
+
+    .zx-home-hero__metric span {
+        color: rgba(255, 255, 255, 0.68);
+        font-size: 0.9rem;
+    }
+
+    .zx-home-hero__spotlight {
+        display: grid;
+        gap: 14px;
+    }
+
+    .zx-home-hero__card {
+        padding: 22px;
+        border-radius: 28px;
+        background: linear-gradient(180deg, rgba(255, 255, 255, 0.14), rgba(255, 255, 255, 0.08));
+        border: 1px solid rgba(255, 255, 255, 0.14);
+        backdrop-filter: blur(14px);
+    }
+
+    .zx-home-hero__card h3 {
+        margin: 0 0 10px;
+        color: #fff;
+        font-size: 1.1rem;
+    }
+
+    .zx-home-hero__card p {
+        margin: 0;
+        color: rgba(255, 255, 255, 0.68);
+        font-size: 0.94rem;
+        line-height: 1.7;
+    }
+
+    .zx-home-section {
+        margin-top: 30px;
+        padding: clamp(22px, 3vw, 30px);
+        border-radius: 30px;
+        background: var(--zx-home-surface);
+        border: 1px solid rgba(255, 255, 255, 0.65);
+        backdrop-filter: blur(14px);
+        box-shadow: var(--zx-home-shadow-soft);
+    }
+
+    .zx-home-section__head {
+        display: flex;
+        align-items: end;
+        justify-content: space-between;
+        gap: 18px;
+        margin-bottom: 24px;
+    }
+
+    .zx-home-section__eyebrow {
+        display: inline-flex;
+        margin-bottom: 8px;
+        color: var(--zx-home-gold-deep);
+        font-size: 0.78rem;
+        font-weight: 800;
+        text-transform: uppercase;
+        letter-spacing: 0.12em;
+    }
+
+    .zx-home-section h2 {
+        margin: 0;
+        font-family: 'Playfair Display', serif;
+        font-size: clamp(2rem, 3vw, 2.8rem);
+        line-height: 1;
+        color: var(--zx-home-green);
+    }
+
+    .zx-home-section__desc {
+        max-width: 620px;
+        margin: 8px 0 0;
+        color: var(--zx-home-muted);
+        line-height: 1.75;
+    }
+
+    .zx-home-link {
+        color: var(--zx-home-green);
+        text-decoration: none;
+        font-weight: 800;
+    }
+
+    .zx-home-link:hover {
+        color: var(--zx-home-gold-deep);
+    }
+
+    .zx-category-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+        gap: 18px;
+    }
+
+    .zx-category-card {
+        position: relative;
+        overflow: hidden;
+        min-height: 270px;
+        border-radius: 24px;
+        text-decoration: none;
+        color: #fff;
+        background: linear-gradient(180deg, rgba(18, 28, 20, 0.08), rgba(18, 28, 20, 0.75));
+        box-shadow: var(--zx-home-shadow-soft);
+        isolation: isolate;
+        transition: transform 0.22s ease, box-shadow 0.22s ease;
+    }
+
+    .zx-category-card:hover {
+        transform: translateY(-6px);
+        box-shadow: var(--zx-home-shadow);
+        color: #fff;
+    }
+
+    .zx-category-card img,
+    .zx-dish-card__img img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        display: block;
+    }
+
+    .zx-category-card__bg {
+        position: absolute;
+        inset: 0;
+    }
+
+    .zx-category-card__bg::after {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(180deg, rgba(15, 22, 16, 0.08), rgba(15, 22, 16, 0.8));
+    }
+
+    .zx-category-card__body {
+        position: absolute;
+        inset: auto 0 0;
+        padding: 20px;
+        z-index: 1;
+    }
+
+    .zx-category-card__top {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 10px;
+        margin-bottom: 12px;
+    }
+
+    .zx-category-card__icon,
+    .zx-category-card__count {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-width: 42px;
+        min-height: 42px;
+        padding: 0 12px;
+        border-radius: 999px;
+        background: rgba(255, 255, 255, 0.14);
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        backdrop-filter: blur(8px);
+        font-size: 0.92rem;
+        font-weight: 800;
+    }
+
+    .zx-category-card h3 {
+        margin: 0 0 8px;
+        font-size: 1.5rem;
+        line-height: 1.1;
+        color: #fff;
+    }
+
+    .zx-category-card p {
+        margin: 0;
+        color: rgba(255, 255, 255, 0.74);
+        line-height: 1.65;
+        font-size: 0.92rem;
+    }
+
+    .zx-feature-grid {
+        display: grid;
+        grid-template-columns: 1.15fr 0.85fr;
+        gap: 20px;
+    }
+
+    .zx-dish-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 18px;
+    }
+
+    .zx-dish-card {
+        overflow: hidden;
+        border-radius: 26px;
+        background: var(--zx-home-card);
+        border: 1px solid var(--zx-home-line);
+        box-shadow: var(--zx-home-shadow-soft);
+        transition: transform 0.22s ease, box-shadow 0.22s ease;
+    }
+
+    .zx-dish-card:hover {
+        transform: translateY(-4px);
+        box-shadow: var(--zx-home-shadow);
+    }
+
+    .zx-dish-card__img {
+        height: 220px;
+        background: linear-gradient(145deg, #f4ecdf 0%, #eaf0e8 100%);
+    }
+
+    .zx-dish-card__body {
+        padding: 18px;
+    }
+
+    .zx-dish-card__meta {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 10px;
+        margin-bottom: 12px;
+    }
+
+    .zx-dish-card__tag {
+        display: inline-flex;
+        align-items: center;
+        padding: 7px 11px;
+        border-radius: 999px;
+        background: var(--zx-home-green-soft);
+        color: var(--zx-home-green);
+        font-size: 0.76rem;
+        font-weight: 800;
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+    }
+
+    .zx-dish-card__price {
+        color: var(--zx-home-gold-deep);
+        font-weight: 800;
+        font-size: 0.95rem;
+    }
+
+    .zx-dish-card h3 {
+        margin: 0 0 10px;
+        font-family: 'Playfair Display', serif;
+        font-size: 1.45rem;
+        line-height: 1.08;
+        color: var(--zx-home-text);
+    }
+
+    .zx-dish-card p {
+        margin: 0 0 18px;
+        color: var(--zx-home-muted);
+        line-height: 1.72;
+    }
+
+    .zx-dish-card__cta {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        color: var(--zx-home-green);
+        text-decoration: none;
+        font-weight: 800;
+    }
+
+    .zx-home-highlight {
+        display: grid;
+        gap: 16px;
+        align-content: start;
+    }
+
+    .zx-highlight-card {
+        padding: 24px;
+        border-radius: 28px;
+        background:
+            radial-gradient(circle at top right, rgba(223, 154, 46, 0.16), transparent 26%),
+            linear-gradient(180deg, #ffffff 0%, #f7f3eb 100%);
+        border: 1px solid rgba(49, 65, 43, 0.08);
+        box-shadow: var(--zx-home-shadow-soft);
+    }
+
+    .zx-highlight-card h3 {
+        margin: 0 0 10px;
+        color: var(--zx-home-green);
+        font-size: 1.2rem;
+    }
+
+    .zx-highlight-card p {
+        margin: 0;
+        color: var(--zx-home-muted);
+        line-height: 1.75;
+    }
+
+    .zx-highlight-card--cta {
+        background: linear-gradient(135deg, #214d34 0%, #316c47 100%);
+        color: #fff;
+        border-color: rgba(255, 255, 255, 0.12);
+    }
+
+    .zx-highlight-card--cta h3,
+    .zx-highlight-card--cta p {
+        color: #fff;
+    }
+
+    .zx-highlight-card--cta p {
+        color: rgba(255, 255, 255, 0.74);
+        margin-bottom: 18px;
+    }
+
+    .zx-highlights-row {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 18px;
+    }
+
+    .zx-info-card {
+        padding: 24px;
+        border-radius: 24px;
+        background: var(--zx-home-card);
+        border: 1px solid var(--zx-home-line);
+        box-shadow: var(--zx-home-shadow-soft);
+    }
+
+    .zx-info-card__icon {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 44px;
+        height: 44px;
+        margin-bottom: 14px;
+        border-radius: 14px;
+        background: linear-gradient(135deg, rgba(223, 154, 46, 0.16), rgba(32, 76, 52, 0.12));
+        font-size: 1.2rem;
+    }
+
+    .zx-info-card h3 {
+        margin: 0 0 8px;
+        color: var(--zx-home-green);
+        font-size: 1.12rem;
+    }
+
+    .zx-info-card p {
+        margin: 0;
+        color: var(--zx-home-muted);
+        line-height: 1.7;
+    }
+
+    .zx-home-empty {
+        padding: 20px;
+        border-radius: 22px;
+        background: rgba(255, 255, 255, 0.7);
+        border: 1px dashed var(--zx-home-line);
+        color: var(--zx-home-muted);
+    }
+
+    .zx-suggestion-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+        gap: 18px;
+    }
+
+    .zx-suggestion-card {
+        overflow: hidden;
+        border-radius: 24px;
+        background: var(--zx-home-card);
+        border: 1px solid var(--zx-home-line);
+        box-shadow: var(--zx-home-shadow-soft);
+    }
+
+    .zx-suggestion-card__img {
+        height: 190px;
+        background: linear-gradient(145deg, #f4ecdf 0%, #eaf0e8 100%);
+    }
+
+    .zx-suggestion-card__img img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        display: block;
+    }
+
+    .zx-suggestion-card__body {
+        padding: 18px;
+    }
+
+    .zx-suggestion-card__top {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 10px;
+        margin-bottom: 10px;
+    }
+
+    .zx-suggestion-card__tag {
+        display: inline-flex;
+        padding: 7px 11px;
+        border-radius: 999px;
+        background: var(--zx-home-green-soft);
+        color: var(--zx-home-green);
+        font-size: 0.75rem;
+        font-weight: 800;
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+    }
+
+    .zx-suggestion-card__price {
+        color: var(--zx-home-gold-deep);
+        font-weight: 800;
+    }
+
+    .zx-suggestion-card h3 {
+        margin: 0 0 10px;
+        font-family: 'Playfair Display', serif;
+        font-size: 1.4rem;
+        color: var(--zx-home-text);
+    }
+
+    .zx-suggestion-card p {
+        margin: 0 0 16px;
+        color: var(--zx-home-muted);
+        line-height: 1.7;
+    }
+
+    .zx-suggestion-note {
+        display: inline-flex;
+        margin-bottom: 16px;
+        padding: 8px 12px;
+        border-radius: 999px;
+        background: rgba(223, 154, 46, 0.12);
+        color: var(--zx-home-gold-deep);
+        font-size: 0.82rem;
+        font-weight: 800;
+    }
+
+    @media (max-width: 1080px) {
+        .zx-home-hero__grid,
+        .zx-feature-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .zx-dish-grid,
+        .zx-highlights-row {
+            grid-template-columns: 1fr 1fr;
+        }
+    }
+
+    @media (max-width: 768px) {
+        .zx-home {
+            padding: 18px 0 64px;
+        }
+
+        .zx-home-shell {
+            width: min(100% - 24px, 1320px);
+        }
+
+        .zx-home-hero {
+            border-radius: 24px;
+            padding: 24px 20px;
+        }
+
+        .zx-home-hero__actions,
+        .zx-home-hero__metrics,
+        .zx-home-section__head {
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
+        .zx-home-btn {
+            width: 100%;
+        }
+
+        .zx-dish-grid,
+        .zx-highlights-row {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>
+
+<section class="zx-home">
+    <div class="zx-home-shell">
+        <section class="zx-home-hero">
+            <div class="zx-home-hero__grid">
+                <div class="zx-home-hero__content">
+                    <div class="zx-home-hero__eyebrow">Authentic Indian Flavours</div>
+                    <h1>Fresh, hot, and <em>full of flavour</em>.</h1>
+                    <p>From smoky tandoori bites to rich curries and satisfying biryanis, ZaikaX serves food that looks irresistible and tastes even better with every order.</p>
+
+                    <div class="zx-home-hero__actions">
+                        <a href="{% url 'menu_list' %}" class="zx-home-btn zx-home-btn--primary">Explore Full Menu</a>
+                        <a href="/menu/mood" class="zx-home-btn zx-home-btn--secondary">Choose by Mood</a>
+                    </div>
+
+                    <div class="zx-home-hero__metrics">
+                        <div class="zx-home-hero__metric">
+                            <strong>{{ homepage_categories|length }}</strong>
+                            <span>Tasty categories</span>
+                        </div>
+                        <div class="zx-home-hero__metric">
+                            <strong>{{ popular_dishes|length }}</strong>
+                            <span>Customer favorites</span>
+                        </div>
+                        <div class="zx-home-hero__metric">
+                            <strong>Quick</strong>
+                            <span>Fresh cravings served</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="zx-home-hero__spotlight">
+                    <div class="zx-home-hero__card">
+                        <h3>Made for every craving</h3>
+                        <p>Whether you want spicy starters, comforting mains, or refreshing drinks, there is always something delicious waiting for you.</p>
+                    </div>
+                    <div class="zx-home-hero__card">
+                        <h3>Cooked to tempt at first sight</h3>
+                        <p>Loaded with vibrant dishes, rich aromas, and comforting classics that make every meal feel special.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="zx-home-section" id="menu">
+            <div class="zx-home-section__head">
+                <div>
+                    <span class="zx-home-section__eyebrow">Browse</span>
+                    <h2>Discover Menu Categories</h2>
+                    <p class="zx-home-section__desc">Start with what you are craving today, from spicy starters and rich curries to biryanis, breads, snacks, and refreshing drinks.</p>
+                </div>
+                <a href="{% url 'menu_list' %}" class="zx-home-link">Open Menu</a>
+            </div>
+
+            <div class="zx-category-grid">
+                {% for category in homepage_categories %}
+                <a class="zx-category-card" href="{% url 'menu_list' %}#{{ category.menu_anchor }}">
+                    <div class="zx-category-card__bg">
+                        {% if category.image_item and category.image_item.image %}
+                        <img src="{{ category.image_item.image.url }}" alt="{{ category.label }}">
+                        {% else %}
+                        <img src="{% static 'images/default-food.svg' %}" alt="{{ category.label }}">
+                        {% endif %}
+                    </div>
+                    <div class="zx-category-card__body">
+                        <div class="zx-category-card__top">
+                            <span class="zx-category-card__icon">{{ category.icon }}</span>
+                            <span class="zx-category-card__count">{{ category.count }} items</span>
+                        </div>
+                        <h3>{{ category.label }}</h3>
+                        <p>Open this section and discover dishes worth ordering again and again.</p>
+                    </div>
+                </a>
+                {% empty %}
+                <div class="zx-home-empty">No categories available yet.</div>
+                {% endfor %}
+            </div>
+        </section>
+
+        <section class="zx-home-section">
+            <div class="zx-home-section__head">
+                <div>
+                    <span class="zx-home-section__eyebrow">Popular</span>
+                    <h2>Guest Favorites</h2>
+                    <p class="zx-home-section__desc">A mouth-watering lineup of dishes our customers love most, picked to make your next order easier and more tempting.</p>
+                </div>
+                <a href="{% url 'menu_list' %}" class="zx-home-link">See Everything</a>
+            </div>
+
+            <div class="zx-feature-grid">
+                <div class="zx-dish-grid">
+                    {% for dish in popular_dishes %}
+                    <article class="zx-dish-card">
+                        <div class="zx-dish-card__img">
+                            {% if dish.image %}
+                            <img src="{{ dish.image.url }}" alt="{{ dish.name }}">
+                            {% else %}
+                            <img src="{% static 'images/default-food.svg' %}" alt="{{ dish.name }}">
+                            {% endif %}
+                        </div>
+                        <div class="zx-dish-card__body">
+                            <div class="zx-dish-card__meta">
+                                <span class="zx-dish-card__tag">{{ dish.category_name }}</span>
+                                <span class="zx-dish-card__price">&#8377;{{ dish.price }}</span>
+                            </div>
+                            <h3>{{ dish.name }}</h3>
+                            <p>{{ dish.description|truncatechars:95 }}</p>
+                            <a href="{% url 'menu_list' %}" class="zx-dish-card__cta">Order from menu</a>
+                        </div>
+                    </article>
+                    {% empty %}
+                    <div class="zx-home-empty">Add menu items in the database to show popular dishes here.</div>
+                    {% endfor %}
+                </div>
+
+                <div class="zx-home-highlight">
+                    <div class="zx-highlight-card">
+                        <h3>Bold flavors in every bite</h3>
+                        <p>Expect rich gravies, smoky grills, perfectly spiced rice, and fresh ingredients that bring real restaurant taste to your table.</p>
+                    </div>
+
+                    <div class="zx-highlight-card">
+                        <h3>Something for every mood</h3>
+                        <p>Planning a family meal, evening snack, or late-night treat? Our menu has comforting picks for every appetite.</p>
+                    </div>
+
+                    <div class="zx-highlight-card zx-highlight-card--cta">
+                        <h3>Ready for a delicious meal?</h3>
+                        <p>Pick your favorites, satisfy your cravings, and enjoy restaurant-style food delivered with full flavor.</p>
+                        <a href="{% url 'menu_list' %}" class="zx-home-btn zx-home-btn--primary">Go To Menu</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        {% if recommendations.cards %}
+        <section class="zx-home-section">
+            <div class="zx-home-section__head">
+                <div>
+                    <span class="zx-home-section__eyebrow">Suggestions</span>
+                    <h2>{{ recommendations.title }}</h2>
+                    <p class="zx-home-section__desc">{{ recommendations.subtitle }}</p>
+                </div>
+                <a href="{% url 'menu_list' %}" class="zx-home-link">See Full Menu</a>
+            </div>
+
+            {% if recommendations.insight %}
+            <div class="zx-suggestion-note">{{ recommendations.insight }}</div>
+            {% endif %}
+
+            <div class="zx-suggestion-grid">
+                {% for card in recommendations.cards %}
+                <article class="zx-suggestion-card">
+                    <div class="zx-suggestion-card__img">
+                        {% if card.dish.image %}
+                        <img src="{{ card.dish.image.url }}" alt="{{ card.dish.name }}">
+                        {% else %}
+                        <img src="{% static 'images/default-food.svg' %}" alt="{{ card.dish.name }}">
+                        {% endif %}
+                    </div>
+                    <div class="zx-suggestion-card__body">
+                        <div class="zx-suggestion-card__top">
+                            <span class="zx-suggestion-card__tag">{{ card.dish.category_name }}</span>
+                            <span class="zx-suggestion-card__price">&#8377;{{ card.dish.price }}</span>
+                        </div>
+                        <h3>{{ card.dish.name }}</h3>
+                        <p>{{ card.dish.description|default:"A delicious pick chosen from real customer ordering patterns."|truncatechars:95 }}</p>
+                        <div class="zx-suggestion-note" style="margin-bottom:14px;">{{ card.reason }}</div>
+                        <a href="{% url 'add_to_cart' card.dish.id %}" class="zx-dish-card__cta">Add to cart</a>
+                        <a href="{% url 'menu_item_detail' card.dish.id %}" class="zx-dish-card__cta" style="margin-left:14px;">View details</a>
+                    </div>
+                </article>
+                {% endfor %}
+            </div>
+        </section>
+        {% endif %}
+
+        <!-- Why ZaikaX -->
+        <section class="zx-home-section">
+            <div class="zx-home-section__head">
+                <div>
+                    <span class="zx-home-section__eyebrow">Why ZaikaX</span>
+                    <h2>A smoother ordering experience</h2>
+                    <p class="zx-home-section__desc">Everything at ZaikaX is crafted to make your meal feel more satisfying, flavorful, and worth coming back for.</p>
+                </div>
+            </div>
+
+            <div class="zx-highlights-row">
+                <article class="zx-info-card">
+                    <div class="zx-info-card__icon">01</div>
+                    <h3>Authentic taste</h3>
+                    <p>From classic Indian favorites to crowd-pleasing comfort food, every dish is packed with familiar, satisfying flavor.</p>
+                </article>
+
+                <article class="zx-info-card">
+                    <div class="zx-info-card__icon">02</div>
+                    <h3>Freshly prepared dishes</h3>
+                    <p>Enjoy food that feels freshly made, well-seasoned, and ready to turn an ordinary meal into something special.</p>
+                </article>
+
+                <article class="zx-info-card">
+                    <div class="zx-info-card__icon">03</div>
+                    <h3>Food worth sharing</h3>
+                    <p>Perfect for solo cravings, family dinners, or group orders with dishes everyone at the table can enjoy.</p>
+                </article>
+            </div>
+        </section>
     </div>
 </section>
-
-
-<section class="categories" id="menu">
-    <h2>Browse Categories</h2>
-
-    <div class="cat-container">
-        <div class="cat-card">
-            <img src="{% static 'images/starter.jpg' %}" alt="">
-            <h3>Starters</h3>
-        </div>
-        <div class="cat-card">
-            <img src="{% static 'images/main_course.jpg' %}" alt="">
-            <h3>Main Course</h3>
-        </div>
-        <div class="cat-card">
-            <img src="{% static 'images/biryani.jpg' %}" alt="">
-            <h3>Biryani</h3>
-        </div>
-        <div class="cat-card">
-            <img src="{% static 'images/beverages.jpg' %}" alt="">
-            <h3>Beverages</h3>
-        </div>
-    </div>
-</section>
-
-<section class="popular">
-    <h2>Popular Dishes</h2>
-
-    <div class="popular-container">
-        <div class="dish-card">
-            <img src="{% static 'images/biryani_ch.jpg' %}" alt="">
-            <div class="dish-info">
-                <h3>Chicken Biryani</h3>
-                <p>Spicy & flavorful Hyderabadi biryani.</p>
-                <span class="price">₹199</span>
-            </div>
-        </div>
-
-        <div class="dish-card">
-            <img src="{% static 'images/paneer.png' %}" alt="">
-            <div class="dish-info">
-                <h3>Paneer Tikka</h3>
-                <p>Grilled paneer marinated in rich spices.</p>
-                <span class="price">₹149</span>
-            </div>
-        </div>
-
-        <div class="dish-card">
-            <img src="{% static 'images/Cold-Coffee.png' %}" alt="">
-            <div class="dish-info">
-                <h3>Cold Coffee</h3>
-                <p>Refreshing cold coffee with ice cream.</p>
-                <span class="price">₹99</span>
-            </div>
-        </div>
-    </div>
-</section>
-
 {% endblock %}

@@ -1,0 +1,1021 @@
+{% extends 'main/base.html' %}
+{% load static %}
+
+{% block content %}
+<link
+    href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700;800&family=Manrope:wght@400;500;600;700;800&display=swap"
+    rel="stylesheet">
+
+<style>
+    :root {
+        --zx-bg: #f6f1e8;
+        --zx-surface: rgba(255, 255, 255, 0.78);
+        --zx-surface-strong: #ffffff;
+        --zx-line: rgba(62, 78, 54, 0.12);
+        --zx-line-strong: rgba(62, 78, 54, 0.2);
+        --zx-text: #1d231c;
+        --zx-muted: #667164;
+        --zx-green: #1f4f34;
+        --zx-green-soft: #e6efe7;
+        --zx-gold: #df9c2f;
+        --zx-gold-deep: #bf7e14;
+        --zx-shadow: 0 20px 60px rgba(24, 31, 21, 0.08);
+        --zx-shadow-soft: 0 14px 34px rgba(24, 31, 21, 0.06);
+        --zx-radius-xl: 32px;
+        --zx-radius-lg: 24px;
+        --zx-radius-md: 18px;
+        --zx-radius-sm: 14px;
+    }
+
+    body {
+        background:
+            radial-gradient(circle at top left, rgba(223, 156, 47, 0.12), transparent 26%),
+            radial-gradient(circle at top right, rgba(31, 79, 52, 0.12), transparent 22%),
+            linear-gradient(180deg, #f8f4ec 0%, #f4eee4 100%) !important;
+    }
+
+    .zx-menu {
+        font-family: 'Manrope', sans-serif;
+        color: var(--zx-text);
+        padding: 36px 0 0;
+    }
+
+    .zx-shell {
+        width: min(1320px, calc(100% - 48px));
+        margin: 0 auto;
+    }
+
+    .zx-menu-hero {
+        position: relative;
+        overflow: hidden;
+        border: 1px solid rgba(255, 255, 255, 0.45);
+        border-radius: var(--zx-radius-xl);
+        background:
+            radial-gradient(circle at 86% 18%, rgba(223, 156, 47, 0.22), transparent 18%),
+            radial-gradient(circle at 22% 120%, rgba(255, 255, 255, 0.18), transparent 24%),
+            linear-gradient(135deg, #183c27 0%, #29583b 54%, #3e724d 100%);
+        padding: 72px clamp(24px, 5vw, 60px);
+        box-shadow: var(--zx-shadow);
+        isolation: isolate;
+    }
+
+    .zx-menu-hero::before,
+    .zx-menu-hero::after {
+        content: '';
+        position: absolute;
+        border-radius: 999px;
+        border: 1px solid rgba(255, 255, 255, 0.09);
+        background: rgba(255, 255, 255, 0.04);
+        backdrop-filter: blur(4px);
+        z-index: -1;
+    }
+
+    .zx-menu-hero::before {
+        width: 280px;
+        height: 280px;
+        right: -70px;
+        top: -70px;
+    }
+
+    .zx-menu-hero::after {
+        width: 180px;
+        height: 180px;
+        bottom: -40px;
+        right: 180px;
+    }
+
+    .zx-menu-hero__grid {
+        display: grid;
+        grid-template-columns: minmax(0, 1.45fr) minmax(280px, 0.85fr);
+        gap: 28px;
+        align-items: end;
+    }
+
+    .zx-menu-hero__eyebrow {
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        padding: 9px 14px;
+        border-radius: 999px;
+        background: rgba(255, 255, 255, 0.1);
+        color: #f4cb7f;
+        font-size: 0.8rem;
+        font-weight: 800;
+        text-transform: uppercase;
+        letter-spacing: 0.16em;
+        margin-bottom: 18px;
+    }
+
+    .zx-menu-hero__eyebrow::before {
+        content: '';
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: currentColor;
+        box-shadow: 0 0 0 6px rgba(244, 203, 127, 0.12);
+    }
+
+    .zx-menu-hero h1 {
+        margin: 0 0 16px;
+        font-family: 'Playfair Display', serif;
+        font-size: clamp(3rem, 5.2vw, 5.3rem);
+        line-height: 0.98;
+        letter-spacing: -0.04em;
+        color: #fffef8;
+    }
+
+    .zx-menu-hero h1 em {
+        color: #f4cb7f;
+        font-style: normal;
+    }
+
+    .zx-menu-hero__sub {
+        max-width: 650px;
+        margin: 0;
+        color: rgba(255, 255, 255, 0.78);
+        font-size: 1.02rem;
+        line-height: 1.8;
+    }
+
+    .zx-menu-hero__panel {
+        display: grid;
+        gap: 14px;
+        padding: 22px;
+        border-radius: 28px;
+        background: linear-gradient(180deg, rgba(255, 255, 255, 0.14), rgba(255, 255, 255, 0.08));
+        border: 1px solid rgba(255, 255, 255, 0.14);
+        backdrop-filter: blur(14px);
+    }
+
+    .zx-menu-hero__panel-title {
+        color: rgba(255, 255, 255, 0.74);
+        font-size: 0.84rem;
+        font-weight: 700;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+    }
+
+    .zx-menu-hero__panel-value {
+        font-size: 2.4rem;
+        line-height: 1;
+        font-weight: 800;
+        color: #ffffff;
+    }
+
+    .zx-menu-hero__stats {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 12px;
+    }
+
+    .zx-menu-hero__stat {
+        padding: 16px;
+        border-radius: 20px;
+        background: rgba(255, 255, 255, 0.08);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .zx-menu-hero__stat strong {
+        display: block;
+        margin-bottom: 6px;
+        color: #ffffff;
+        font-size: 1.15rem;
+    }
+
+    .zx-menu-hero__stat span {
+        color: rgba(255, 255, 255, 0.68);
+        font-size: 0.9rem;
+    }
+
+    .zx-cat-nav {
+        position: sticky;
+        top: 10px;
+        z-index: 100;
+        width: min(1320px, calc(100% - 48px));
+        margin: -28px auto 0;
+        padding: 14px 18px;
+        border-radius: 999px;
+        background: rgba(255, 255, 255, 0.76);
+        border: 1px solid rgba(255, 255, 255, 0.55);
+        backdrop-filter: blur(18px);
+        box-shadow: 0 18px 40px rgba(28, 35, 24, 0.08);
+        overflow-x: auto;
+        scrollbar-width: none;
+    }
+
+    .zx-cat-nav::-webkit-scrollbar {
+        display: none;
+    }
+
+    .zx-cat-nav__inner {
+        display: flex;
+        gap: 10px;
+        min-width: max-content;
+    }
+
+    .zx-cat-pill {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 11px 18px;
+        border-radius: 999px;
+        color: #526150;
+        text-decoration: none;
+        border: 1px solid transparent;
+        font-size: 0.95rem;
+        font-weight: 700;
+        white-space: nowrap;
+        transition: 0.18s ease;
+    }
+
+    .zx-cat-pill:hover,
+    .zx-cat-pill.active {
+        background: var(--zx-green);
+        color: #ffffff;
+        box-shadow: 0 10px 24px rgba(31, 79, 52, 0.22);
+    }
+
+    .zx-menu-body {
+        padding: 42px 0 92px;
+    }
+
+    .zx-filter-bar {
+        display: grid;
+        grid-template-columns: minmax(230px, 1.4fr) repeat(2, minmax(180px, 0.7fr)) auto;
+        gap: 14px;
+        align-items: end;
+        padding: 18px;
+        margin-bottom: 18px;
+        border-radius: 28px;
+        background: var(--zx-surface);
+        border: 1px solid rgba(255, 255, 255, 0.66);
+        backdrop-filter: blur(18px);
+        box-shadow: var(--zx-shadow-soft);
+    }
+
+    .zx-filter-field {
+        display: flex;
+        flex-direction: column;
+        gap: 7px;
+    }
+
+    .zx-filter-label {
+        font-size: 0.78rem;
+        font-weight: 800;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        color: #60705e;
+    }
+
+    .zx-filter-input,
+    .zx-filter-select {
+        width: 100%;
+        padding: 14px 16px;
+        border: 1px solid var(--zx-line);
+        border-radius: 16px;
+        background: rgba(255, 255, 255, 0.92);
+        color: var(--zx-text);
+        font: inherit;
+        outline: none;
+        transition: border-color 0.18s ease, box-shadow 0.18s ease, transform 0.18s ease;
+    }
+
+    .zx-filter-input:focus,
+    .zx-filter-select:focus {
+        border-color: rgba(223, 156, 47, 0.65);
+        box-shadow: 0 0 0 4px rgba(223, 156, 47, 0.12);
+        transform: translateY(-1px);
+    }
+
+    .zx-filter-reset {
+        border: none;
+        border-radius: 16px;
+        padding: 14px 20px;
+        background: linear-gradient(135deg, var(--zx-green) 0%, #2f6946 100%);
+        color: #fff;
+        font: inherit;
+        font-weight: 800;
+        cursor: pointer;
+        transition: transform 0.18s ease, box-shadow 0.18s ease;
+    }
+
+    .zx-filter-reset:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 14px 26px rgba(31, 79, 52, 0.18);
+    }
+
+    .zx-filter-meta {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 12px;
+        margin-bottom: 34px;
+        padding: 0 6px;
+        color: var(--zx-muted);
+    }
+
+    .zx-filter-summary strong {
+        color: var(--zx-green);
+    }
+
+    .zx-filter-note {
+        font-size: 0.9rem;
+    }
+
+    .zx-featured-wrap {
+        margin-bottom: 44px;
+        border-radius: 30px;
+        overflow: hidden;
+        box-shadow: var(--zx-shadow);
+    }
+
+    .zx-categories {
+        display: grid;
+        gap: 28px;
+    }
+
+    .zx-category {
+        padding: clamp(20px, 3vw, 28px);
+        border-radius: 30px;
+        background: var(--zx-surface);
+        border: 1px solid rgba(255, 255, 255, 0.68);
+        backdrop-filter: blur(14px);
+        box-shadow: var(--zx-shadow-soft);
+    }
+
+    .zx-category-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 20px;
+        margin-bottom: 24px;
+    }
+
+    .zx-category-header__label {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        min-width: 0;
+    }
+
+    .zx-category-header__emoji {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 48px;
+        height: 48px;
+        border-radius: 16px;
+        background: linear-gradient(135deg, rgba(223, 156, 47, 0.16), rgba(31, 79, 52, 0.12));
+        box-shadow: inset 0 0 0 1px rgba(223, 156, 47, 0.08);
+        font-size: 1.35rem;
+    }
+
+    .zx-category-header__copy h2 {
+        margin: 0 0 4px;
+        font-family: 'Playfair Display', serif;
+        font-size: clamp(1.9rem, 2.5vw, 2.6rem);
+        color: var(--zx-green);
+        line-height: 1;
+    }
+
+    .zx-category-header__copy p {
+        margin: 0;
+        color: var(--zx-muted);
+        font-size: 0.96rem;
+    }
+
+    .zx-category-header__count {
+        flex-shrink: 0;
+        padding: 10px 14px;
+        border-radius: 999px;
+        background: rgba(31, 79, 52, 0.08);
+        color: var(--zx-green);
+        font-size: 0.85rem;
+        font-weight: 800;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+    }
+
+    .zx-menu-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(270px, 1fr));
+        gap: 20px;
+    }
+
+    .zx-menu-card {
+        display: flex;
+        flex-direction: column;
+        min-width: 0;
+        border-radius: 24px;
+        overflow: hidden;
+        background: var(--zx-surface-strong);
+        border: 1px solid var(--zx-line);
+        box-shadow: 0 14px 30px rgba(24, 31, 21, 0.06);
+        transition: transform 0.22s ease, box-shadow 0.22s ease, border-color 0.22s ease;
+    }
+
+    .zx-menu-card:hover {
+        transform: translateY(-6px);
+        border-color: rgba(223, 156, 47, 0.35);
+        box-shadow: 0 22px 34px rgba(24, 31, 21, 0.1);
+    }
+
+    .zx-card-img-wrap {
+        position: relative;
+        height: 210px;
+        overflow: hidden;
+        background: linear-gradient(145deg, #f5efe4 0%, #edf3ec 100%);
+    }
+
+    .zx-card-img-wrap::after {
+        content: '';
+        position: absolute;
+        inset: auto 0 0;
+        height: 55%;
+        background: linear-gradient(to top, rgba(10, 18, 12, 0.38), rgba(10, 18, 12, 0));
+        pointer-events: none;
+    }
+
+    .zx-card-img-wrap img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        display: block;
+        transition: transform 0.4s ease;
+    }
+
+    .zx-menu-card:hover .zx-card-img-wrap img {
+        transform: scale(1.06);
+    }
+
+    .zx-veg-badge {
+        position: absolute;
+        top: 14px;
+        left: 14px;
+        width: 24px;
+        height: 24px;
+        border-radius: 7px;
+        background: rgba(255, 255, 255, 0.95);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+        z-index: 1;
+    }
+
+    .zx-veg-badge::after {
+        content: '';
+        width: 11px;
+        height: 11px;
+        border-radius: 50%;
+        background: #1b8a4a;
+    }
+
+    .zx-veg-badge--nonveg::after {
+        background: #994233;
+    }
+
+    .zx-card-body {
+        display: flex;
+        flex-direction: column;
+        flex: 1;
+        gap: 12px;
+        padding: 18px;
+    }
+
+    .zx-card-meta {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 10px;
+    }
+
+    .zx-card-tag {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 7px 10px;
+        border-radius: 999px;
+        background: var(--zx-green-soft);
+        color: var(--zx-green);
+        font-size: 0.78rem;
+        font-weight: 800;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+    }
+
+    .zx-card-tag--veg {
+        background: #e7f5ea;
+        color: #1d7a45;
+    }
+
+    .zx-card-tag--nonveg {
+        background: #f8e8e4;
+        color: #8b3d2f;
+    }
+
+    .zx-card-price-pill {
+        color: var(--zx-gold-deep);
+        font-size: 0.88rem;
+        font-weight: 800;
+    }
+
+    .zx-card-name {
+        margin: 0;
+        font-family: 'Playfair Display', serif;
+        font-size: 1.4rem;
+        line-height: 1.12;
+        color: var(--zx-text);
+    }
+
+    .zx-card-desc {
+        margin: 0;
+        color: var(--zx-muted);
+        line-height: 1.65;
+        font-size: 0.95rem;
+        flex: 1;
+        display: -webkit-box;
+        -webkit-line-clamp: 3;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+    }
+
+    .zx-card-footer {
+        display: flex;
+        align-items: end;
+        justify-content: space-between;
+        gap: 14px;
+        margin-top: 6px;
+    }
+
+    .zx-price-block {
+        display: flex;
+        flex-direction: column;
+        gap: 3px;
+    }
+
+    .zx-price-label {
+        color: #8b9589;
+        font-size: 0.74rem;
+        font-weight: 800;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+    }
+
+    .zx-price-value {
+        font-family: 'Playfair Display', serif;
+        font-size: 1.34rem;
+        color: var(--zx-green);
+        font-weight: 800;
+        line-height: 1;
+    }
+
+    .zx-add-btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        min-width: 126px;
+        padding: 12px 16px;
+        border-radius: 15px;
+        background: linear-gradient(135deg, var(--zx-gold) 0%, var(--zx-gold-deep) 100%);
+        color: #fff;
+        text-decoration: none;
+        font-size: 0.92rem;
+        font-weight: 800;
+        letter-spacing: 0.02em;
+        transition: transform 0.18s ease, box-shadow 0.18s ease;
+    }
+
+    .zx-add-btn:hover {
+        color: #fff;
+        transform: translateY(-1px);
+        box-shadow: 0 14px 26px rgba(191, 126, 20, 0.25);
+    }
+
+    .zx-add-btn svg {
+        flex-shrink: 0;
+    }
+
+    .zx-empty-cat {
+        padding: 10px 4px 4px;
+        color: var(--zx-muted);
+    }
+
+    .zx-empty-results {
+        display: none;
+        margin-top: 10px;
+        padding: 32px 24px;
+        border-radius: 26px;
+        background: rgba(255, 255, 255, 0.78);
+        border: 1px dashed var(--zx-line-strong);
+        text-align: center;
+        color: var(--zx-muted);
+        box-shadow: var(--zx-shadow-soft);
+    }
+
+    .zx-empty-results.is-visible {
+        display: block;
+    }
+
+    .is-hidden-by-filter {
+        display: none !important;
+    }
+
+    .zx-reviews-wrap {
+        background: rgba(255, 255, 255, 0.6);
+        border-top: 1px solid rgba(62, 78, 54, 0.08);
+    }
+
+    .zx-suggestion-strip {
+        margin-bottom: 34px;
+        padding: 24px;
+        border-radius: 28px;
+        background: var(--zx-surface);
+        border: 1px solid rgba(255, 255, 255, 0.68);
+        backdrop-filter: blur(14px);
+        box-shadow: var(--zx-shadow-soft);
+    }
+
+    .zx-suggestion-head {
+        display: flex;
+        align-items: end;
+        justify-content: space-between;
+        gap: 18px;
+        margin-bottom: 20px;
+    }
+
+    .zx-suggestion-head h2 {
+        margin: 0 0 6px;
+        font-family: 'Playfair Display', serif;
+        font-size: clamp(1.8rem, 2.5vw, 2.4rem);
+        color: var(--zx-green);
+    }
+
+    .zx-suggestion-head p {
+        margin: 0;
+        color: var(--zx-muted);
+        line-height: 1.7;
+    }
+
+    .zx-suggestion-chip {
+        display: inline-flex;
+        margin-top: 12px;
+        padding: 8px 12px;
+        border-radius: 999px;
+        background: rgba(223, 156, 47, 0.12);
+        color: var(--zx-gold-deep);
+        font-size: 0.82rem;
+        font-weight: 800;
+    }
+
+    @media (max-width: 1080px) {
+        .zx-menu-hero__grid {
+            grid-template-columns: 1fr;
+        }
+
+        .zx-filter-bar {
+            grid-template-columns: 1fr 1fr;
+        }
+    }
+
+    @media (max-width: 768px) {
+        .zx-shell,
+        .zx-cat-nav {
+            width: min(100% - 24px, 1320px);
+        }
+
+        .zx-menu {
+            padding-top: 18px;
+        }
+
+        .zx-menu-hero {
+            padding: 34px 20px 30px;
+            border-radius: 24px;
+        }
+
+        .zx-menu-hero__stats {
+            grid-template-columns: 1fr;
+        }
+
+        .zx-filter-bar {
+            grid-template-columns: 1fr;
+            border-radius: 22px;
+        }
+
+        .zx-filter-reset {
+            width: 100%;
+        }
+
+        .zx-filter-meta,
+        .zx-category-header,
+        .zx-card-footer {
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
+        .zx-card-footer,
+        .zx-add-btn {
+            width: 100%;
+        }
+
+        .zx-menu-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>
+
+<section class="zx-menu">
+    <div class="zx-shell">
+        <div class="zx-menu-hero">
+            <div class="zx-menu-hero__grid">
+                <div class="zx-menu-hero__content">
+                    <div class="zx-menu-hero__eyebrow">Curated Dining Experience</div>
+                    <h1>Modern <em>Menu</em> Design for Better Ordering</h1>
+                    <p class="zx-menu-hero__sub">Browse dishes in a cleaner, premium format with faster discovery, structured categories, and a more polished restaurant-style ordering experience.</p>
+                </div>
+
+                <div class="zx-menu-hero__panel">
+                    <div class="zx-menu-hero__panel-title">Quick Snapshot</div>
+                    <div class="zx-menu-hero__panel-value">{{ category_sections|length }} Categories</div>
+                    <div class="zx-menu-hero__stats">
+                        <div class="zx-menu-hero__stat">
+                            <strong>{{ featured.name|default:"Chef Pick" }}</strong>
+                            <span>Featured recommendation right now</span>
+                        </div>
+                        <div class="zx-menu-hero__stat">
+                            <strong>Fresh Layout</strong>
+                            <span>Modern browsing with quick filters</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <nav class="zx-cat-nav" aria-label="Menu categories">
+        <div class="zx-cat-nav__inner">
+            {% if featured %}
+            <a href="#featured" class="zx-cat-pill active">
+                <span class="zx-cat-pill__emoji">★</span> Featured
+            </a>
+            {% endif %}
+            {% for section in category_sections %}
+            <a href="#{{ section.anchor }}" class="zx-cat-pill">
+                <span class="zx-cat-pill__emoji">{{ section.icon }}</span> {{ section.name }}
+            </a>
+            {% endfor %}
+        </div>
+    </nav>
+
+    <div class="zx-shell">
+        <div class="zx-menu-body">
+            <div class="zx-filter-bar" aria-label="Menu filters">
+                <div class="zx-filter-field">
+                    <label class="zx-filter-label" for="menu-search">Search</label>
+                    <input id="menu-search" class="zx-filter-input" type="search" placeholder="Search by dish name or description">
+                </div>
+
+                <div class="zx-filter-field">
+                    <label class="zx-filter-label" for="menu-type-filter">Type</label>
+                    <select id="menu-type-filter" class="zx-filter-select">
+                        <option value="all">All Items</option>
+                        <option value="veg">Veg</option>
+                        <option value="nonveg">Non-Veg</option>
+                    </select>
+                </div>
+
+                <div class="zx-filter-field">
+                    <label class="zx-filter-label" for="menu-category-filter">Category</label>
+                    <select id="menu-category-filter" class="zx-filter-select">
+                        <option value="all">All Categories</option>
+                        {% for section in category_sections %}
+                        <option value="{{ section.slug }}">{{ section.name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <button type="button" id="menu-filter-reset" class="zx-filter-reset">Reset Filters</button>
+            </div>
+
+            <div class="zx-filter-meta">
+                <div id="menu-filter-summary" class="zx-filter-summary">Showing <strong>all dishes</strong></div>
+                <div id="menu-filter-count" class="zx-filter-note"></div>
+            </div>
+
+            {% if featured %}
+            <div class="zx-featured-wrap" id="featured" data-featured-wrap>
+                {% include 'partials/dish_spotlight.html' %}
+                <link rel="stylesheet" href="{% static 'css/spotlight.css' %}">
+                <script src="{% static 'js/spotlight.js' %}" defer></script>
+            </div>
+            {% endif %}
+
+            {% if recommendations.cards %}
+            <section class="zx-suggestion-strip">
+                <div class="zx-suggestion-head">
+                    <div>
+                        <h2>{{ recommendations.title }}</h2>
+                        <p>{{ recommendations.subtitle }}</p>
+                        {% if recommendations.insight %}
+                        <div class="zx-suggestion-chip">{{ recommendations.insight }}</div>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <div class="zx-menu-grid">
+                    {% for card in recommendations.cards %}
+                    <div>
+                        {% with item=card.dish %}
+                        {% include "main/menu_card.html" %}
+                        {% endwith %}
+                        <div class="zx-suggestion-chip" style="margin-top:10px;">{{ card.reason }}</div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </section>
+            {% endif %}
+
+            {% if frequently_bought_together %}
+            <section class="zx-suggestion-strip">
+                <div class="zx-suggestion-head">
+                    <div>
+                        <h2>{{ frequently_bought_together.title }}</h2>
+                        <p>{{ frequently_bought_together.subtitle }}</p>
+                    </div>
+                    <div class="zx-suggestion-chip">Combo total &#8377;{{ frequently_bought_together.total_price|floatformat:0 }}</div>
+                </div>
+
+                <div class="zx-menu-grid">
+                    {% for item in frequently_bought_together.items %}
+                    {% include "main/menu_card.html" %}
+                    {% endfor %}
+                </div>
+            </section>
+            {% endif %}
+
+            <div class="zx-categories">
+                {% for section in category_sections %}
+                <section class="zx-category" id="{{ section.anchor }}" data-menu-category="{{ section.slug }}">
+                    <div class="zx-category-header">
+                        <div class="zx-category-header__label">
+                            <span class="zx-category-header__emoji">{{ section.icon }}</span>
+                            <div class="zx-category-header__copy">
+                                <h2>{{ section.name }}</h2>
+                                <p>Classic favorites and kitchen specials in a clean, easy-to-scan layout.</p>
+                            </div>
+                        </div>
+                        <div class="zx-category-header__count">{{ section.items|length }} Items</div>
+                    </div>
+
+                    <div class="zx-menu-grid">
+                        {% for item in section.items %}
+                        {% include "main/menu_card.html" %}
+                        {% empty %}
+                        <div class="zx-empty-cat">No dishes in this category yet.</div>
+                        {% endfor %}
+                    </div>
+                </section>
+                {% endfor %}
+            </div>
+
+            <div id="menu-empty-results" class="zx-empty-results">
+                No dishes match your current filters. Try resetting or searching with a different keyword.
+            </div>
+        </div>
+    </div>
+</section>
+
+<div class="zx-reviews-wrap">
+    {% with reviews=reviews_list %}
+    {% include 'partials/reviews.html' %}
+    {% endwith %}
+</div>
+
+{% include 'partials/chatbot_widget.html' %}
+
+<script>
+    (function () {
+        const pills = document.querySelectorAll('.zx-cat-pill[href^="#"]');
+        const sections = Array.from(pills).map(p => document.querySelector(p.getAttribute('href'))).filter(Boolean);
+        const searchInput = document.getElementById('menu-search');
+        const typeFilter = document.getElementById('menu-type-filter');
+        const categoryFilter = document.getElementById('menu-category-filter');
+        const resetButton = document.getElementById('menu-filter-reset');
+        const cards = Array.from(document.querySelectorAll('[data-menu-item]'));
+        const categoryBlocks = Array.from(document.querySelectorAll('[data-menu-category]'));
+        const featuredWrap = document.querySelector('[data-featured-wrap]');
+        const emptyState = document.getElementById('menu-empty-results');
+        const summary = document.getElementById('menu-filter-summary');
+        const countNote = document.getElementById('menu-filter-count');
+
+        function visibleSections() {
+            return Array.from(document.querySelectorAll('.zx-cat-pill[href^="#"]'))
+                .map(pill => document.querySelector(pill.getAttribute('href')))
+                .filter(Boolean)
+                .filter(section => !section.classList.contains('is-hidden-by-filter'));
+        }
+
+        function onScroll() {
+            const activeSections = visibleSections();
+            if (!activeSections.length) return;
+
+            const scrollY = window.scrollY + 150;
+            let current = activeSections[0];
+
+            activeSections.forEach(section => {
+                if (scrollY >= section.offsetTop) current = section;
+            });
+
+            pills.forEach(pill => {
+                pill.classList.toggle('active', pill.getAttribute('href') === '#' + current.id);
+            });
+        }
+
+        pills.forEach(pill => {
+            pill.addEventListener('click', function (event) {
+                const target = document.querySelector(this.getAttribute('href'));
+                if (!target || target.classList.contains('is-hidden-by-filter')) return;
+                event.preventDefault();
+                target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            });
+        });
+
+        function updateSummary(visibleCount, totalCount, hasActiveFilter) {
+            if (!summary || !countNote) return;
+
+            if (!hasActiveFilter) {
+                summary.innerHTML = 'Showing <strong>all dishes</strong>';
+                countNote.textContent = totalCount + ' items available';
+                return;
+            }
+
+            const query = searchInput.value.trim();
+            const type = typeFilter.value;
+            const category = categoryFilter.value;
+            const parts = [];
+
+            if (query) parts.push('"' + query + '"');
+            if (type !== 'all') parts.push(type === 'veg' ? 'Veg' : 'Non-Veg');
+            if (category !== 'all') {
+                const selectedOption = categoryFilter.options[categoryFilter.selectedIndex];
+                parts.push(selectedOption ? selectedOption.text : category);
+            }
+
+            summary.innerHTML = 'Showing <strong>' + (parts.join(' • ') || 'filtered dishes') + '</strong>';
+            countNote.textContent = visibleCount + ' of ' + totalCount + ' items match';
+        }
+
+        function applyFilters() {
+            const query = searchInput ? searchInput.value.trim().toLowerCase() : '';
+            const type = typeFilter ? typeFilter.value : 'all';
+            const category = categoryFilter ? categoryFilter.value : 'all';
+            const hasActiveFilter = Boolean(query) || type !== 'all' || category !== 'all';
+            let visibleCount = 0;
+
+            cards.forEach(card => {
+                const matchesQuery = !query || card.dataset.name.includes(query) || card.dataset.description.includes(query);
+                const matchesType = type === 'all' || card.dataset.veg === type;
+                const matchesCategory = category === 'all' || card.dataset.category === category;
+                const isVisible = matchesQuery && matchesType && matchesCategory;
+
+                card.classList.toggle('is-hidden-by-filter', !isVisible);
+                if (isVisible) visibleCount += 1;
+            });
+
+            categoryBlocks.forEach(block => {
+                const hasVisibleCards = block.querySelector('[data-menu-item]:not(.is-hidden-by-filter)');
+                block.classList.toggle('is-hidden-by-filter', !hasVisibleCards);
+            });
+
+            if (featuredWrap) {
+                featuredWrap.classList.toggle('is-hidden-by-filter', hasActiveFilter);
+            }
+
+            if (emptyState) {
+                emptyState.classList.toggle('is-visible', visibleCount === 0);
+            }
+
+            updateSummary(visibleCount, cards.length, hasActiveFilter);
+            onScroll();
+        }
+
+        if (searchInput) searchInput.addEventListener('input', applyFilters);
+        if (typeFilter) typeFilter.addEventListener('change', applyFilters);
+        if (categoryFilter) categoryFilter.addEventListener('change', applyFilters);
+
+        if (resetButton) {
+            resetButton.addEventListener('click', function () {
+                if (searchInput) searchInput.value = '';
+                if (typeFilter) typeFilter.value = 'all';
+                if (categoryFilter) categoryFilter.value = 'all';
+                applyFilters();
+            });
+        }
+
+        window.addEventListener('scroll', onScroll, { passive: true });
+        applyFilters();
+        onScroll();
+    })();
+</script>
+{% endblock %}

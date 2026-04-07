@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 280" role="img" aria-label="Food placeholder">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#f7efe2"/>
+      <stop offset="100%" stop-color="#e7f0e4"/>
+    </linearGradient>
+    <linearGradient id="plate" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ffffff"/>
+      <stop offset="100%" stop-color="#f2f2f2"/>
+    </linearGradient>
+  </defs>
+  <rect width="400" height="280" fill="url(#bg)"/>
+  <ellipse cx="200" cy="170" rx="118" ry="56" fill="url(#plate)"/>
+  <ellipse cx="200" cy="164" rx="96" ry="42" fill="#f8faf7"/>
+  <circle cx="166" cy="154" r="22" fill="#f3a000"/>
+  <circle cx="206" cy="148" r="24" fill="#1f7a3f"/>
+  <circle cx="240" cy="162" r="20" fill="#d55c2f"/>
+  <path d="M128 110c18-28 48-44 82-44 34 0 64 16 82 44" fill="none" stroke="#254d2b" stroke-linecap="round" stroke-width="10"/>
+  <text x="200" y="242" text-anchor="middle" font-family="Poppins, Arial, sans-serif" font-size="24" fill="#5b675f">ZaikaX Dish</text>
+</svg>

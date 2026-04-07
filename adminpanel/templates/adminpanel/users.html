@@ -1,84 +1,71 @@
 {% extends 'adminpanel/base_admin.html' %}
 {% block content %}
 
-<div class="d-flex justify-content-between align-items-center mb-4">
-    <h2><i class="fas fa-users me-2"></i>Users Management</h2>
-    <span class="badge bg-info" style="font-size: 16px;">{{ users|length }} Users</span>
+<div class="zx-page-head">
+    <div>
+        <div class="zx-page-eyebrow">Customers</div>
+        <h1 class="zx-page-title">Users Management</h1>
+        <p class="zx-page-subtitle">View registered users, search customer records, and manage admin-access assignments.</p>
+    </div>
+    <div class="zx-page-actions">
+        <span class="zx-pill-count">{{ users|length }} Users</span>
+    </div>
 </div>
 
-<div class="row mb-4">
-    <div class="col-md-5">
-        <div class="input-group" style="box-shadow: 0 2px 8px rgba(59, 130, 246, 0.1); border-radius: 10px; overflow: hidden;">
-            <span class="input-group-text" style="background: linear-gradient(135deg, #3b82f6 0%, #0284c7 100%); border: none; color: #fff;">
-                <i class="fas fa-search"></i>
-            </span>
-            <input type="search" class="form-control" style="background: #f9fafb; border: none; color: #1f2937; padding: 12px 16px;" placeholder="Search username or email..." id="searchInput">
-        </div>
-    </div>
+<div class="admin-toolbar">
+    <input type="search" class="admin-search" placeholder="Search username or email..." id="searchInput">
 </div>
 
 <div class="card">
     <div class="table-responsive">
         <table class="table table-hover mb-0 users-table">
-            <thead style="background: linear-gradient(135deg, #3b82f6 0%, #0284c7 100%); color: #fff;">
+            <thead>
                 <tr>
-                    <th style="text-transform: uppercase; font-size: 12px; font-weight: 600; letter-spacing: 0.5px;">Username</th>
-                    <th style="text-transform: uppercase; font-size: 12px; font-weight: 600; letter-spacing: 0.5px;">Email</th>
-                    <th style="text-transform: uppercase; font-size: 12px; font-weight: 600; letter-spacing: 0.5px;">Role</th>
-                    <th style="text-transform: uppercase; font-size: 12px; font-weight: 600; letter-spacing: 0.5px;">Joined</th>
-                    <th style="text-transform: uppercase; font-size: 12px; font-weight: 600; letter-spacing: 0.5px;">Actions</th>
+                    <th>Username</th>
+                    <th>Email</th>
+                    <th>Role</th>
+                    <th>Joined</th>
+                    <th>Actions</th>
                 </tr>
             </thead>
-
             <tbody>
                 {% for user in users %}
-                <tr data-search-for="{{ user.username }} {{ user.email }}" style="border-bottom: 1px solid #e5e7eb;">
+                <tr data-search-for="{{ user.username }} {{ user.email }}">
                     <td>
-                        <div class="d-flex align-items-center">
-                            <div class="avatar me-2" style="width: 40px; height: 40px; border-radius: 50%; background: linear-gradient(135deg, #3b82f6 0%, #0284c7 100%); display: flex; align-items: center; justify-content: center; color: white; font-weight: bold;">
-                                {{ user.username|first|upper }}
-                            </div>
-                            <strong style="color: #3b82f6;">{{ user.username }}</strong>
+                        <div class="d-flex align-items-center gap-2">
+                            <div class="zx-avatar">{{ user.username|first|upper }}</div>
+                            <strong>{{ user.username }}</strong>
                         </div>
                     </td>
-                    <td><small class="text-muted">{{ user.email }}</small></td>
+                    <td>{{ user.email|default:"-" }}</td>
                     <td>
                         {% if user.is_staff %}
-                            <span class="badge" style="background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);">Admin</span>
+                        <span class="badge badge-secondary">Admin</span>
                         {% else %}
-                            <span class="badge bg-secondary">User</span>
+                        <span class="badge badge-secondary">User</span>
                         {% endif %}
                     </td>
-                    <td><small class="text-muted">{{ user.date_joined|date:"d M, Y" }}</small></td>
+                    <td>{{ user.date_joined|date:"d M, Y" }}</td>
                     <td>
-                        <div class="btn-group btn-group-sm" role="group">
+                        <div class="d-flex gap-2 flex-wrap">
                             {% if not user.is_staff %}
-                            <form method="post" action="{% url 'assign_admin_assistant' user.id %}" style="display:inline">
+                            <form method="post" action="{% url 'assign_admin_assistant' user.id %}" class="d-inline">
                                 {% csrf_token %}
-                                <button class="btn" style="background: #0f172a; border: 1px solid #10b981; color: #10b981; padding: 8px 14px; font-size: 12px; border-radius: 6px; transition: all 0.3s ease; cursor: pointer; margin-right: 4px; font-weight: 600;" title="Make Admin" type="submit" onmouseover="this.style.background='#10b981'; this.style.color='#fff';" onmouseout="this.style.background='#0f172a'; this.style.color='#10b981';'">
-                                    <i class="fas fa-user-check"></i>
-                                </button>
+                                <button class="btn btn-sm btn-outline-primary" type="submit">Make Admin</button>
                             </form>
                             {% endif %}
 
                             {% if user.is_staff and user != request.user %}
-                            <form method="post" action="{% url 'remove_admin_assistant' user.id %}" style="display:inline">
+                            <form method="post" action="{% url 'remove_admin_assistant' user.id %}" class="d-inline">
                                 {% csrf_token %}
-                                <button class="btn" style="background: #0f172a; border: 1px solid #ef4444; color: #ef4444; padding: 8px 14px; font-size: 12px; border-radius: 6px; transition: all 0.3s ease; cursor: pointer; font-weight: 600;" title="Remove Admin" type="submit" onmouseover="this.style.background='#ef4444'; this.style.color='#fff';" onmouseout="this.style.background='#0f172a'; this.style.color='#ef4444';'">
-                                    <i class="fas fa-user-times"></i>
-                                </button>
+                                <button class="btn btn-sm btn-outline-danger" type="submit">Remove Admin</button>
                             </form>
                             {% endif %}
                         </div>
                     </td>
                 </tr>
                 {% empty %}
-                <tr>
-                    <td colspan="5" class="text-center text-muted py-5">
-                        <i class="fas fa-users" style="font-size: 48px; opacity: 0.3;"></i>
-                        <p class="mt-3">No users found</p>
-                    </td>
-                </tr>
+                <tr><td colspan="5"><div class="zx-admin-empty"><i class="fas fa-users"></i><div>No users found.</div></div></td></tr>
                 {% endfor %}
             </tbody>
         </table>
@@ -86,13 +73,13 @@
 </div>
 
 <script>
-    document.getElementById('searchInput')?.addEventListener('input', function() {
-        const searchText = this.value.toLowerCase();
-        document.querySelectorAll('.users-table tbody tr').forEach(row => {
-            const text = row.getAttribute('data-search-for')?.toLowerCase() || '';
-            row.style.display = text.includes(searchText) ? '' : 'none';
-        });
+document.getElementById('searchInput')?.addEventListener('input', function() {
+    const searchText = this.value.toLowerCase();
+    document.querySelectorAll('.users-table tbody tr').forEach(row => {
+        const text = row.getAttribute('data-search-for')?.toLowerCase() || '';
+        row.style.display = text.includes(searchText) ? '' : 'none';
     });
+});
 </script>
 
 {% endblock %}

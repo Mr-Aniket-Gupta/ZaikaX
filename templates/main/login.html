@@ -2,134 +2,245 @@
 {% load static %}
 {% block content %}
 
-<section class="zx-auth zx-auth-login">
-    <div class="zx-login-wrap">
-        <div class="zx-login-intro">
-            <p class="zx-auth-kicker">Welcome Back</p>
-            <h1>Login to ZaikaX</h1>
-            <p>Access your profile, saved addresses and cart in one click.</p>
-            <img src="{% static 'images/auth-login.svg' %}" alt="Login illustration" class="zx-login-art" onerror="this.style.display='none'; this.parentElement.classList.add('zx-login-intro-noimg');">
-        </div>
-
-        <div class="zx-login-panel">
-            <h2>Sign in</h2>
-            <form method="POST" novalidate>
-                {% csrf_token %}
-                <div class="zx-form-group">
-                    <label for="id_username">Username</label>
-                    <input id="id_username" type="text" name="username" class="form-control" placeholder="Enter your username" required>
-                </div>
-
-                <div class="zx-form-group">
-                    <label for="id_password">Password</label>
-                    <input id="id_password" type="password" name="password" class="form-control" placeholder="Enter your password" required>
-                </div>
-
-                <button class="submit-btn" type="submit">Login</button>
-            </form>
-
-            <p class="small-note" style="margin-top:12px;">Don't have an account? <a href="{% url 'register' %}">Create one</a></p>
-        </div>
-    </div>
-</section>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700;800&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
 <style>
-    .zx-auth-login {
-        padding: 56px 16px 76px;
-        background: linear-gradient(180deg, #f7fbf8 0%, #f8f9f3 100%);
-        min-height: calc(100vh - 160px);
-        display: flex;
-        align-items: center;
+    :root {
+        --zx-surface: rgba(255,255,255,0.82);
+        --zx-line: rgba(44,60,38,0.12);
+        --zx-text: #1d231c;
+        --zx-muted: #677064;
+        --zx-green: #214d34;
+        --zx-green-soft: #e8f0e9;
+        --zx-gold: #df9a2e;
+        --zx-gold-deep: #bf7e14;
+        --zx-shadow: 0 18px 46px rgba(23,30,21,0.08);
+        --zx-shadow-soft: 0 12px 28px rgba(23,30,21,0.06);
     }
 
-    .zx-login-wrap {
-        max-width: 980px;
-        width: 100%;
+    body {
+        background:
+            radial-gradient(circle at top left, rgba(223,154,46,0.12), transparent 24%),
+            radial-gradient(circle at top right, rgba(33,77,52,0.08), transparent 20%),
+            linear-gradient(180deg, #f8f4ec 0%, #f4eee5 100%) !important;
+    }
+
+    .zx-auth {
+        font-family: 'Manrope', sans-serif;
+        color: var(--zx-text);
+        padding: 34px 0 90px;
+    }
+
+    .zx-shell {
+        width: min(1180px, calc(100% - 48px));
         margin: 0 auto;
+    }
+
+    .zx-auth-wrap {
         display: grid;
-        grid-template-columns: 1fr 420px;
-        gap: 18px;
+        grid-template-columns: 1.1fr 420px;
+        gap: 24px;
+        align-items: stretch;
     }
 
-    .zx-login-intro,
+    .zx-auth-intro {
+        overflow: hidden;
+        border-radius: 34px;
+        padding: clamp(28px, 5vw, 56px);
+        background:
+            radial-gradient(circle at 85% 15%, rgba(223,154,46,0.2), transparent 18%),
+            radial-gradient(circle at 0% 100%, rgba(255,255,255,0.08), transparent 28%),
+            linear-gradient(135deg, #183a27 0%, #28553a 50%, #3d714c 100%);
+        border: 1px solid rgba(255,255,255,0.35);
+        box-shadow: var(--zx-shadow);
+    }
+
+    .zx-auth-kicker {
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        padding: 9px 14px;
+        border-radius: 999px;
+        background: rgba(255,255,255,0.1);
+        color: #f4ca7e;
+        font-size: 0.8rem;
+        font-weight: 800;
+        letter-spacing: 0.16em;
+        text-transform: uppercase;
+        margin-bottom: 18px;
+    }
+
+    .zx-auth-kicker::before {
+        content: '';
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: currentColor;
+    }
+
+    .zx-auth-intro h1 {
+        margin: 0 0 16px;
+        font-family: 'Playfair Display', serif;
+        font-size: clamp(3rem, 5vw, 4.9rem);
+        line-height: 0.98;
+        color: #fffdf7;
+    }
+
+    .zx-auth-intro h1 em {
+        color: #f4ca7e;
+        font-style: normal;
+    }
+
+    .zx-auth-intro p {
+        max-width: 560px;
+        margin: 0;
+        color: rgba(255,255,255,0.78);
+        line-height: 1.8;
+        font-size: 1rem;
+    }
+
+    .zx-login-art {
+        width: min(100%, 320px);
+        margin-top: 28px;
+        display: block;
+    }
+
     .zx-login-panel {
-        background: #fff;
-        border: 1px solid #e4ebe5;
-        border-radius: 16px;
-        box-shadow: 0 10px 30px rgba(20, 40, 25, 0.06);
-    }
-
-    .zx-login-intro {
-        padding: 30px;
+        background: var(--zx-surface);
+        border: 1px solid rgba(255,255,255,0.65);
+        backdrop-filter: blur(14px);
+        box-shadow: var(--zx-shadow-soft);
+        border-radius: 30px;
+        padding: 28px;
         display: flex;
         flex-direction: column;
         justify-content: center;
     }
 
-    .zx-auth-kicker {
-        margin: 0 0 10px;
-        font-size: 12px;
-        font-weight: 700;
-        letter-spacing: 0.12em;
-        color: #1b8a5a;
-        text-transform: uppercase;
-    }
-
-    .zx-login-intro h1 {
-        margin: 0;
-        font-size: 38px;
-        line-height: 1.15;
-        color: #153926;
-    }
-
-    .zx-login-intro p {
-        margin: 14px 0 0;
-        color: #50645b;
-        line-height: 1.6;
-    }
-
-    .zx-login-art {
-        margin-top: 18px;
-        width: 100%;
-        max-width: 320px;
-        display: block;
-    }
-
-    .zx-login-intro-noimg {
-        background-image: radial-gradient(circle at bottom left, rgba(243, 160, 0, 0.12), transparent 45%);
-    }
-
-    .zx-login-panel {
-        padding: 26px;
-    }
-
     .zx-login-panel h2 {
-        margin: 0 0 16px;
-        color: #153926;
-        font-size: 30px;
+        margin: 0 0 10px;
+        font-family: 'Playfair Display', serif;
+        font-size: 2rem;
+        color: var(--zx-green);
+    }
+
+    .zx-login-note {
+        margin-bottom: 20px;
+        color: var(--zx-muted);
+        line-height: 1.75;
     }
 
     .zx-form-group {
-        margin-bottom: 12px;
+        margin-bottom: 16px;
     }
 
     .zx-form-group label {
         display: block;
-        margin-bottom: 6px;
-        font-size: 14px;
-        color: #355a4a;
+        margin-bottom: 8px;
+        color: var(--zx-green);
+        font-size: 0.78rem;
+        font-weight: 800;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
     }
 
     .zx-form-group .form-control {
         width: 100%;
+        padding: 14px 16px;
+        border-radius: 16px;
+        border: 1px solid var(--zx-line);
+        background: #fcfbf8;
+        color: var(--zx-text);
+        font: inherit;
+    }
+
+    .zx-form-group .form-control:focus {
+        outline: none;
+        border-color: rgba(223,154,46,0.55);
+        box-shadow: 0 0 0 4px rgba(223,154,46,0.12);
+        background: #fff;
+    }
+
+    .submit-btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+        min-height: 54px;
+        margin-top: 6px;
+        border: none;
+        border-radius: 16px;
+        background: linear-gradient(135deg, var(--zx-gold) 0%, var(--zx-gold-deep) 100%);
+        color: #fff;
+        font: inherit;
+        font-weight: 800;
+        cursor: pointer;
+    }
+
+    .small-note {
+        margin-top: 14px;
+        color: var(--zx-muted);
+    }
+
+    .small-note a {
+        color: var(--zx-green);
+        font-weight: 800;
+        text-decoration: none;
     }
 
     @media (max-width: 900px) {
-        .zx-login-wrap {
+        .zx-auth {
+            padding: 18px 0 64px;
+        }
+
+        .zx-shell {
+            width: min(100% - 24px, 1180px);
+        }
+
+        .zx-auth-wrap {
             grid-template-columns: 1fr;
-            max-width: 560px;
+        }
+
+        .zx-auth-intro {
+            border-radius: 24px;
+            padding: 24px 20px;
         }
     }
 </style>
+
+<section class="zx-auth zx-auth-login">
+    <div class="zx-shell">
+        <div class="zx-auth-wrap">
+            <div class="zx-auth-intro">
+                <p class="zx-auth-kicker">Welcome Back</p>
+                <h1>Come back to your <em>favorite flavours</em>.</h1>
+                <p>Login to access your cart, saved delivery addresses, and previous details so ordering your next ZaikaX meal feels fast and effortless.</p>
+                <img src="{% static 'images/auth-login.svg' %}" alt="Login illustration" class="zx-login-art" onerror="this.style.display='none';">
+            </div>
+
+            <div class="zx-login-panel">
+                <h2>Login</h2>
+                <p class="zx-login-note">Sign in and continue with the dishes you already love.</p>
+
+                <form method="POST" novalidate>
+                    {% csrf_token %}
+                    <div class="zx-form-group">
+                        <label for="id_username">Username</label>
+                        <input id="id_username" type="text" name="username" class="form-control" placeholder="Enter your username" required>
+                    </div>
+
+                    <div class="zx-form-group">
+                        <label for="id_password">Password</label>
+                        <input id="id_password" type="password" name="password" class="form-control" placeholder="Enter your password" required>
+                    </div>
+
+                    <button class="submit-btn" type="submit">Login</button>
+                </form>
+
+                <p class="small-note">Don't have an account? <a href="{% url 'register' %}">Create one</a></p>
+            </div>
+        </div>
+    </div>
+</section>
 
 {% endblock %}

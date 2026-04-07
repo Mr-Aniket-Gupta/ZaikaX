@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import MenuItem
+from .models import Category, MenuItem
 from django import forms
 from django.utils.html import format_html
 from django.urls import reverse
@@ -15,11 +15,22 @@ class MenuItemAdminForm(forms.ModelForm):
 		fields = ('name', 'description', 'price', 'category', 'image')
 
 
+@admin.register(Category)
+class CategoryAdmin(admin.ModelAdmin):
+	list_display = ('name', 'slug', 'icon', 'display_order')
+	search_fields = ('name', 'slug')
+	prepopulated_fields = {'slug': ('name',)}
+
+
 @admin.register(MenuItem)
 class MenuItemAdmin(admin.ModelAdmin):
 	form = MenuItemAdminForm
-	list_display = ('name', 'category', 'price', 'preview_image', 'delete_link')
+	list_display = ('name', 'category_name', 'price', 'preview_image', 'delete_link')
 	search_fields = ('name', 'category')
+
+	def category_name(self, obj):
+		return obj.category_name
+	category_name.short_description = 'Category'
 
 	def preview_image(self, obj):
 		if obj.image:

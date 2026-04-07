@@ -1,0 +1,120 @@
+{% extends "adminpanel/base_admin.html" %}
+{% load adminpanel_extras %}
+{% block content %}
+
+<div class="zx-page-head">
+    <div>
+        <div class="zx-page-eyebrow">Classification</div>
+        <h1 class="zx-page-title">Category Management</h1>
+        <p class="zx-page-subtitle">Create, sort, and maintain menu categories used across customer-facing sections and admin workflows.</p>
+    </div>
+    <div class="zx-page-actions">
+        <span class="zx-pill-count">{{ categories|length }} Categories</span>
+    </div>
+</div>
+
+<div class="row g-4">
+    <div class="col-lg-4">
+        <div class="card">
+            <div class="card-header"><i class="fas fa-plus me-2"></i>Add Category</div>
+            <div class="card-body">
+                <form method="post" action="{% url 'add_category' %}">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <label class="form-label">Category Name</label>
+                        <input type="text" name="name" class="form-control" placeholder="e.g. Tandoor Specials" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Slug</label>
+                        <input type="text" name="slug" class="form-control" placeholder="e.g. tandoor-specials">
+                        <div class="zx-form-help">Auto-generated from the name if left blank.</div>
+                    </div>
+                    <div class="zx-form-grid-2">
+                        <div>
+                            <label class="form-label">Icon</label>
+                            <input type="text" name="icon" class="form-control" value="🍽">
+                        </div>
+                        <div>
+                            <label class="form-label">Order</label>
+                            <input type="number" name="display_order" class="form-control" value="100" min="0">
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-primary w-100 mt-4">Create Category</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-8">
+        <div class="card">
+            <div class="card-header d-flex justify-content-between align-items-center gap-3 flex-wrap">
+                <span><i class="fas fa-layer-group me-2"></i>Existing Categories</span>
+                <a href="{% url 'add_dish' %}" class="btn btn-sm btn-outline-primary">Add Dish</a>
+            </div>
+            <div class="table-responsive">
+                <table class="table table-hover mb-0">
+                    <thead>
+                        <tr>
+                            <th>Icon</th>
+                            <th>Name</th>
+                            <th>Slug</th>
+                            <th>Order</th>
+                            <th>Dishes</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for category in categories %}
+                        <tr>
+                            <td style="font-size: 1.35rem;">{{ category.icon|default:"🍽" }}</td>
+                            <td><strong>{{ category.name }}</strong></td>
+                            <td><code>{{ category.slug }}</code></td>
+                            <td>{{ category.display_order }}</td>
+                            <td><span class="badge badge-secondary">{{ category_usage|get_item:category.slug|default:0 }}</span></td>
+                            <td>
+                                <div class="d-flex gap-2 flex-wrap">
+                                    <button type="button" class="btn btn-sm btn-outline-primary" data-bs-toggle="collapse" data-bs-target="#edit-category-{{ category.id }}">Edit</button>
+                                    <form method="post" action="{% url 'delete_category' category.id %}" class="d-inline">
+                                        {% csrf_token %}
+                                        <button type="submit" class="btn btn-sm btn-outline-danger" onclick="return confirm('Delete this category?')">Delete</button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr class="collapse" id="edit-category-{{ category.id }}">
+                            <td colspan="6">
+                                <form method="post" action="{% url 'edit_category' category.id %}" class="row g-3 align-items-end p-2">
+                                    {% csrf_token %}
+                                    <div class="col-md-4">
+                                        <label class="form-label">Name</label>
+                                        <input type="text" name="name" class="form-control" value="{{ category.name }}" required>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <label class="form-label">Slug</label>
+                                        <input type="text" name="slug" class="form-control" value="{{ category.slug }}" required>
+                                    </div>
+                                    <div class="col-md-1">
+                                        <label class="form-label">Icon</label>
+                                        <input type="text" name="icon" class="form-control" value="{{ category.icon }}">
+                                    </div>
+                                    <div class="col-md-2">
+                                        <label class="form-label">Order</label>
+                                        <input type="number" name="display_order" class="form-control" value="{{ category.display_order }}" min="0">
+                                    </div>
+                                    <div class="col-md-2">
+                                        <button type="submit" class="btn btn-primary w-100">Save</button>
+                                    </div>
+                                </form>
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr><td colspan="6"><div class="zx-admin-empty"><i class="fas fa-tags"></i><div>No categories available.</div></div></td></tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

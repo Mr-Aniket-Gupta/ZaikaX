@@ -1,78 +1,74 @@
 {% extends "adminpanel/base_admin.html" %}
 {% block content %}
 
-<div class="d-flex justify-content-between align-items-center mb-4">
-    <h2><i class="fas fa-plus-circle me-2"></i>Add New Dish</h2>
-    <button onclick="history.back()" class="btn btn-outline-secondary"><i class="fas fa-arrow-left me-2"></i>Back</button>
+<div class="zx-page-head">
+    <div>
+        <div class="zx-page-eyebrow">Menu Builder</div>
+        <h1 class="zx-page-title">Add New Dish</h1>
+        <p class="zx-page-subtitle">Create a new menu item with the right description, category, pricing, and image details.</p>
+    </div>
+    <div class="zx-page-actions">
+        <button onclick="history.back()" class="btn btn-outline-secondary">Back</button>
+    </div>
 </div>
 
-<div class="row">
+<div class="row g-4">
     <div class="col-lg-8">
         <div class="card">
-            <div class="card-header" style="background: linear-gradient(135deg, #3b82f6 0%, #0284c7 100%); color: #fff; border: none;">
-                <h5 class="mb-0"><i class="fas fa-list me-2"></i>Dish Information</h5>
-            </div>
+            <div class="card-header"><i class="fas fa-bowl-food me-2"></i>Dish Information</div>
             <div class="card-body">
                 <form method="POST" enctype="multipart/form-data">
                     {% csrf_token %}
-
                     <div class="mb-4">
-                        <label class="form-label fw-600" style="color: #1f2937;"><i class="fas fa-bowl-food me-2" style="color: #3b82f6;"></i>Dish Name</label>
-                        <input type="text" name="name" class="form-control" style="background: #f1f5f9; border: 1px solid #cbd5e1; padding: 12px; border-radius: 8px;" placeholder="Enter dish name" required>
+                        <label class="form-label">Dish Name</label>
+                        <input type="text" name="name" class="form-control" placeholder="Enter dish name" required>
                     </div>
 
                     <div class="mb-4">
-                        <label class="form-label fw-600" style="color: #1f2937;"><i class="fas fa-align-left me-2" style="color: #3b82f6;"></i>Description</label>
-                        <textarea name="description" class="form-control" style="background: #f1f5f9; border: 1px solid #cbd5e1; padding: 12px; border-radius: 8px; min-height: 120px;" placeholder="Describe your dish..." required></textarea>
+                        <label class="form-label">Description</label>
+                        <textarea name="description" class="form-control" style="min-height: 120px;" placeholder="Describe your dish..." required></textarea>
                     </div>
 
-                    <div class="row g-3 mb-4">
-                        <div class="col-md-6">
-                            <label class="form-label fw-600" style="color: #1f2937;"><i class="fas fa-indian-rupee-sign me-2" style="color: #3b82f6;"></i>Price (₹)</label>
-                            <input type="number" name="price" class="form-control" style="background: #f1f5f9; border: 1px solid #cbd5e1; padding: 12px; border-radius: 8px;" placeholder="0.00" step="0.01" required>
+                    <div class="zx-form-grid-2 mb-4">
+                        <div>
+                            <label class="form-label">Price (Rs.)</label>
+                            <input type="number" name="price" class="form-control" placeholder="0.00" step="0.01" required>
                         </div>
-
-                        <div class="col-md-6">
-                            <label class="form-label fw-600" style="color: #1f2937;"><i class="fas fa-tag me-2" style="color: #3b82f6;"></i>Category</label>
-                            <select name="category" class="form-select" style="background: #f1f5f9; border: 1px solid #cbd5e1; padding: 12px; border-radius: 8px;" required>
+                        <div>
+                            <label class="form-label">Category</label>
+                            <select name="category" class="form-select" required>
                                 <option value="">Select Category</option>
-                                <option value="starters">🥘 Starters</option>
-                                <option value="main_course">🍲 Main Course</option>
-                                <option value="biryani">🍚 Biryani</option>
-                                <option value="breads">🍞 Breads</option>
-                                <option value="rice">🍝 Rice & Noodles</option>
-                                <option value="snacks">🥟 Snacks</option>
-                                <option value="beverages">🥤 Beverages</option>
-                                <option value="desserts">🎂 Desserts</option>
+                                {% for category in categories %}
+                                <option value="{{ category.slug }}">{{ category.icon }} {{ category.name }}</option>
+                                {% endfor %}
                             </select>
+                            <div class="zx-form-help">Need a new one? <a href="{% url 'admin_categories' %}">Create category</a></div>
                         </div>
                     </div>
 
                     <hr class="my-4">
 
-                    <label class="form-label fw-600 d-block mb-3" style="color: #0f172a;"><i class="fas fa-image me-2" style="color: #06b6d4;"></i>Image</label>
-
                     <div class="mb-4">
-                        <label class="form-label fw-600" style="color: #0f172a;">Upload Image</label>
-                        <input type="file" name="image" id="image-input" class="form-control" style="background: #f1f5f9; border: 2px dashed #cbd5e1; padding: 20px; border-radius: 8px; cursor: pointer;">
-                        <small class="text-muted d-block mt-2">Supported formats: JPG, PNG, WebP (Max 5MB)</small>
+                        <label class="form-label">Upload Image</label>
+                        <input type="file" name="image" id="image-input" class="form-control">
+                        <div class="zx-form-help">Supported formats: JPG, PNG, WebP.</div>
                     </div>
 
                     <div id="preview-container" style="display:none;" class="mb-4">
-                        <label class="form-label" style="color: #64748b; font-size: 13px;">Preview</label>
-                        <div class="p-3" style="background: #f1f5f9; border-radius: 10px; border: 2px dashed #10b981;">
-                            <img id="preview-image" style="max-width: 100%; max-height: 300px; border-radius: 8px;" />
+                        <label class="form-label">Preview</label>
+                        <div class="card-body" style="padding: 16px; background: rgba(33, 77, 52, 0.04); border-radius: 18px;">
+                            <img id="preview-image" style="max-width: 100%; max-height: 300px; border-radius: 14px;">
                         </div>
                     </div>
 
                     <div class="mb-4">
-                        <label class="form-label fw-600" style="color: #0f172a;">Or Image URL</label>
-                        <input type="url" name="image_url" class="form-control" style="background: #f1f5f9; border: 1px solid #cbd5e1; padding: 12px; border-radius: 8px;" placeholder="https://example.com/image.jpg">
+                        <label class="form-label">Or Image URL</label>
+                        <input type="url" name="image_url" class="form-control" placeholder="https://example.com/image.jpg">
                     </div>
 
-                    <div class="d-flex gap-2 mt-4">
-                        <button type="submit" class="btn" style="background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: #fff; padding: 12px 30px; font-weight: 600; border: none; border-radius: 8px; transition: all 0.3s ease;" onmouseover="this.style.boxShadow='0 4px 12px rgba(16, 185, 129, 0.3)'; this.style.transform='translateY(-2px)';"><i class="fas fa-plus me-2"></i>Add Dish</button>
-                        <button type="button" onclick="history.back()" class="btn btn-outline-secondary" style="padding: 12px 30px; font-weight: 600; border-radius: 8px;"><i class="fas fa-times me-2"></i>Cancel</button>
+                    <div class="d-flex gap-2 flex-wrap">
+                        <button type="submit" class="btn btn-primary">Add Dish</button>
+                        <button type="button" onclick="history.back()" class="btn btn-outline-secondary">Cancel</button>
                     </div>
                 </form>
             </div>
@@ -80,33 +76,28 @@
     </div>
 
     <div class="col-lg-4">
-        <div class="card mb-4">
-            <div class="card-header" style="background: linear-gradient(135deg, #06b6d4 0%, #0891b2 100%); color: #fff; border: none;">
-                <h6 class="mb-0"><i class="fas fa-info-circle me-2"></i>Image Tips</h6>
+        <div class="zx-side-stack">
+            <div class="card">
+                <div class="card-header"><i class="fas fa-image me-2"></i>Image Tips</div>
+                <div class="card-body">
+                    <ul class="zx-tip-list">
+                        <li>Use clear food photography.</li>
+                        <li>Recommended size: 800x600px.</li>
+                        <li>Keep file size under 5MB.</li>
+                        <li>Square or landscape images work best.</li>
+                    </ul>
+                </div>
             </div>
-            <div class="card-body">
-                <ul style="color: #475569; font-size: 14px; line-height: 1.8;">
-                    <li>Use high-quality images</li>
-                    <li>Recommended size: 800x600px</li>
-                    <li>Square images work best</li>
-                    <li>File size under 5MB</li>
-                    <li>Formats: JPG, PNG, WebP</li>
-                </ul>
-            </div>
-        </div>
-
-        <div class="card">
-            <div class="card-header" style="background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); color: #fff; border: none;">
-                <h6 class="mb-0"><i class="fas fa-lightbulb me-2"></i>Quick Tips</h6>
-            </div>
-            <div class="card-body">
-                <ul style="color: #475569; font-size: 14px; line-height: 1.8;">
-                    <li>Use descriptive names</li>
-                    <li>Keep description short (50-100 words)</li>
-                    <li>Set competitive price</li>
-                    <li>Choose appropriate category</li>
-                    <li>Upload clear food photos</li>
-                </ul>
+            <div class="card">
+                <div class="card-header"><i class="fas fa-lightbulb me-2"></i>Quick Tips</div>
+                <div class="card-body">
+                    <ul class="zx-tip-list">
+                        <li>Use descriptive dish names.</li>
+                        <li>Keep descriptions crisp and useful.</li>
+                        <li>Choose the correct category.</li>
+                        <li>Double-check pricing before saving.</li>
+                    </ul>
+                </div>
             </div>
         </div>
     </div>
@@ -124,8 +115,7 @@ document.addEventListener('DOMContentLoaded', function(){
             container.style.display = 'none';
             return;
         }
-        const url = URL.createObjectURL(file);
-        preview.src = url;
+        preview.src = URL.createObjectURL(file);
         container.style.display = 'block';
     });
 });

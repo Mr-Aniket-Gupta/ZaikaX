@@ -7,10 +7,53 @@ from django.contrib.auth.decorators import login_required
 from accounts.forms import RegistrationForm, UserProfileForm, AddressForm
 from accounts.models import Address
 import random
+from menu.models import Category, MenuItem
+from .recommendations import get_personalized_recommendations
 
 # Pages
 def index(request):
-    return render(request, 'main/index.html')
+    categories = []
+    for category in Category.objects.all():
+        category_items = MenuItem.objects.filter(category=category.slug)
+        if not category_items.exists():
+            continue
+
+        category_image_item = (
+            category_items.exclude(image__isnull=True)
+            .exclude(image='')
+            .order_by('?')
+            .first()
+        ) or category_items.order_by('?').first()
+
+        categories.append({
+            'key': category.slug,
+            'label': category.name,
+            'count': category_items.count(),
+            'image_item': category_image_item,
+            'icon': category.icon or '🍽',
+            'menu_anchor': category.slug.replace('_', '-'),
+        })
+
+    random.shuffle(categories)
+    homepage_categories = categories[:4]
+
+    popular_dishes = list(
+        MenuItem.objects.exclude(image__isnull=True)
+        .exclude(image='')
+        .order_by('?')[:3]
+    )
+
+    if len(popular_dishes) < 3:
+        existing_ids = {item.id for item in popular_dishes}
+        fallback_items = MenuItem.objects.exclude(id__in=existing_ids).order_by('?')[: 3 - len(popular_dishes)]
+        popular_dishes.extend(list(fallback_items))
+
+    context = {
+        'homepage_categories': homepage_categories,
+        'popular_dishes': popular_dishes,
+        'recommendations': get_personalized_recommendations(request.user, limit=4),
+    }
+    return render(request, 'main/index.html', context)
 
 def menu_list(request):
     return render(request, 'main/menu_list.html')

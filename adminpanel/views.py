@@ -3,17 +3,199 @@ from django.http import JsonResponse
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from .models import Dish
-from menu.models import MenuItem
+from menu.models import Category, MenuItem, DEFAULT_CATEGORY_META
 from django.contrib.auth.models import User, Group
 from django.contrib import messages
 from django.contrib.auth import update_session_auth_hash
 from django.views.decorators.http import require_POST
 from urllib.request import urlopen
 from django.core.files.base import ContentFile
-from django.db.models import Count, Sum, F
+from django.db.models import Count, Sum, F, DecimalField, ExpressionWrapper
 from django.db.models.functions import TruncDay, TruncMonth
 from django.utils import timezone
+from django.utils.text import slugify
 import datetime
+
+
+def _percent_change(current, previous):
+    current = float(current or 0)
+    previous = float(previous or 0)
+    if previous == 0:
+        if current == 0:
+            return 0.0
+        return 100.0
+    return round(((current - previous) / previous) * 100, 1)
+
+
+def _dashboard_analytics(days=30):
+    from cart.models import Order, OrderItem
+
+    days = max(1, int(days))
+    today = timezone.localdate()
+    start_date = today - datetime.timedelta(days=days - 1)
+    start_dt = timezone.make_aware(datetime.datetime.combine(start_date, datetime.time.min))
+    end_dt = timezone.now()
+
+    previous_start_dt = start_dt - datetime.timedelta(days=days)
+    previous_end_dt = start_dt
+
+    revenue_expr = ExpressionWrapper(
+        F("price_at_purchase") * F("quantity"),
+        output_field=DecimalField(max_digits=12, decimal_places=2),
+    )
+
+    orders_qs = Order.objects.filter(created_at__gte=start_dt, created_at__lte=end_dt)
+    prev_orders_qs = Order.objects.filter(created_at__gte=previous_start_dt, created_at__lt=previous_end_dt)
+
+    revenue = orders_qs.aggregate(total=Sum("total_price"))["total"] or 0
+    prev_revenue = prev_orders_qs.aggregate(total=Sum("total_price"))["total"] or 0
+    total_orders = orders_qs.count()
+    prev_total_orders = prev_orders_qs.count()
+    active_customers = orders_qs.values("user").distinct().count()
+    prev_active_customers = prev_orders_qs.values("user").distinct().count()
+    average_order = (revenue / total_orders) if total_orders else 0
+    prev_average_order = (prev_revenue / prev_total_orders) if prev_total_orders else 0
+
+    total_categories = Category.objects.count()
+    total_items = MenuItem.objects.count()
+    total_users = User.objects.count()
+    veg_items = MenuItem.objects.filter(is_veg=True).count()
+    non_veg_items = MenuItem.objects.filter(is_veg=False).count()
+
+    delivered_orders = orders_qs.filter(status=Order.STATUS_DELIVERED).count()
+    cancelled_orders = orders_qs.filter(status=Order.STATUS_CANCELLED).count()
+    pending_orders = orders_qs.filter(status__in=[
+        Order.STATUS_PENDING,
+        Order.STATUS_PLACED,
+        Order.STATUS_PROCESSING,
+        Order.STATUS_SHIPPED,
+    ]).count()
+    repeat_customers = (
+        orders_qs.values("user")
+        .annotate(order_count=Count("id"))
+        .filter(order_count__gte=2)
+        .count()
+    )
+    items_sold = (
+        OrderItem.objects.filter(order__created_at__gte=start_dt, order__created_at__lte=end_dt)
+        .aggregate(total=Sum("quantity"))["total"] or 0
+    )
+    avg_items_per_order = (items_sold / total_orders) if total_orders else 0
+    order_completion_rate = round((delivered_orders / total_orders) * 100, 1) if total_orders else 0
+    cancellation_rate = round((cancelled_orders / total_orders) * 100, 1) if total_orders else 0
+    repeat_customer_rate = round((repeat_customers / active_customers) * 100, 1) if active_customers else 0
+
+    status_counts = {s[0]: 0 for s in Order.STATUS_CHOICES}
+    for row in orders_qs.values("status").annotate(count=Count("id")):
+        status_counts[row["status"]] = row["count"]
+
+    day_rows = (
+        orders_qs.annotate(day=TruncDay("created_at"))
+        .values("day")
+        .annotate(revenue=Sum("total_price"), orders=Count("id"))
+        .order_by("day")
+    )
+    daily_lookup = {
+        row["day"].date().isoformat(): {
+            "revenue": float(row["revenue"] or 0),
+            "orders": row["orders"],
+        }
+        for row in day_rows
+    }
+
+    labels = []
+    revenue_series = []
+    order_series = []
+    for offset in range(days):
+        current_day = start_date + datetime.timedelta(days=offset)
+        key = current_day.isoformat()
+        labels.append(current_day.strftime("%d %b"))
+        revenue_series.append(daily_lookup.get(key, {}).get("revenue", 0))
+        order_series.append(daily_lookup.get(key, {}).get("orders", 0))
+
+    item_rows = (
+        OrderItem.objects.filter(order__created_at__gte=start_dt, order__created_at__lte=end_dt)
+        .values("item__id", "item__name")
+        .annotate(total_qty=Sum("quantity"), total_revenue=Sum(revenue_expr))
+        .order_by("-total_qty")[:5]
+    )
+    top_items = [
+        {
+            "name": row["item__name"],
+            "qty": row["total_qty"],
+            "revenue": float(row["total_revenue"] or 0),
+        }
+        for row in item_rows
+    ]
+
+    category_rows = (
+        OrderItem.objects.filter(order__created_at__gte=start_dt, order__created_at__lte=end_dt)
+        .values("item__category")
+        .annotate(total_qty=Sum("quantity"), total_revenue=Sum(revenue_expr))
+        .order_by("-total_qty")[:5]
+    )
+    top_categories = [
+        {
+            "slug": row["item__category"],
+            "name": row["item__category"].replace("_", " ").title(),
+            "qty": row["total_qty"],
+            "revenue": float(row["total_revenue"] or 0),
+        }
+        for row in category_rows
+    ]
+
+    top_users_rows = (
+        orders_qs.values("user__id", "user__username")
+        .annotate(total_orders=Count("id"), total_spent=Sum("total_price"))
+        .order_by("-total_spent")[:5]
+    )
+    top_users = [
+        {
+            "username": row["user__username"],
+            "orders": row["total_orders"],
+            "spent": float(row["total_spent"] or 0),
+        }
+        for row in top_users_rows
+    ]
+
+    recent_orders = (
+        orders_qs.select_related("user")
+        .order_by("-created_at")[:6]
+    )
+
+    return {
+        "days": days,
+        "revenue": float(revenue or 0),
+        "orders": total_orders,
+        "active_customers": active_customers,
+        "average_order": float(average_order or 0),
+        "total_categories": total_categories,
+        "total_items": total_items,
+        "total_users": total_users,
+        "veg_items": veg_items,
+        "non_veg_items": non_veg_items,
+        "delivered_orders": delivered_orders,
+        "cancelled_orders": cancelled_orders,
+        "pending_orders": pending_orders,
+        "repeat_customers": repeat_customers,
+        "items_sold": items_sold,
+        "avg_items_per_order": round(float(avg_items_per_order or 0), 1),
+        "order_completion_rate": order_completion_rate,
+        "cancellation_rate": cancellation_rate,
+        "repeat_customer_rate": repeat_customer_rate,
+        "revenue_change": _percent_change(revenue, prev_revenue),
+        "orders_change": _percent_change(total_orders, prev_total_orders),
+        "active_customers_change": _percent_change(active_customers, prev_active_customers),
+        "average_order_change": _percent_change(average_order, prev_average_order),
+        "status_counts": status_counts,
+        "labels": labels,
+        "revenue_series": revenue_series,
+        "order_series": order_series,
+        "top_items": top_items,
+        "top_categories": top_categories,
+        "top_users": top_users,
+        "recent_orders": list(recent_orders),
+    }
 
 # -------------------------
 # ADMIN AUTHENTICATION
@@ -101,6 +283,8 @@ def dashboard(request):
         except User.DoesNotExist:
             continue
 
+    analytics = _dashboard_analytics(30)
+
     context = {
         'total_orders': total_orders,
         'total_users': total_users,
@@ -111,9 +295,63 @@ def dashboard(request):
         'top_items': top_items,
         'top_users': top_users,
         'recent_users': recent_users,
+        'dashboard_analytics': analytics,
     }
 
     return render(request, 'adminpanel/dashboard.html', context)
+
+
+@login_required(login_url="admin_login")
+def dashboard_analytics_data(request):
+    try:
+        days = int(request.GET.get("days", 30))
+    except ValueError:
+        days = 30
+
+    analytics = _dashboard_analytics(days)
+    payload = {
+        "days": analytics["days"],
+        "revenue": analytics["revenue"],
+        "orders": analytics["orders"],
+        "active_customers": analytics["active_customers"],
+        "average_order": analytics["average_order"],
+        "total_categories": analytics["total_categories"],
+        "total_items": analytics["total_items"],
+        "total_users": analytics["total_users"],
+        "veg_items": analytics["veg_items"],
+        "non_veg_items": analytics["non_veg_items"],
+        "delivered_orders": analytics["delivered_orders"],
+        "cancelled_orders": analytics["cancelled_orders"],
+        "pending_orders": analytics["pending_orders"],
+        "repeat_customers": analytics["repeat_customers"],
+        "items_sold": analytics["items_sold"],
+        "avg_items_per_order": analytics["avg_items_per_order"],
+        "order_completion_rate": analytics["order_completion_rate"],
+        "cancellation_rate": analytics["cancellation_rate"],
+        "repeat_customer_rate": analytics["repeat_customer_rate"],
+        "revenue_change": analytics["revenue_change"],
+        "orders_change": analytics["orders_change"],
+        "active_customers_change": analytics["active_customers_change"],
+        "average_order_change": analytics["average_order_change"],
+        "status_counts": analytics["status_counts"],
+        "labels": analytics["labels"],
+        "revenue_series": analytics["revenue_series"],
+        "order_series": analytics["order_series"],
+        "top_items": analytics["top_items"],
+        "top_categories": analytics["top_categories"],
+        "top_users": analytics["top_users"],
+        "recent_orders": [
+            {
+                "id": order.id,
+                "user": order.user.username,
+                "status": order.status,
+                "total": float(order.total_price or 0),
+                "created_at": timezone.localtime(order.created_at).strftime("%d %b %Y, %I:%M %p"),
+            }
+            for order in analytics["recent_orders"]
+        ],
+    }
+    return JsonResponse(payload)
 
 
 @login_required(login_url="admin_login")
@@ -231,6 +469,103 @@ def menu_list(request):
     return render(request, 'adminpanel/menu_list.html', {"dishes": dishes})
 
 
+def _category_choices():
+    return Category.objects.all()
+
+
+@login_required(login_url="admin_login")
+def category_list(request):
+    categories = Category.objects.all()
+    category_usage = {
+        row["category"]: row["count"]
+        for row in MenuItem.objects.values("category").annotate(count=Count("id"))
+    }
+    return render(
+        request,
+        "adminpanel/categories.html",
+        {
+            "categories": categories,
+            "category_usage": category_usage,
+        },
+    )
+
+
+@login_required(login_url="admin_login")
+@require_POST
+def add_category(request):
+    name = (request.POST.get("name") or "").strip()
+    slug = slugify((request.POST.get("slug") or "").strip() or name)
+    icon = (request.POST.get("icon") or "🍽").strip() or "🍽"
+    display_order = request.POST.get("display_order") or "100"
+
+    if not name:
+        messages.error(request, "Category name is required.")
+        return redirect("admin_categories")
+
+    if not slug:
+        messages.error(request, "A valid category slug is required.")
+        return redirect("admin_categories")
+
+    if Category.objects.filter(slug=slug).exists():
+        messages.error(request, "A category with that slug already exists.")
+        return redirect("admin_categories")
+
+    Category.objects.create(
+        name=name,
+        slug=slug,
+        icon=icon,
+        display_order=int(display_order),
+    )
+    messages.success(request, f"Category '{name}' created.")
+    return redirect("admin_categories")
+
+
+@login_required(login_url="admin_login")
+@require_POST
+def edit_category(request, category_id):
+    category = get_object_or_404(Category, id=category_id)
+    old_slug = category.slug
+
+    name = (request.POST.get("name") or "").strip()
+    slug = slugify((request.POST.get("slug") or "").strip() or name)
+    icon = (request.POST.get("icon") or "🍽").strip() or "🍽"
+    display_order = request.POST.get("display_order") or category.display_order
+
+    if not name or not slug:
+        messages.error(request, "Category name and slug are required.")
+        return redirect("admin_categories")
+
+    if Category.objects.filter(slug=slug).exclude(id=category.id).exists():
+        messages.error(request, "Another category already uses that slug.")
+        return redirect("admin_categories")
+
+    category.name = name
+    category.slug = slug
+    category.icon = icon
+    category.display_order = int(display_order)
+    category.save()
+
+    if old_slug != slug:
+        MenuItem.objects.filter(category=old_slug).update(category=slug)
+
+    messages.success(request, f"Category '{name}' updated.")
+    return redirect("admin_categories")
+
+
+@login_required(login_url="admin_login")
+@require_POST
+def delete_category(request, category_id):
+    category = get_object_or_404(Category, id=category_id)
+    linked_items = MenuItem.objects.filter(category=category.slug).count()
+    if linked_items:
+        messages.error(request, f"Cannot delete '{category.name}' because {linked_items} dishes still use it.")
+        return redirect("admin_categories")
+
+    category.delete()
+    messages.success(request, "Category deleted.")
+    return redirect("admin_categories")
+
+
 @login_required(login_url="admin_login")
 def add_dish(request):
     if request.method == "POST":
@@ -240,6 +575,10 @@ def add_dish(request):
         category = request.POST.get('category')
         image = request.FILES.get('image')
         image_url = request.POST.get('image_url')
+
+        if not Category.objects.filter(slug=category).exists():
+            messages.error(request, "Please select a valid category.")
+            return redirect('add_dish')
 
         item = MenuItem.objects.create(
             name=name,
@@ -262,7 +601,7 @@ def add_dish(request):
 
         return redirect('admin_menu')
 
-    return render(request, 'adminpanel/add_dish.html')
+    return render(request, 'adminpanel/add_dish.html', {"categories": _category_choices()})
 
 
 @login_required(login_url="admin_login")
@@ -273,6 +612,9 @@ def edit_dish(request, id):
         dish.description = request.POST.get('description')
         dish.price = request.POST.get('price')
         dish.category = request.POST.get('category')
+        if not Category.objects.filter(slug=dish.category).exists():
+            messages.error(request, "Please select a valid category.")
+            return redirect('edit_dish', id=id)
         image = request.FILES.get('image')
         image_url = request.POST.get('image_url')
         if image:
@@ -288,7 +630,7 @@ def edit_dish(request, id):
         dish.save()
         return redirect('admin_menu')
 
-    return render(request, 'adminpanel/edit_dish.html', {"dish": dish})
+    return render(request, 'adminpanel/edit_dish.html', {"dish": dish, "categories": _category_choices()})
 
 
 # -------------------------

@@ -1,62 +1,66 @@
 {% extends 'adminpanel/base_admin.html' %}
 {% block content %}
 
-<div class="d-flex justify-content-between align-items-center mb-4">
-    <h2><i class="fas fa-user-circle me-2"></i>Profile Settings</h2>
-    <span class="badge bg-success">{{ request.user.username }}</span>
+<div class="zx-page-head">
+    <div>
+        <div class="zx-page-eyebrow">Account</div>
+        <h1 class="zx-page-title">Profile Settings</h1>
+        <p class="zx-page-subtitle">Update your admin account details and change password from one secure place.</p>
+    </div>
+    <div class="zx-page-actions">
+        <span class="zx-pill-count">{{ request.user.username }}</span>
+    </div>
 </div>
 
-<div class="row">
+<div class="row g-4">
     <div class="col-lg-8">
         <div class="card">
-            <div class="card-header" style="background: linear-gradient(135deg, #3b82f6 0%, #0284c7 100%); color: #fff; border: none;">
-                <h5 class="mb-0"><i class="fas fa-id-badge me-2"></i>Account Information</h5>
-            </div>
+            <div class="card-header"><i class="fas fa-id-badge me-2"></i>Account Information</div>
             <div class="card-body">
                 <form method="post">
                     {% csrf_token %}
                     <div class="row g-3 mb-4">
                         <div class="col-md-6">
-                            <label class="form-label"><i class="fas fa-at me-2" style="color:#3b82f6;"></i>Username</label>
+                            <label class="form-label">Username</label>
                             <input name="username" class="form-control" value="{{ user.username }}" required>
                         </div>
                         <div class="col-md-6">
-                            <label class="form-label"><i class="fas fa-envelope me-2" style="color:#3b82f6;"></i>Email</label>
+                            <label class="form-label">Email</label>
                             <input name="email" type="email" class="form-control" value="{{ user.email }}">
                         </div>
                         <div class="col-md-6">
-                            <label class="form-label"><i class="fas fa-user me-2" style="color:#3b82f6;"></i>First Name</label>
+                            <label class="form-label">First Name</label>
                             <input name="first_name" class="form-control" value="{{ user.first_name }}">
                         </div>
                         <div class="col-md-6">
-                            <label class="form-label"><i class="fas fa-user me-2" style="color:#3b82f6;"></i>Last Name</label>
+                            <label class="form-label">Last Name</label>
                             <input name="last_name" class="form-control" value="{{ user.last_name }}">
                         </div>
                     </div>
 
                     <hr class="my-4">
 
-                    <h6 class="mb-3"><i class="fas fa-lock me-2" style="color:#f59e0b;"></i>Change Password</h6>
-                    <small class="text-muted d-block mb-3">Leave blank if you don't want to change password</small>
+                    <h6 class="mb-2" style="color:var(--zx-admin-green); font-weight:800;">Change Password</h6>
+                    <div class="zx-data-note mb-3">Leave these fields blank if you do not want to update the password.</div>
 
                     <div class="row g-3 mb-3">
                         <div class="col-md-4">
                             <label class="form-label">Current Password</label>
-                            <input name="old_password" type="password" class="form-control" placeholder="Enter current password">
+                            <input name="old_password" type="password" class="form-control" placeholder="Current password">
                         </div>
                         <div class="col-md-4">
                             <label class="form-label">New Password</label>
-                            <input name="new_password1" type="password" class="form-control" placeholder="Enter new password">
+                            <input name="new_password1" type="password" class="form-control" placeholder="New password">
                         </div>
                         <div class="col-md-4">
                             <label class="form-label">Confirm Password</label>
-                            <input name="new_password2" type="password" class="form-control" placeholder="Confirm new password">
+                            <input name="new_password2" type="password" class="form-control" placeholder="Confirm password">
                         </div>
                     </div>
 
-                    <div class="d-flex gap-2 mt-4 pt-2">
-                        <button type="submit" class="btn" style="background: linear-gradient(135deg, #3b82f6 0%, #0284c7 100%); color: #fff; padding: 10px 20px; border: none; font-weight: 600;"><i class="fas fa-save me-2"></i>Save Changes</button>
-                        <button type="button" onclick="history.back()" class="btn btn-outline-secondary"><i class="fas fa-arrow-left me-2"></i>Back</button>
+                    <div class="d-flex gap-2 mt-4 flex-wrap">
+                        <button type="submit" class="btn btn-primary">Save Changes</button>
+                        <button type="button" onclick="history.back()" class="btn btn-outline-secondary">Back</button>
                     </div>
                 </form>
             </div>
@@ -65,29 +69,25 @@
 
     <div class="col-lg-4">
         <div class="card">
-            <div class="card-header" style="background: linear-gradient(135deg, #3b82f6 0%, #0284c7 100%); color: #fff; border: none;">
-                <h6 class="mb-0"><i class="fas fa-info-circle me-2"></i>Account Details</h6>
-            </div>
+            <div class="card-header"><i class="fas fa-circle-info me-2"></i>Account Snapshot</div>
             <div class="card-body">
                 <div class="mb-3">
-                    <small class="text-muted d-block">Username</small>
-                    <h6>{{ user.username }}</h6>
+                    <div class="zx-data-note">Username</div>
+                    <strong>{{ user.username }}</strong>
                 </div>
                 <div class="mb-3">
-                    <small class="text-muted d-block">Email</small>
-                    <h6>{{ user.email|default:"Not set" }}</h6>
+                    <div class="zx-data-note">Email</div>
+                    <strong>{{ user.email|default:"Not set" }}</strong>
                 </div>
                 <div class="mb-3">
-                    <small class="text-muted d-block">Full Name</small>
-                    <h6>{{ user.first_name }} {{ user.last_name|default:"" }}</h6>
+                    <div class="zx-data-note">Full Name</div>
+                    <strong>{{ user.first_name }} {{ user.last_name|default:"" }}</strong>
                 </div>
                 <div class="mb-3">
-                    <small class="text-muted d-block">Joined</small>
-                    <h6>{{ user.date_joined|date:"d M, Y" }}</h6>
+                    <div class="zx-data-note">Joined</div>
+                    <strong>{{ user.date_joined|date:"d M, Y" }}</strong>
                 </div>
-                <div class="mb-0">
-                    <span class="badge bg-success">Admin</span>
-                </div>
+                <span class="badge badge-secondary">Admin</span>
             </div>
         </div>
     </div>

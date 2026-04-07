@@ -1,7 +1,14 @@
 {% load static %}
 
-<div class="zx-menu-card">
-
+<div
+    class="zx-menu-card"
+    data-menu-item
+    data-name="{{ item.name|lower }}"
+    data-description="{{ item.description|default:''|lower }}"
+    data-category="{{ item.category }}"
+    data-veg="{% if item.is_veg %}veg{% else %}nonveg{% endif %}"
+    data-price="{{ item.price }}"
+>
     <div class="zx-card-img-wrap">
         {% if item.image %}
             <img src="{{ item.image.url }}" alt="{{ item.name }}" loading="lazy" onerror="this.onerror=null;this.src='{% static 'images/default-food.svg' %}';">
@@ -9,11 +16,18 @@
             <img src="{% static 'images/default-food.svg' %}" alt="{{ item.name }}" loading="lazy">
         {% endif %}
 
-        <div class="zx-veg-badge" title="Vegetarian"></div>
+        <div class="zx-veg-badge{% if not item.is_veg %} zx-veg-badge--nonveg{% endif %}" title="{% if item.is_veg %}Vegetarian{% else %}Non-Vegetarian{% endif %}"></div>
     </div>
 
     <div class="zx-card-body">
-        <div class="zx-card-name">{{ item.name }}</div>
+        <div class="zx-card-meta">
+            <span class="zx-card-tag">{{ item.category_name }}</span>
+            <span class="zx-card-tag {% if item.is_veg %}zx-card-tag--veg{% else %}zx-card-tag--nonveg{% endif %}">
+                {% if item.is_veg %}Veg{% else %}Non-Veg{% endif %}
+            </span>
+        </div>
+
+        <h3 class="zx-card-name">{{ item.name }}</h3>
 
         {% if item.description %}
         <p class="zx-card-desc">{{ item.description }}</p>
@@ -21,10 +35,12 @@
         <p class="zx-card-desc">A delicious dish crafted with authentic spices and fresh ingredients.</p>
         {% endif %}
 
+        <a href="{% url 'menu_item_detail' item.id %}" class="zx-card-tag" style="width:max-content; text-decoration:none;">View details</a>
+
         <div class="zx-card-footer">
             <div class="zx-price-block">
                 <span class="zx-price-label">Price</span>
-                <span class="zx-price-value">₹{{ item.price }}</span>
+                <span class="zx-price-value">&#8377;{{ item.price }}</span>
             </div>
 
             <a href="{% url 'add_to_cart' item.id %}" class="zx-add-btn" aria-label="Add {{ item.name }} to cart">
@@ -35,5 +51,4 @@
             </a>
         </div>
     </div>
-
 </div>

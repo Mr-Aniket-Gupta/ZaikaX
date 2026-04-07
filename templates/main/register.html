@@ -2,194 +2,149 @@
 {% load static %}
 {% block content %}
 
-<section class="zx-auth zx-auth-register">
-    <div class="zx-auth-wrap">
-        <div class="zx-auth-intro">
-            <p class="zx-auth-kicker">Join ZaikaX</p>
-            <h1>Create your account</h1>
-            <p>Sign up once and manage your profile, cart and delivery addresses from one place.</p>
-            <img src="{% static 'images/auth-register.svg' %}" alt="Register illustration" class="zx-auth-art" onerror="this.style.display='none'; this.parentElement.classList.add('zx-auth-intro-noimg');">
-        </div>
-
-        <div class="zx-auth-panel">
-            <h2>Register</h2>
-
-            <form method="POST" novalidate>
-                {% csrf_token %}
-                {% if form.non_field_errors %}
-                    <div class="zx-form-alert">{{ form.non_field_errors|striptags }}</div>
-                {% endif %}
-
-                {% if form %}
-                    <div class="zx-form-grid">
-                        <div class="zx-form-group">
-                            {{ form.username.label_tag }}
-                            {{ form.username }}
-                            {% if form.username.errors %}<div class="field-errors">{{ form.username.errors|striptags }}</div>{% endif %}
-                        </div>
-                        <div class="zx-form-group">
-                            {{ form.email.label_tag }}
-                            {{ form.email }}
-                            {% if form.email.errors %}<div class="field-errors">{{ form.email.errors|striptags }}</div>{% endif %}
-                        </div>
-
-                        <div class="zx-form-group">
-                            {{ form.password.label_tag }}
-                            {{ form.password }}
-                            {% if form.password.errors %}<div class="field-errors">{{ form.password.errors|striptags }}</div>{% endif %}
-                        </div>
-                        <div class="zx-form-group">
-                            {{ form.confirm.label_tag }}
-                            {{ form.confirm }}
-                            {% if form.confirm.errors %}<div class="field-errors">{{ form.confirm.errors|striptags }}</div>{% endif %}
-                        </div>
-                    </div>
-
-                    <div class="zx-section-divider">Delivery Address</div>
-
-                    <div class="zx-form-grid">
-                        <div class="zx-form-group zx-col-2">
-                            {{ form.full_name.label_tag }}
-                            {{ form.full_name }}
-                            {% if form.full_name.errors %}<div class="field-errors">{{ form.full_name.errors|striptags }}</div>{% endif %}
-                        </div>
-
-                        <div class="zx-form-group">
-                            {{ form.phone.label_tag }}
-                            {{ form.phone }}
-                            {% if form.phone.errors %}<div class="field-errors">{{ form.phone.errors|striptags }}</div>{% endif %}
-                        </div>
-                        <div class="zx-form-group">
-                            {{ form.pincode.label_tag }}
-                            {{ form.pincode }}
-                            {% if form.pincode.errors %}<div class="field-errors">{{ form.pincode.errors|striptags }}</div>{% endif %}
-                        </div>
-
-                        <div class="zx-form-group zx-col-2">
-                            {{ form.address_line1.label_tag }}
-                            {{ form.address_line1 }}
-                            {% if form.address_line1.errors %}<div class="field-errors">{{ form.address_line1.errors|striptags }}</div>{% endif %}
-                        </div>
-
-                        <div class="zx-form-group zx-col-2">
-                            {{ form.address_line2.label_tag }}
-                            {{ form.address_line2 }}
-                            {% if form.address_line2.errors %}<div class="field-errors">{{ form.address_line2.errors|striptags }}</div>{% endif %}
-                        </div>
-
-                        <div class="zx-form-group">
-                            {{ form.city.label_tag }}
-                            {{ form.city }}
-                            {% if form.city.errors %}<div class="field-errors">{{ form.city.errors|striptags }}</div>{% endif %}
-                        </div>
-                        <div class="zx-form-group">
-                            {{ form.state.label_tag }}
-                            {{ form.state }}
-                            {% if form.state.errors %}<div class="field-errors">{{ form.state.errors|striptags }}</div>{% endif %}
-                        </div>
-
-                        <div class="zx-form-group zx-col-2">
-                            {{ form.country.label_tag }}
-                            {{ form.country }}
-                            {% if form.country.errors %}<div class="field-errors">{{ form.country.errors|striptags }}</div>{% endif %}
-                        </div>
-                    </div>
-                {% endif %}
-
-                <button class="submit-btn" type="submit">Create account</button>
-            </form>
-
-            <p class="small-note">Already have an account? <a href="{% url 'login' %}">Login</a></p>
-        </div>
-    </div>
-</section>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700;800&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
 <style>
+    :root {
+        --zx-surface: rgba(255,255,255,0.82);
+        --zx-line: rgba(44,60,38,0.12);
+        --zx-text: #1d231c;
+        --zx-muted: #677064;
+        --zx-green: #214d34;
+        --zx-green-soft: #e8f0e9;
+        --zx-gold: #df9a2e;
+        --zx-gold-deep: #bf7e14;
+        --zx-shadow: 0 18px 46px rgba(23,30,21,0.08);
+        --zx-shadow-soft: 0 12px 28px rgba(23,30,21,0.06);
+        --zx-error-bg: #fff4f1;
+        --zx-error-border: #f5cdc4;
+        --zx-error-text: #b2432e;
+    }
+
+    body {
+        background:
+            radial-gradient(circle at top left, rgba(223,154,46,0.12), transparent 24%),
+            radial-gradient(circle at top right, rgba(33,77,52,0.08), transparent 20%),
+            linear-gradient(180deg, #f8f4ec 0%, #f4eee5 100%) !important;
+    }
+
     .zx-auth {
-        padding: 46px 16px 72px;
-        background: linear-gradient(180deg, #f7fbf8 0%, #f8f9f3 100%);
+        font-family: 'Manrope', sans-serif;
+        color: var(--zx-text);
+        padding: 34px 0 90px;
+    }
+
+    .zx-shell {
+        width: min(1240px, calc(100% - 48px));
+        margin: 0 auto;
     }
 
     .zx-auth-wrap {
-        max-width: 1180px;
-        margin: 0 auto;
         display: grid;
         grid-template-columns: 380px 1fr;
-        gap: 18px;
+        gap: 24px;
         align-items: start;
     }
 
-    .zx-auth-intro,
-    .zx-auth-panel {
-        background: #fff;
-        border: 1px solid #e4ebe5;
-        border-radius: 16px;
-        box-shadow: 0 10px 30px rgba(20, 40, 25, 0.06);
-    }
-
     .zx-auth-intro {
-        padding: 28px;
+        overflow: hidden;
+        border-radius: 34px;
+        padding: clamp(28px, 5vw, 48px);
+        background:
+            radial-gradient(circle at 85% 15%, rgba(223,154,46,0.2), transparent 18%),
+            radial-gradient(circle at 0% 100%, rgba(255,255,255,0.08), transparent 28%),
+            linear-gradient(135deg, #183a27 0%, #28553a 50%, #3d714c 100%);
+        border: 1px solid rgba(255,255,255,0.35);
+        box-shadow: var(--zx-shadow);
         position: sticky;
-        top: 84px;
+        top: 24px;
     }
 
     .zx-auth-kicker {
-        margin: 0 0 10px;
-        font-size: 12px;
-        font-weight: 700;
-        letter-spacing: 0.12em;
-        color: #1b8a5a;
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        padding: 9px 14px;
+        border-radius: 999px;
+        background: rgba(255,255,255,0.1);
+        color: #f4ca7e;
+        font-size: 0.8rem;
+        font-weight: 800;
+        letter-spacing: 0.16em;
         text-transform: uppercase;
+        margin-bottom: 18px;
+    }
+
+    .zx-auth-kicker::before {
+        content: '';
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: currentColor;
     }
 
     .zx-auth-intro h1 {
-        margin: 0;
-        font-size: 34px;
-        line-height: 1.15;
-        color: #153926;
+        margin: 0 0 16px;
+        font-family: 'Playfair Display', serif;
+        font-size: clamp(2.8rem, 4.8vw, 4.5rem);
+        line-height: 1;
+        color: #fffdf7;
+    }
+
+    .zx-auth-intro h1 em {
+        color: #f4ca7e;
+        font-style: normal;
     }
 
     .zx-auth-intro p {
-        margin: 14px 0 0;
-        color: #50645b;
-        line-height: 1.6;
+        margin: 0;
+        color: rgba(255,255,255,0.78);
+        line-height: 1.8;
     }
 
     .zx-auth-art {
-        margin-top: 20px;
+        margin-top: 24px;
         width: 100%;
         max-width: 260px;
         display: block;
     }
 
-    .zx-auth-intro-noimg {
-        background-image: radial-gradient(circle at top right, rgba(27, 138, 90, 0.08), transparent 50%);
-    }
-
     .zx-auth-panel {
-        padding: 26px;
+        background: var(--zx-surface);
+        border: 1px solid rgba(255,255,255,0.65);
+        backdrop-filter: blur(14px);
+        box-shadow: var(--zx-shadow-soft);
+        border-radius: 30px;
+        padding: 28px;
     }
 
     .zx-auth-panel h2 {
-        margin: 0 0 16px;
-        color: #153926;
-        font-size: 30px;
+        margin: 0 0 10px;
+        font-family: 'Playfair Display', serif;
+        font-size: 2rem;
+        color: var(--zx-green);
+    }
+
+    .zx-panel-note {
+        margin-bottom: 20px;
+        color: var(--zx-muted);
+        line-height: 1.75;
     }
 
     .zx-form-alert {
-        margin-bottom: 12px;
-        background: #fff4f1;
-        border: 1px solid #f5cdc4;
-        color: #b2432e;
-        padding: 10px 12px;
-        border-radius: 10px;
-        font-size: 14px;
+        margin-bottom: 14px;
+        background: var(--zx-error-bg);
+        border: 1px solid var(--zx-error-border);
+        color: var(--zx-error-text);
+        padding: 12px 14px;
+        border-radius: 14px;
+        font-size: 0.92rem;
     }
 
     .zx-form-grid {
         display: grid;
         grid-template-columns: 1fr 1fr;
-        gap: 12px;
+        gap: 16px;
     }
 
     .zx-form-group {
@@ -202,33 +157,92 @@
 
     .zx-form-group label {
         display: block;
-        margin-bottom: 6px;
-        font-size: 14px;
-        color: #355a4a;
+        margin-bottom: 8px;
+        color: var(--zx-green);
+        font-size: 0.78rem;
+        font-weight: 800;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
     }
 
     .zx-form-group .form-control {
         width: 100%;
+        padding: 14px 16px;
+        border-radius: 16px;
+        border: 1px solid var(--zx-line);
+        background: #fcfbf8;
+        color: var(--zx-text);
+        font: inherit;
+    }
+
+    .zx-form-group .form-control:focus {
+        outline: none;
+        border-color: rgba(223,154,46,0.55);
+        box-shadow: 0 0 0 4px rgba(223,154,46,0.12);
+        background: #fff;
+    }
+
+    .field-errors {
+        margin-top: 6px;
+        color: var(--zx-error-text);
+        font-size: 0.82rem;
     }
 
     .zx-section-divider {
-        margin: 18px 0 12px;
-        padding-top: 14px;
-        border-top: 1px dashed #dfe7e1;
-        font-size: 13px;
-        font-weight: 700;
-        letter-spacing: 0.08em;
+        margin: 18px 0 14px;
+        padding-top: 16px;
+        border-top: 1px dashed rgba(44,60,38,0.18);
+        font-size: 0.78rem;
+        font-weight: 800;
+        letter-spacing: 0.1em;
         text-transform: uppercase;
-        color: #1b8a5a;
+        color: var(--zx-gold-deep);
+    }
+
+    .submit-btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+        min-height: 54px;
+        margin-top: 18px;
+        border: none;
+        border-radius: 16px;
+        background: linear-gradient(135deg, var(--zx-gold) 0%, var(--zx-gold-deep) 100%);
+        color: #fff;
+        font: inherit;
+        font-weight: 800;
+        cursor: pointer;
+    }
+
+    .small-note {
+        margin-top: 14px;
+        color: var(--zx-muted);
+    }
+
+    .small-note a {
+        color: var(--zx-green);
+        font-weight: 800;
+        text-decoration: none;
     }
 
     @media (max-width: 980px) {
+        .zx-auth {
+            padding: 18px 0 64px;
+        }
+
+        .zx-shell {
+            width: min(100% - 24px, 1240px);
+        }
+
         .zx-auth-wrap {
             grid-template-columns: 1fr;
         }
 
         .zx-auth-intro {
             position: static;
+            border-radius: 24px;
+            padding: 24px 20px;
         }
     }
 
@@ -242,5 +256,110 @@
         }
     }
 </style>
+
+<section class="zx-auth zx-auth-register">
+    <div class="zx-shell">
+        <div class="zx-auth-wrap">
+            <div class="zx-auth-intro">
+                <p class="zx-auth-kicker">Join ZaikaX</p>
+                <h1>Create an account for <em>faster cravings</em>.</h1>
+                <p>Sign up once and keep your profile, cart, and delivery address ready so your next favorite meal is always just a few clicks away.</p>
+                <img src="{% static 'images/auth-register.svg' %}" alt="Register illustration" class="zx-auth-art" onerror="this.style.display='none';">
+            </div>
+
+            <div class="zx-auth-panel">
+                <h2>Sign Up</h2>
+                <p class="zx-panel-note">Create your ZaikaX account and save your details for quick ordering.</p>
+
+                <form method="POST" novalidate>
+                    {% csrf_token %}
+                    {% if form.non_field_errors %}
+                        <div class="zx-form-alert">{{ form.non_field_errors|striptags }}</div>
+                    {% endif %}
+
+                    {% if form %}
+                        <div class="zx-form-grid">
+                            <div class="zx-form-group">
+                                {{ form.username.label_tag }}
+                                {{ form.username }}
+                                {% if form.username.errors %}<div class="field-errors">{{ form.username.errors|striptags }}</div>{% endif %}
+                            </div>
+                            <div class="zx-form-group">
+                                {{ form.email.label_tag }}
+                                {{ form.email }}
+                                {% if form.email.errors %}<div class="field-errors">{{ form.email.errors|striptags }}</div>{% endif %}
+                            </div>
+
+                            <div class="zx-form-group">
+                                {{ form.password.label_tag }}
+                                {{ form.password }}
+                                {% if form.password.errors %}<div class="field-errors">{{ form.password.errors|striptags }}</div>{% endif %}
+                            </div>
+                            <div class="zx-form-group">
+                                {{ form.confirm.label_tag }}
+                                {{ form.confirm }}
+                                {% if form.confirm.errors %}<div class="field-errors">{{ form.confirm.errors|striptags }}</div>{% endif %}
+                            </div>
+                        </div>
+
+                        <div class="zx-section-divider">Delivery Address</div>
+
+                        <div class="zx-form-grid">
+                            <div class="zx-form-group zx-col-2">
+                                {{ form.full_name.label_tag }}
+                                {{ form.full_name }}
+                                {% if form.full_name.errors %}<div class="field-errors">{{ form.full_name.errors|striptags }}</div>{% endif %}
+                            </div>
+
+                            <div class="zx-form-group">
+                                {{ form.phone.label_tag }}
+                                {{ form.phone }}
+                                {% if form.phone.errors %}<div class="field-errors">{{ form.phone.errors|striptags }}</div>{% endif %}
+                            </div>
+                            <div class="zx-form-group">
+                                {{ form.pincode.label_tag }}
+                                {{ form.pincode }}
+                                {% if form.pincode.errors %}<div class="field-errors">{{ form.pincode.errors|striptags }}</div>{% endif %}
+                            </div>
+
+                            <div class="zx-form-group zx-col-2">
+                                {{ form.address_line1.label_tag }}
+                                {{ form.address_line1 }}
+                                {% if form.address_line1.errors %}<div class="field-errors">{{ form.address_line1.errors|striptags }}</div>{% endif %}
+                            </div>
+
+                            <div class="zx-form-group zx-col-2">
+                                {{ form.address_line2.label_tag }}
+                                {{ form.address_line2 }}
+                                {% if form.address_line2.errors %}<div class="field-errors">{{ form.address_line2.errors|striptags }}</div>{% endif %}
+                            </div>
+
+                            <div class="zx-form-group">
+                                {{ form.city.label_tag }}
+                                {{ form.city }}
+                                {% if form.city.errors %}<div class="field-errors">{{ form.city.errors|striptags }}</div>{% endif %}
+                            </div>
+                            <div class="zx-form-group">
+                                {{ form.state.label_tag }}
+                                {{ form.state }}
+                                {% if form.state.errors %}<div class="field-errors">{{ form.state.errors|striptags }}</div>{% endif %}
+                            </div>
+
+                            <div class="zx-form-group zx-col-2">
+                                {{ form.country.label_tag }}
+                                {{ form.country }}
+                                {% if form.country.errors %}<div class="field-errors">{{ form.country.errors|striptags }}</div>{% endif %}
+                            </div>
+                        </div>
+                    {% endif %}
+
+                    <button class="submit-btn" type="submit">Create Account</button>
+                </form>
+
+                <p class="small-note">Already have an account? <a href="{% url 'login' %}">Login</a></p>
+            </div>
+        </div>
+    </div>
+</section>
 
 {% endblock %}

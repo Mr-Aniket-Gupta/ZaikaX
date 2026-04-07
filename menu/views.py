@@ -1,36 +1,62 @@
-from .models import MenuItem
-from django.shortcuts import render
+from django.shortcuts import get_object_or_404, render
+
+from .models import Category, MenuItem
+from main.recommendations import (
+    get_frequently_bought_together,
+    get_item_detail_recommendations,
+    get_personalized_recommendations,
+)
+
 
 def menu_list(request):
-    context = {
-        'starters': MenuItem.objects.filter(category='starters'),
-        'main_course': MenuItem.objects.filter(category='main_course'),
-        'biryani': MenuItem.objects.filter(category='biryani'),
-        'breads': MenuItem.objects.filter(category='breads'),
-        'rice_and_noodles': MenuItem.objects.filter(category='rice'),
-        'snacks': MenuItem.objects.filter(category='snacks'),
-        'beverages': MenuItem.objects.filter(category='beverages'),
-        'desserts': MenuItem.objects.filter(category='desserts'),
-    }
+    category_sections = []
+    for category in Category.objects.all():
+        items = MenuItem.objects.filter(category=category.slug)
+        if not items.exists():
+            continue
 
-    # Choose a featured menu item (prefer items with images) from categories shown on the page
-    visible_categories = ['starters', 'main_course', 'biryani']
-    featured = MenuItem.objects.filter(category__in=visible_categories, image__isnull=False).order_by('?').first()
+        category_sections.append({
+            "slug": category.slug,
+            "anchor": category.slug.replace("_", "-"),
+            "name": category.name,
+            "icon": category.icon or "🍽",
+            "items": items,
+        })
+
+    visible_category_slugs = [section["slug"] for section in category_sections[:3]]
+    featured = (
+        MenuItem.objects.filter(category__in=visible_category_slugs, image__isnull=False)
+        .exclude(image="")
+        .order_by("?")
+        .first()
+    )
     if not featured:
-        # fallback to any menu item with an image
-        featured = MenuItem.objects.filter(image__isnull=False).order_by('?').first()
-    context['featured'] = featured
+        featured = MenuItem.objects.filter(image__isnull=False).exclude(image="").order_by("?").first()
 
-    # Load a few recent customer reviews to display below the menu (show up to 6)
     from main.models import Review
-    reviews_list = Review.objects.all()[:6]
-    context['reviews_list'] = reviews_list
 
-    return render(request, 'main/menu_list.html', context)
+    context = {
+        "category_sections": category_sections,
+        "featured": featured,
+        "reviews_list": Review.objects.all()[:6],
+        "recommendations": get_personalized_recommendations(request.user, limit=4),
+        "frequently_bought_together": get_frequently_bought_together(seed_item=featured, limit=3) if featured else None,
+    }
+    return render(request, "main/menu_list_dynamic.html", context)
+
+
+def menu_item_detail(request, item_id):
+    item = get_object_or_404(MenuItem, id=item_id)
+    context = {
+        "item": item,
+        "recommendations": get_item_detail_recommendations(item, user=request.user, limit=4),
+        "frequently_bought_together": get_frequently_bought_together(seed_item=item, limit=3),
+    }
+    return render(request, "main/menu_item_detail.html", context)
 
 
 def menu_3d(request):
     """Render a simple 3D gallery where each menu item is represented
     as a textured 3D card built from the item's image."""
     items = MenuItem.objects.all()
-    return render(request, 'menu/3d_gallery.html', {'items': items})
+    return render(request, "menu/3d_gallery.html", {"items": items})

@@ -1,508 +1,620 @@
 {% extends 'main/base.html' %}
+{% load static %}
 
 {% block content %}
-
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<link
+    href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700;800&family=Manrope:wght@400;500;600;700;800&display=swap"
+    rel="stylesheet">
 
 <style>
     :root {
-        --gold: #f3a000;
-        --gold-light: #ffc94a;
-        --gold-pale: #fff8ec;
-        --green: #387040;
-        --green-dark: #254d2b;
-        --green-light: #eef5ef;
-        --ink: #1a1a1a;
-        --muted: #6b6b6b;
-        --cream: #faf8f4;
-        --white: #ffffff;
-        --shadow: 0 8px 40px rgba(0,0,0,0.07);
-        --radius: 16px;
+        --zx-about-bg: #f6f1e8;
+        --zx-about-surface: rgba(255, 255, 255, 0.8);
+        --zx-about-card: #ffffff;
+        --zx-about-line: rgba(44, 60, 38, 0.12);
+        --zx-about-text: #1d231c;
+        --zx-about-muted: #677064;
+        --zx-about-green: #214d34;
+        --zx-about-green-soft: #e8f0e9;
+        --zx-about-gold: #df9a2e;
+        --zx-about-gold-deep: #bf7e14;
+        --zx-about-shadow: 0 18px 46px rgba(23, 30, 21, 0.08);
+        --zx-about-shadow-soft: 0 12px 28px rgba(23, 30, 21, 0.06);
     }
 
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
-    body { background: var(--cream) !important; }
-    main, .content, .page-content, .main-content {
-        padding: 0 !important; margin: 0 !important; width: 100% !important;
+    body {
+        background:
+            radial-gradient(circle at top left, rgba(223, 154, 46, 0.12), transparent 24%),
+            radial-gradient(circle at top right, rgba(33, 77, 52, 0.08), transparent 20%),
+            linear-gradient(180deg, #f8f4ec 0%, #f4eee5 100%) !important;
     }
 
-    .zx-about { font-family: 'DM Sans', sans-serif; color: var(--ink); }
+    .zx-about {
+        font-family: 'Manrope', sans-serif;
+        color: var(--zx-about-text);
+        padding: 34px 0 90px;
+    }
 
-    /* ── HERO ── */
+    .zx-about-shell {
+        width: min(1320px, calc(100% - 48px));
+        margin: 0 auto;
+    }
+
     .zx-about-hero {
         position: relative;
-        background: var(--green-dark);
-        min-height: 460px;
-        display: flex; align-items: flex-end;
-        padding: 0 6% 72px;
         overflow: hidden;
+        border-radius: 34px;
+        padding: clamp(28px, 5vw, 62px);
+        background:
+            radial-gradient(circle at 85% 16%, rgba(223, 154, 46, 0.2), transparent 18%),
+            radial-gradient(circle at 0% 100%, rgba(255, 255, 255, 0.08), transparent 28%),
+            linear-gradient(135deg, #183a27 0%, #28553a 50%, #3d714c 100%);
+        border: 1px solid rgba(255, 255, 255, 0.35);
+        box-shadow: var(--zx-about-shadow);
+        isolation: isolate;
     }
 
-    .zx-about-hero__bg {
-        position: absolute; inset: 0;
-        background-image:
-            radial-gradient(circle at 10% 65%, rgba(243,160,0,0.18) 0%, transparent 50%),
-            radial-gradient(circle at 85% 10%, rgba(56,112,64,0.5) 0%, transparent 50%);
-        pointer-events: none;
+    .zx-about-hero::before,
+    .zx-about-hero::after {
+        content: '';
+        position: absolute;
+        border-radius: 999px;
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        z-index: -1;
     }
 
-    .zx-about-hero__deco {
-        position: absolute; right: -70px; top: -70px;
-        width: 480px; height: 480px; border-radius: 50%;
-        border: 84px solid rgba(243,160,0,0.07);
-        pointer-events: none;
+    .zx-about-hero::before {
+        width: 300px;
+        height: 300px;
+        top: -90px;
+        right: -60px;
     }
 
-    .zx-about-hero__deco2 {
-        position: absolute; right: 160px; bottom: -100px;
-        width: 210px; height: 210px; border-radius: 50%;
-        border: 42px solid rgba(243,160,0,0.1);
-        pointer-events: none;
+    .zx-about-hero::after {
+        width: 180px;
+        height: 180px;
+        bottom: -40px;
+        right: 220px;
     }
 
-    /* Floating quote card */
-    .zx-about-hero__quote {
-        position: absolute; right: 6%; top: 50%;
-        transform: translateY(-50%);
-        background: rgba(255,255,255,0.06);
-        border: 1px solid rgba(255,255,255,0.12);
-        backdrop-filter: blur(12px);
-        -webkit-backdrop-filter: blur(12px);
-        border-radius: 18px;
-        padding: 28px 32px;
-        max-width: 280px;
-        animation: fadeInRight 1s 0.5s cubic-bezier(0.22,1,0.36,1) both;
-    }
-
-    @keyframes fadeInRight {
-        from { opacity: 0; transform: translateY(-50%) translateX(24px); }
-        to   { opacity: 1; transform: translateY(-50%) translateX(0); }
-    }
-
-    .zx-about-hero__quote p {
-        font-family: 'Playfair Display', serif;
-        font-style: italic; font-size: 1.05rem;
-        color: rgba(255,255,255,0.88);
-        line-height: 1.65; margin-bottom: 12px;
-    }
-
-    .zx-about-hero__quote cite {
-        font-size: 0.78rem; font-weight: 500;
-        letter-spacing: 0.12em; text-transform: uppercase;
-        color: var(--gold); font-style: normal;
-    }
-
-    .zx-about-hero__content {
-        position: relative; z-index: 1; max-width: 620px;
-        animation: fadeUp 0.9s cubic-bezier(0.22,1,0.36,1) both;
-    }
-
-    @keyframes fadeUp {
-        from { opacity: 0; transform: translateY(28px); }
-        to   { opacity: 1; transform: translateY(0); }
+    .zx-about-hero__grid {
+        display: grid;
+        grid-template-columns: minmax(0, 1.35fr) minmax(300px, 0.9fr);
+        gap: 28px;
+        align-items: center;
     }
 
     .zx-about-hero__eyebrow {
-        display: inline-flex; align-items: center; gap: 10px;
-        font-size: 0.76rem; font-weight: 500; letter-spacing: 0.2em;
-        text-transform: uppercase; color: var(--gold); margin-bottom: 18px;
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        padding: 9px 14px;
+        border-radius: 999px;
+        background: rgba(255, 255, 255, 0.1);
+        color: #f4ca7e;
+        font-size: 0.8rem;
+        font-weight: 800;
+        letter-spacing: 0.16em;
+        text-transform: uppercase;
+        margin-bottom: 18px;
     }
+
     .zx-about-hero__eyebrow::before {
-        content: ''; display: block; width: 30px; height: 2px; background: var(--gold);
+        content: '';
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: currentColor;
     }
 
     .zx-about-hero h1 {
+        margin: 0 0 16px;
         font-family: 'Playfair Display', serif;
-        font-size: clamp(2.8rem, 6vw, 5rem);
-        font-weight: 900; color: var(--white);
-        line-height: 1.04; letter-spacing: -0.02em; margin-bottom: 18px;
-    }
-    .zx-about-hero h1 em { font-style: italic; color: var(--gold); }
-
-    .zx-about-hero__sub {
-        font-size: 1.05rem; color: rgba(255,255,255,0.6);
-        font-weight: 300; max-width: 460px; line-height: 1.7;
+        font-size: clamp(3rem, 5.4vw, 5.4rem);
+        line-height: 0.97;
+        letter-spacing: -0.05em;
+        color: #fffdf7;
     }
 
-    /* ── MARQUEE STRIP ── */
-    .zx-strip {
-        background: var(--gold); overflow: hidden;
-        padding: 0; height: 52px; display: flex; align-items: center;
-    }
-    .zx-strip__inner {
-        display: flex; gap: 0;
-        animation: marquee 22s linear infinite;
-        white-space: nowrap; will-change: transform;
-    }
-    @keyframes marquee {
-        from { transform: translateX(0); }
-        to   { transform: translateX(-50%); }
-    }
-    .zx-strip__item {
-        font-family: 'Playfair Display', serif;
-        font-style: italic; font-size: 1.05rem;
-        color: var(--green-dark); padding: 0 28px;
-        display: flex; align-items: center; gap: 12px;
-    }
-    .zx-strip__dot {
-        width: 5px; height: 5px; border-radius: 50%;
-        background: var(--green-dark); flex-shrink: 0; opacity: 0.45;
+    .zx-about-hero h1 em {
+        color: #f4ca7e;
+        font-style: normal;
     }
 
-    /* ── STORY / MISSION ── */
-    .zx-story {
-        max-width: 1200px; margin: 0 auto;
-        padding: 88px 5%;
+    .zx-about-hero p {
+        max-width: 670px;
+        margin: 0;
+        color: rgba(255, 255, 255, 0.78);
+        line-height: 1.85;
+        font-size: 1.03rem;
+    }
+
+    .zx-about-hero__panel {
         display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 80px; align-items: center;
+        gap: 14px;
     }
 
-    .zx-story__left { animation: fadeInLeft 0.8s 0.1s cubic-bezier(0.22,1,0.36,1) both; }
-
-    @keyframes fadeInLeft {
-        from { opacity: 0; transform: translateX(-22px); }
-        to   { opacity: 1; transform: translateX(0); }
+    .zx-about-hero__card {
+        padding: 22px;
+        border-radius: 28px;
+        background: linear-gradient(180deg, rgba(255, 255, 255, 0.14), rgba(255, 255, 255, 0.08));
+        border: 1px solid rgba(255, 255, 255, 0.14);
+        backdrop-filter: blur(14px);
     }
 
-    .zx-story__eyebrow {
-        font-size: 0.74rem; font-weight: 500; letter-spacing: 0.2em;
-        text-transform: uppercase; color: var(--muted); margin-bottom: 14px;
+    .zx-about-hero__card h3 {
+        margin: 0 0 10px;
+        color: #fff;
+        font-size: 1.08rem;
     }
 
-    .zx-story__heading {
+    .zx-about-hero__card p {
+        color: rgba(255, 255, 255, 0.72);
+        font-size: 0.94rem;
+        line-height: 1.7;
+    }
+
+    .zx-about-strip {
+        margin-top: 18px;
+        padding: 14px 18px;
+        border-radius: 999px;
+        background: rgba(255, 255, 255, 0.8);
+        border: 1px solid rgba(255, 255, 255, 0.66);
+        box-shadow: var(--zx-about-shadow-soft);
+        overflow: auto;
+        scrollbar-width: none;
+    }
+
+    .zx-about-strip::-webkit-scrollbar {
+        display: none;
+    }
+
+    .zx-about-strip__row {
+        display: flex;
+        gap: 14px;
+        min-width: max-content;
+        color: var(--zx-about-green);
+        font-weight: 800;
+    }
+
+    .zx-about-strip__row span {
+        display: inline-flex;
+        align-items: center;
+        gap: 14px;
+    }
+
+    .zx-about-strip__row span::after {
+        content: '•';
+        color: var(--zx-about-gold-deep);
+    }
+
+    .zx-about-section {
+        margin-top: 30px;
+        padding: clamp(22px, 3vw, 30px);
+        border-radius: 30px;
+        background: var(--zx-about-surface);
+        border: 1px solid rgba(255, 255, 255, 0.65);
+        backdrop-filter: blur(14px);
+        box-shadow: var(--zx-about-shadow-soft);
+    }
+
+    .zx-about-section__head {
+        display: flex;
+        align-items: end;
+        justify-content: space-between;
+        gap: 18px;
+        margin-bottom: 24px;
+    }
+
+    .zx-about-section__eyebrow {
+        display: inline-flex;
+        margin-bottom: 8px;
+        color: var(--zx-about-gold-deep);
+        font-size: 0.78rem;
+        font-weight: 800;
+        text-transform: uppercase;
+        letter-spacing: 0.12em;
+    }
+
+    .zx-about-section h2 {
+        margin: 0;
         font-family: 'Playfair Display', serif;
-        font-size: clamp(2rem, 4vw, 3rem);
-        font-weight: 700; color: var(--green-dark);
-        line-height: 1.15; margin-bottom: 28px;
-    }
-    .zx-story__heading em { font-style: italic; color: var(--gold); }
-
-    .zx-story__body p {
-        font-size: 1rem; color: var(--muted);
-        line-height: 1.8; margin-bottom: 18px;
-    }
-    .zx-story__body p strong { color: var(--ink); font-weight: 500; }
-    .zx-story__body p:last-child { margin-bottom: 0; }
-
-    /* Right: big stat blocks */
-    .zx-story__right {
-        display: grid; grid-template-columns: 1fr 1fr; gap: 16px;
-        animation: fadeInRight2 0.8s 0.2s cubic-bezier(0.22,1,0.36,1) both;
+        font-size: clamp(2rem, 3vw, 2.8rem);
+        line-height: 1;
+        color: var(--zx-about-green);
     }
 
-    @keyframes fadeInRight2 {
-        from { opacity: 0; transform: translateX(22px); }
-        to   { opacity: 1; transform: translateX(0); }
+    .zx-about-section__desc {
+        max-width: 650px;
+        margin: 8px 0 0;
+        color: var(--zx-about-muted);
+        line-height: 1.8;
+    }
+
+    .zx-story-grid {
+        display: grid;
+        grid-template-columns: 1.15fr 0.85fr;
+        gap: 22px;
+        align-items: start;
+    }
+
+    .zx-story-copy {
+        display: grid;
+        gap: 16px;
+    }
+
+    .zx-story-copy p {
+        margin: 0;
+        color: var(--zx-about-muted);
+        line-height: 1.85;
+        font-size: 1rem;
+    }
+
+    .zx-story-copy strong {
+        color: var(--zx-about-text);
+    }
+
+    .zx-quote-card {
+        padding: 26px;
+        border-radius: 28px;
+        background:
+            radial-gradient(circle at top right, rgba(223, 154, 46, 0.16), transparent 26%),
+            linear-gradient(180deg, #ffffff 0%, #f7f3eb 100%);
+        border: 1px solid rgba(44, 60, 38, 0.08);
+        box-shadow: var(--zx-about-shadow-soft);
+    }
+
+    .zx-quote-card p {
+        margin: 0 0 10px;
+        font-family: 'Playfair Display', serif;
+        font-size: 1.4rem;
+        line-height: 1.35;
+        color: var(--zx-about-green);
+    }
+
+    .zx-quote-card span {
+        color: var(--zx-about-muted);
+        font-weight: 700;
+    }
+
+    .zx-stat-grid {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 18px;
+        margin-top: 24px;
     }
 
     .zx-stat-card {
-        background: var(--white);
-        border-radius: var(--radius);
-        padding: 32px 24px;
-        box-shadow: var(--shadow);
-        border: 1.5px solid transparent;
-        transition: border-color 0.25s, transform 0.25s;
-        text-align: center;
+        padding: 24px;
+        border-radius: 24px;
+        background: var(--zx-about-card);
+        border: 1px solid var(--zx-about-line);
+        box-shadow: var(--zx-about-shadow-soft);
     }
 
-    .zx-stat-card:first-child {
-        grid-column: 1 / -1;
-        background: var(--green-dark);
-    }
-
-    .zx-stat-card:hover {
-        border-color: rgba(243,160,0,0.3);
-        transform: translateY(-4px);
-    }
-
-    .zx-stat-card:first-child:hover { border-color: var(--gold); }
-
-    .zx-stat-card__num {
+    .zx-stat-card strong {
+        display: block;
+        margin-bottom: 6px;
         font-family: 'Playfair Display', serif;
-        font-size: 3rem; font-weight: 900; line-height: 1;
-        color: var(--gold); margin-bottom: 6px;
+        font-size: 2rem;
+        color: var(--zx-about-green);
     }
 
-    .zx-stat-card:not(:first-child) .zx-stat-card__num { color: var(--green-dark); }
-
-    .zx-stat-card__label {
-        font-size: 0.85rem; font-weight: 500; color: rgba(255,255,255,0.7);
+    .zx-stat-card span {
+        color: var(--zx-about-muted);
+        line-height: 1.6;
     }
 
-    .zx-stat-card:not(:first-child) .zx-stat-card__label { color: var(--muted); }
-
-    .zx-stat-card__emoji { font-size: 1.6rem; margin-bottom: 10px; display: block; }
-
-    /* ── VALUE GRID ── */
-    .zx-values {
-        background: var(--white);
-        padding: 88px 5%;
-    }
-
-    .zx-values__inner { max-width: 1200px; margin: 0 auto; }
-
-    .zx-values__header {
-        text-align: center; margin-bottom: 56px;
-    }
-
-    .zx-values__eyebrow {
-        font-size: 0.74rem; font-weight: 500; letter-spacing: 0.2em;
-        text-transform: uppercase; color: var(--muted); margin-bottom: 12px;
-    }
-
-    .zx-values__heading {
-        font-family: 'Playfair Display', serif;
-        font-size: clamp(1.9rem, 4vw, 2.8rem);
-        font-weight: 700; color: var(--green-dark);
-        line-height: 1.2;
-    }
-    .zx-values__heading em { font-style: italic; color: var(--gold); }
-
-    .zx-values__grid {
+    .zx-values-grid {
         display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(290px, 1fr));
-        gap: 24px;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 18px;
     }
 
     .zx-value-card {
-        padding: 36px 30px;
-        border-radius: var(--radius);
-        background: var(--cream);
-        border: 1.5px solid #ede9e2;
-        box-shadow: var(--shadow);
-        transition: transform 0.28s cubic-bezier(0.22,1,0.36,1),
-                    border-color 0.28s, box-shadow 0.28s, background 0.28s;
-        animation: fadeUp 0.6s cubic-bezier(0.22,1,0.36,1) both;
+        padding: 24px;
+        border-radius: 24px;
+        background: var(--zx-about-card);
+        border: 1px solid var(--zx-about-line);
+        box-shadow: var(--zx-about-shadow-soft);
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
     }
 
-    .zx-value-card:nth-child(1) { animation-delay: 0.05s; }
-    .zx-value-card:nth-child(2) { animation-delay: 0.12s; }
-    .zx-value-card:nth-child(3) { animation-delay: 0.19s; }
-
     .zx-value-card:hover {
-        transform: translateY(-6px);
-        border-color: rgba(243,160,0,0.35);
-        box-shadow: 0 20px 56px rgba(0,0,0,0.1);
-        background: var(--white);
+        transform: translateY(-4px);
+        box-shadow: var(--zx-about-shadow);
     }
 
     .zx-value-card__icon {
-        width: 58px; height: 58px; border-radius: 14px;
-        background: var(--gold-pale);
-        display: flex; align-items: center; justify-content: center;
-        font-size: 1.6rem; margin-bottom: 22px;
-        transition: background 0.25s, transform 0.25s;
-    }
-
-    .zx-value-card:hover .zx-value-card__icon {
-        background: var(--gold);
-        transform: scale(1.08) rotate(-4deg);
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 50px;
+        height: 50px;
+        margin-bottom: 14px;
+        border-radius: 16px;
+        background: linear-gradient(135deg, rgba(223, 154, 46, 0.16), rgba(33, 77, 52, 0.12));
+        color: var(--zx-about-green);
+        font-weight: 800;
     }
 
     .zx-value-card h3 {
-        font-family: 'Playfair Display', serif;
-        font-size: 1.3rem; font-weight: 700;
-        color: var(--green-dark); margin-bottom: 12px;
+        margin: 0 0 8px;
+        color: var(--zx-about-green);
+        font-size: 1.15rem;
     }
 
     .zx-value-card p {
-        font-size: 0.93rem; color: var(--muted); line-height: 1.7;
+        margin: 0;
+        color: var(--zx-about-muted);
+        line-height: 1.75;
     }
-    .zx-value-card p strong { color: var(--ink); font-weight: 500; }
 
-    /* ── CLOSING PROMISE BANNER ── */
     .zx-promise {
-        background: var(--green-dark);
-        padding: 88px 6%;
-        text-align: center;
-        position: relative; overflow: hidden;
+        display: grid;
+        grid-template-columns: 1.1fr 0.9fr;
+        gap: 22px;
+        align-items: stretch;
     }
 
-    .zx-promise__bg {
-        position: absolute; inset: 0;
-        background-image:
-            radial-gradient(circle at 15% 50%, rgba(243,160,0,0.14) 0%, transparent 50%),
-            radial-gradient(circle at 85% 50%, rgba(56,112,64,0.4) 0%, transparent 50%);
-        pointer-events: none;
+    .zx-promise-main,
+    .zx-promise-side {
+        border-radius: 30px;
+        overflow: hidden;
     }
 
-    .zx-promise__inner {
-        position: relative; z-index: 1; max-width: 680px; margin: 0 auto;
+    .zx-promise-main {
+        padding: clamp(26px, 4vw, 40px);
+        background:
+            radial-gradient(circle at top right, rgba(223, 154, 46, 0.18), transparent 22%),
+            linear-gradient(135deg, #1a3f2a 0%, #2b6040 100%);
+        color: #fff;
+        box-shadow: var(--zx-about-shadow);
     }
 
-    .zx-promise__eyebrow {
-        font-size: 0.74rem; font-weight: 500; letter-spacing: 0.2em;
-        text-transform: uppercase; color: var(--gold); margin-bottom: 16px;
+    .zx-promise-main span {
+        display: inline-flex;
+        margin-bottom: 12px;
+        color: #f4ca7e;
+        font-size: 0.8rem;
+        font-weight: 800;
+        text-transform: uppercase;
+        letter-spacing: 0.14em;
     }
 
-    .zx-promise h2 {
+    .zx-promise-main h2 {
+        margin: 0 0 14px;
         font-family: 'Playfair Display', serif;
-        font-size: clamp(2rem, 5vw, 3.4rem);
-        font-weight: 900; color: var(--white);
-        line-height: 1.1; letter-spacing: -0.02em; margin-bottom: 18px;
+        font-size: clamp(2.1rem, 3.5vw, 3.4rem);
+        line-height: 1;
+        color: #fffef8;
     }
-    .zx-promise h2 em { font-style: italic; color: var(--gold); }
 
-    .zx-promise p {
-        font-size: 1.02rem; color: rgba(255,255,255,0.6);
-        line-height: 1.75; margin-bottom: 36px;
+    .zx-promise-main p {
+        margin: 0 0 24px;
+        color: rgba(255, 255, 255, 0.76);
+        line-height: 1.8;
+        max-width: 560px;
     }
 
     .zx-promise-btn {
-        display: inline-flex; align-items: center; gap: 10px;
-        padding: 16px 38px;
-        background: var(--gold); color: var(--white);
-        font-family: 'DM Sans', sans-serif;
-        font-size: 0.97rem; font-weight: 500;
-        border-radius: 100px; text-decoration: none;
-        transition: background 0.2s, transform 0.2s, box-shadow 0.2s;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        min-height: 54px;
+        padding: 0 22px;
+        border-radius: 16px;
+        background: linear-gradient(135deg, var(--zx-about-gold) 0%, var(--zx-about-gold-deep) 100%);
+        color: #fff;
+        text-decoration: none;
+        font-weight: 800;
+        transition: transform 0.18s ease, box-shadow 0.18s ease;
     }
+
     .zx-promise-btn:hover {
-        background: #d98f00; transform: translateY(-2px);
-        box-shadow: 0 10px 32px rgba(243,160,0,0.35);
-        color: var(--white); text-decoration: none;
+        color: #fff;
+        transform: translateY(-2px);
+        box-shadow: 0 14px 28px rgba(191, 126, 20, 0.22);
     }
-    .zx-promise-btn svg { transition: transform 0.2s; }
-    .zx-promise-btn:hover svg { transform: translateX(4px); }
 
-    /* ── RESPONSIVE ── */
-    @media (max-width: 900px) {
-        .zx-story {
+    .zx-promise-side {
+        padding: 26px;
+        background: var(--zx-about-card);
+        border: 1px solid var(--zx-about-line);
+        box-shadow: var(--zx-about-shadow-soft);
+        display: grid;
+        gap: 16px;
+    }
+
+    .zx-promise-side__item {
+        padding: 18px;
+        border-radius: 20px;
+        background: rgba(33, 77, 52, 0.04);
+        border: 1px solid rgba(33, 77, 52, 0.08);
+    }
+
+    .zx-promise-side__item h3 {
+        margin: 0 0 8px;
+        color: var(--zx-about-green);
+        font-size: 1.05rem;
+    }
+
+    .zx-promise-side__item p {
+        margin: 0;
+        color: var(--zx-about-muted);
+        line-height: 1.7;
+    }
+
+    @media (max-width: 1080px) {
+        .zx-about-hero__grid,
+        .zx-story-grid,
+        .zx-promise {
             grid-template-columns: 1fr;
-            gap: 48px; padding: 60px 5%;
         }
-        .zx-about-hero__quote { display: none; }
-        .zx-story__right { grid-template-columns: 1fr 1fr; }
+
+        .zx-stat-grid,
+        .zx-values-grid {
+            grid-template-columns: 1fr 1fr;
+        }
     }
 
-    @media (max-width: 560px) {
-        .zx-story__right { grid-template-columns: 1fr; }
-        .zx-stat-card:first-child { grid-column: 1; }
-        .zx-values { padding: 60px 5%; }
-        .zx-promise { padding: 64px 6%; }
+    @media (max-width: 768px) {
+        .zx-about {
+            padding: 18px 0 64px;
+        }
+
+        .zx-about-shell {
+            width: min(100% - 24px, 1320px);
+        }
+
+        .zx-about-hero {
+            border-radius: 24px;
+            padding: 24px 20px;
+        }
+
+        .zx-about-section__head {
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
+        .zx-stat-grid,
+        .zx-values-grid {
+            grid-template-columns: 1fr;
+        }
     }
 </style>
 
 <section class="zx-about">
-
-    <!-- ── HERO ── -->
-    <div class="zx-about-hero">
-        <div class="zx-about-hero__bg"></div>
-        <div class="zx-about-hero__deco"></div>
-        <div class="zx-about-hero__deco2"></div>
-
-        <div class="zx-about-hero__quote">
-            <p>"Crafted with tradition, delivered with care."</p>
-            <cite>— The ZaikaX Promise</cite>
-        </div>
-
-        <div class="zx-about-hero__content">
-            <div class="zx-about-hero__eyebrow">Our Story</div>
-            <h1>Our Story,<br><em>Our Flavour</em></h1>
-            <p class="zx-about-hero__sub">Bringing the authentic, heartwarming taste of India right to your table — fast, fresh, and full of love.</p>
-        </div>
-    </div>
-
-    <!-- ── MARQUEE STRIP ── -->
-    <div class="zx-strip">
-        <div class="zx-strip__inner">
-            <span class="zx-strip__item">Authentic Recipes<span class="zx-strip__dot"></span></span>
-            <span class="zx-strip__item">Fresh Every Day<span class="zx-strip__dot"></span></span>
-            <span class="zx-strip__item">Made with Love<span class="zx-strip__dot"></span></span>
-            <span class="zx-strip__item">Rooted in Tradition<span class="zx-strip__dot"></span></span>
-            <span class="zx-strip__item">Delivered with Care<span class="zx-strip__dot"></span></span>
-            <span class="zx-strip__item">Authentic Recipes<span class="zx-strip__dot"></span></span>
-            <span class="zx-strip__item">Fresh Every Day<span class="zx-strip__dot"></span></span>
-            <span class="zx-strip__item">Made with Love<span class="zx-strip__dot"></span></span>
-            <span class="zx-strip__item">Rooted in Tradition<span class="zx-strip__dot"></span></span>
-            <span class="zx-strip__item">Delivered with Care<span class="zx-strip__dot"></span></span>
-        </div>
-    </div>
-
-    <!-- ── STORY / MISSION ── -->
-    <div class="zx-story">
-
-        <div class="zx-story__left">
-            <div class="zx-story__eyebrow">Who We Are</div>
-            <h2 class="zx-story__heading">The <em>ZaikaX</em><br>Promise</h2>
-            <div class="zx-story__body">
-                <p>
-                    ZaikaX wasn't founded just to serve food — it was created to deliver <strong>nostalgia</strong>. We believe that the best Indian food is made in the home kitchen — with <strong>fresh ingredients</strong>, traditional methods, and a lot of <strong>passion</strong>.
-                </p>
-                <p>
-                    Our commitment is to bridge the gap between authentic, slow-cooked flavors and the speed of modern life. Every dish is a tribute to India's culinary heritage, guaranteeing <strong>delicious flavors</strong> and meals crafted to satisfy every craving.
-                </p>
-                <p>
-                    From the first chop to the final garnish, we treat every order as if we're cooking for family. Because to us, every customer is.
-                </p>
-            </div>
-        </div>
-
-        <div class="zx-story__right">
-            <div class="zx-stat-card">
-                <span class="zx-stat-card__num">10,000+</span>
-                <div class="zx-stat-card__label">Happy customers served across Delhi</div>
-            </div>
-            <div class="zx-stat-card">
-                <span class="zx-stat-card__emoji">🌶️</span>
-                <span class="zx-stat-card__num">50+</span>
-                <div class="zx-stat-card__label">Authentic dishes on menu</div>
-            </div>
-            <div class="zx-stat-card">
-                <span class="zx-stat-card__emoji">⚡</span>
-                <span class="zx-stat-card__num">35 min</span>
-                <div class="zx-stat-card__label">Average delivery time</div>
-            </div>
-        </div>
-
-    </div>
-
-    <!-- ── VALUE CARDS ── -->
-    <div class="zx-values">
-        <div class="zx-values__inner">
-            <div class="zx-values__header">
-                <div class="zx-values__eyebrow">Why Choose Us</div>
-                <h2 class="zx-values__heading">What makes us <em>special?</em></h2>
-            </div>
-
-            <div class="zx-values__grid">
-                <div class="zx-value-card">
-                    <div class="zx-value-card__icon">🌶️</div>
-                    <h3>Authentic Recipes</h3>
-                    <p>We use <strong>time-honored family recipes</strong> and traditional spices to ensure every bite is truly and deeply Indian.</p>
+    <div class="zx-about-shell">
+        <section class="zx-about-hero">
+            <div class="zx-about-hero__grid">
+                <div>
+                    <div class="zx-about-hero__eyebrow">The Taste Behind ZaikaX</div>
+                    <h1>Every dish begins with <em>real flavour</em>.</h1>
+                    <p>ZaikaX was created for people who love bold spices, comforting meals, and the kind of food that feels satisfying from the first bite to the last. Our story is simple: serve delicious Indian food with warmth, consistency, and heart.</p>
                 </div>
-                <div class="zx-value-card">
-                    <div class="zx-value-card__icon">🥦</div>
-                    <h3>Fresh Ingredients</h3>
-                    <p><strong>Sourcing local, fresh produce daily</strong> ensures high quality and vibrant, natural flavors in every meal we prepare.</p>
-                </div>
-                <div class="zx-value-card">
-                    <div class="zx-value-card__icon">🛵</div>
-                    <h3>Speedy Delivery</h3>
-                    <p>Delicious food doesn't have to wait. We promise <strong>fast, reliable service</strong> right to your doorstep, every single time.</p>
+
+                <div class="zx-about-hero__panel">
+                    <div class="zx-about-hero__card">
+                        <h3>Rooted in familiar taste</h3>
+                        <p>We believe great food should feel comforting, memorable, and full of the rich flavours people come back for.</p>
+                    </div>
+                    <div class="zx-about-hero__card">
+                        <h3>Made to satisfy every craving</h3>
+                        <p>From spicy starters and hearty mains to biryanis and breads, everything is prepared to feel generous, fresh, and worth sharing.</p>
+                    </div>
                 </div>
             </div>
-        </div>
-    </div>
+        </section>
 
-    <!-- ── PROMISE BANNER ── -->
-    <div class="zx-promise">
-        <div class="zx-promise__bg"></div>
-        <div class="zx-promise__inner">
-            <div class="zx-promise__eyebrow">Ready to taste?</div>
-            <h2>Experience the <em>ZaikaX</em> difference</h2>
-            <p>Every plate we send out carries a piece of our story. Come be a part of it — one meal at a time.</p>
-            <a href="{% url 'menu_list' %}" class="zx-promise-btn">
-                Explore Our Menu
-                <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-                    <path d="M3 8h10M9 4l4 4-4 4" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
-                </svg>
-            </a>
+        <div class="zx-about-strip">
+            <div class="zx-about-strip__row">
+                <span>Authentic Indian Taste</span>
+                <span>Rich Spices</span>
+                <span>Freshly Prepared</span>
+                <span>Comforting Meals</span>
+                <span>Family-Style Flavour</span>
+                <span>Bold Aroma</span>
+                <span>Authentic Indian Taste</span>
+                <span>Rich Spices</span>
+            </div>
         </div>
-    </div>
 
+        <section class="zx-about-section">
+            <div class="zx-about-section__head">
+                <div>
+                    <span class="zx-about-section__eyebrow">Our Story</span>
+                    <h2>Food that feels close to home</h2>
+                    <p class="zx-about-section__desc">We are inspired by the joy of a table full of flavour, where every plate feels generous, aromatic, and made with real care.</p>
+                </div>
+            </div>
+
+            <div class="zx-story-grid">
+                <div class="zx-story-copy">
+                    <p>ZaikaX is built around one simple idea: <strong>good food should instantly pull people in</strong>. The aroma of spices, the richness of slow-cooked gravies, the comfort of warm breads, and the satisfaction of a complete meal all matter to us.</p>
+                    <p>Our kitchen focuses on dishes people truly crave, from smoky tandoori bites and flavorful curries to biryanis that feel festive and filling. Every order is prepared to bring <strong>restaurant-style taste</strong> to everyday meals.</p>
+                    <p>Whether someone is ordering for lunch, dinner, a family gathering, or a late-night craving, we want every ZaikaX meal to feel tasty, reliable, and memorable enough to order again.</p>
+                </div>
+
+                <aside class="zx-quote-card">
+                    <p>"Real flavour is not just tasted, it is remembered."</p>
+                    <span>ZaikaX Kitchen Philosophy</span>
+                </aside>
+            </div>
+
+            <div class="zx-stat-grid">
+                <article class="zx-stat-card">
+                    <strong>Bold</strong>
+                    <span>Spices and flavours that make every dish feel lively and satisfying.</span>
+                </article>
+                <article class="zx-stat-card">
+                    <strong>Fresh</strong>
+                    <span>Ingredients chosen to keep every plate vibrant, warm, and full of taste.</span>
+                </article>
+                <article class="zx-stat-card">
+                    <strong>Comforting</strong>
+                    <span>Meals created to feel hearty, familiar, and perfect for repeat cravings.</span>
+                </article>
+            </div>
+        </section>
+
+        <section class="zx-about-section">
+            <div class="zx-about-section__head">
+                <div>
+                    <span class="zx-about-section__eyebrow">What We Stand For</span>
+                    <h2>Why food lovers choose ZaikaX</h2>
+                    <p class="zx-about-section__desc">Everything we serve is shaped around taste, freshness, and the kind of meals people genuinely enjoy ordering.</p>
+                </div>
+            </div>
+
+            <div class="zx-values-grid">
+                <article class="zx-value-card">
+                    <div class="zx-value-card__icon">01</div>
+                    <h3>Authentic flavour first</h3>
+                    <p>We focus on dishes that carry the depth, warmth, and spice people expect from truly satisfying Indian food.</p>
+                </article>
+
+                <article class="zx-value-card">
+                    <div class="zx-value-card__icon">02</div>
+                    <h3>Freshness in every order</h3>
+                    <p>From the first prep to the final garnish, our meals are made to feel lively, rich, and full of appetite-raising aroma.</p>
+                </article>
+
+                <article class="zx-value-card">
+                    <div class="zx-value-card__icon">03</div>
+                    <h3>Food made for sharing</h3>
+                    <p>Perfect for solo cravings, family meals, and group orders with dishes everyone at the table can enjoy.</p>
+                </article>
+            </div>
+        </section>
+
+        <section class="zx-about-section">
+            <div class="zx-promise">
+                <div class="zx-promise-main">
+                    <span>Ready to taste the story?</span>
+                    <h2>Bring home the flavour of ZaikaX.</h2>
+                    <p>Explore a menu filled with smoky starters, rich curries, fragrant biryanis, fresh breads, and comforting favorites prepared to make every meal feel special.</p>
+                    <a href="{% url 'menu_list' %}" class="zx-promise-btn">Explore Our Menu</a>
+                </div>
+
+                <div class="zx-promise-side">
+                    <div class="zx-promise-side__item">
+                        <h3>For everyday cravings</h3>
+                        <p>Quick lunches, relaxed dinners, and evening treats that feel satisfying every single time.</p>
+                    </div>
+                    <div class="zx-promise-side__item">
+                        <h3>For meals that feel complete</h3>
+                        <p>A balance of spice, warmth, freshness, and comfort in dishes that keep people coming back.</p>
+                    </div>
+                    <div class="zx-promise-side__item">
+                        <h3>For people who love good food</h3>
+                        <p>ZaikaX is all about serving meals that look tempting, taste rich, and leave a lasting impression.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
 </section>
-
 {% endblock %}

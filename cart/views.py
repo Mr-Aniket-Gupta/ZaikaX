@@ -6,6 +6,7 @@ from .models import CartItem, Order, OrderItem
 from django.db import transaction # Important for database integrity
 from accounts.models import Address
 from accounts.forms import AddressForm
+from main.recommendations import get_frequently_bought_together, get_personalized_recommendations
 
 
 # ➤ Add item to cart
@@ -41,6 +42,8 @@ def cart_view(request):
     return render(request, "cart/cart.html", {
         "items": items,
         "total": total,
+        "recommendations": get_personalized_recommendations(request.user, cart_items=items, limit=4),
+        "frequently_bought_together": get_frequently_bought_together(cart_items=items, limit=3),
     })
 
 def remove_from_cart(request, item_id):
@@ -169,14 +172,14 @@ def process_order(request):
             total_price=total_amount,
         )
 
-        # 3. Transfer items from CartItem to OrderItem (You'll need an OrderItem model)
-        # for cart_item in cart_items:
-        #     OrderItem.objects.create(
-        #         order=new_order,
-        #         item=cart_item.item,
-        #         quantity=cart_item.quantity,
-        #         price_at_purchase=cart_item.item.price
-        #     )
+        # 3. Transfer items from CartItem to OrderItem for future analytics and recommendations
+        for cart_item in cart_items:
+            OrderItem.objects.create(
+                order=new_order,
+                item=cart_item.item,
+                quantity=cart_item.quantity,
+                price_at_purchase=cart_item.item.price
+            )
         
         # 4. Clear the user's cart
         cart_items.delete()
