@@ -680,6 +680,7 @@
     }
 
     @media (max-width: 768px) {
+
         .zx-shell,
         .zx-cat-nav {
             width: min(100% - 24px, 1320px);
@@ -732,7 +733,8 @@
                 <div class="zx-menu-hero__content">
                     <div class="zx-menu-hero__eyebrow">Curated Dining Experience</div>
                     <h1>Modern <em>Menu</em> Design for Better Ordering</h1>
-                    <p class="zx-menu-hero__sub">Browse dishes in a cleaner, premium format with faster discovery, structured categories, and a more polished restaurant-style ordering experience.</p>
+                    <p class="zx-menu-hero__sub">Browse dishes in a cleaner, premium format with faster discovery,
+                        structured categories, and a more polished restaurant-style ordering experience.</p>
                 </div>
 
                 <div class="zx-menu-hero__panel">
@@ -773,7 +775,8 @@
             <div class="zx-filter-bar" aria-label="Menu filters">
                 <div class="zx-filter-field">
                     <label class="zx-filter-label" for="menu-search">Search</label>
-                    <input id="menu-search" class="zx-filter-input" type="search" placeholder="Search by dish name or description">
+                    <input id="menu-search" class="zx-filter-input" type="search"
+                        placeholder="Search by dish name or description">
                 </div>
 
                 <div class="zx-filter-field">
@@ -843,7 +846,8 @@
                         <h2>{{ frequently_bought_together.title }}</h2>
                         <p>{{ frequently_bought_together.subtitle }}</p>
                     </div>
-                    <div class="zx-suggestion-chip">Combo total &#8377;{{ frequently_bought_together.total_price|floatformat:0 }}</div>
+                    <div class="zx-suggestion-chip">Combo total &#8377;{{
+                        frequently_bought_together.total_price|floatformat:0 }}</div>
                 </div>
 
                 <div class="zx-menu-grid">

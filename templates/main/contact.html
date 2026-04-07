@@ -1,27 +1,515 @@
 {% extends 'main/base.html' %}
 {% block content %}
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700;800&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link
+    href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700;800&family=Manrope:wght@400;500;600;700;800&display=swap"
+    rel="stylesheet">
 <style>
-:root{--zx-surface:rgba(255,255,255,.82);--zx-card:#fff;--zx-line:rgba(44,60,38,.12);--zx-text:#1d231c;--zx-muted:#677064;--zx-green:#214d34;--zx-green-soft:#e8f0e9;--zx-gold:#df9a2e;--zx-gold-deep:#bf7e14;--zx-shadow:0 18px 46px rgba(23,30,21,.08);--zx-shadow-soft:0 12px 28px rgba(23,30,21,.06)}
-body{background:radial-gradient(circle at top left,rgba(223,154,46,.12),transparent 24%),radial-gradient(circle at top right,rgba(33,77,52,.08),transparent 20%),linear-gradient(180deg,#f8f4ec 0%,#f4eee5 100%)!important}
-.zx-contact{font-family:'Manrope',sans-serif;color:var(--zx-text);padding:34px 0 90px}.zx-shell{width:min(1320px,calc(100% - 48px));margin:0 auto}
-.zx-hero{overflow:hidden;border-radius:34px;padding:clamp(28px,5vw,62px);background:radial-gradient(circle at 85% 16%,rgba(223,154,46,.2),transparent 18%),radial-gradient(circle at 0% 100%,rgba(255,255,255,.08),transparent 28%),linear-gradient(135deg,#183a27 0%,#28553a 50%,#3d714c 100%);border:1px solid rgba(255,255,255,.35);box-shadow:var(--zx-shadow)}
-.zx-hero__grid,.zx-body{display:grid;gap:24px}.zx-hero__grid{grid-template-columns:minmax(0,1.3fr) minmax(290px,.9fr);align-items:center}.zx-body{margin-top:30px;grid-template-columns:360px 1fr;align-items:start}
-.zx-hero__eyebrow{display:inline-flex;align-items:center;gap:10px;padding:9px 14px;border-radius:999px;background:rgba(255,255,255,.1);color:#f4ca7e;font-size:.8rem;font-weight:800;letter-spacing:.16em;text-transform:uppercase;margin-bottom:18px}.zx-hero__eyebrow:before{content:'';width:8px;height:8px;border-radius:50%;background:currentColor}
-.zx-hero h1{margin:0 0 16px;font-family:'Playfair Display',serif;font-size:clamp(3rem,5.4vw,5.2rem);line-height:.97;color:#fffdf7}.zx-hero h1 em{color:#f4ca7e;font-style:normal}.zx-hero__sub{margin:0;max-width:620px;color:rgba(255,255,255,.78);line-height:1.85;font-size:1.03rem}
-.zx-hero__panel{display:grid;gap:14px}.zx-hero__card,.zx-info,.zx-form-wrap{border-radius:30px}.zx-hero__card{padding:22px;background:linear-gradient(180deg,rgba(255,255,255,.14),rgba(255,255,255,.08));border:1px solid rgba(255,255,255,.14);backdrop-filter:blur(14px)}.zx-hero__card h3{margin:0 0 10px;color:#fff;font-size:1.08rem}.zx-hero__card p{margin:0;color:rgba(255,255,255,.72);line-height:1.7;font-size:.94rem}
-.zx-info,.zx-form-wrap{background:var(--zx-surface);border:1px solid rgba(255,255,255,.65);backdrop-filter:blur(14px);box-shadow:var(--zx-shadow-soft)}.zx-info{padding:26px;position:sticky;top:24px}.zx-form-wrap{padding:26px}
-.zx-info__label,.zx-form-header__label{display:inline-flex;margin-bottom:8px;color:var(--zx-gold-deep);font-size:.78rem;font-weight:800;text-transform:uppercase;letter-spacing:.12em}.zx-info__heading,.zx-form-header h2{margin:0 0 20px;font-family:'Playfair Display',serif;font-size:clamp(1.9rem,3vw,2.5rem);color:var(--zx-green);line-height:1.05}
-.zx-info__cards{display:grid;gap:14px;margin-bottom:18px}.zx-card{display:flex;align-items:flex-start;gap:14px;padding:18px;border-radius:22px;background:#fff;border:1px solid var(--zx-line);box-shadow:var(--zx-shadow-soft);color:inherit;text-decoration:none}.zx-card__icon{width:48px;height:48px;border-radius:16px;background:linear-gradient(135deg,rgba(223,154,46,.16),rgba(33,77,52,.12));display:flex;align-items:center;justify-content:center;font-size:1.25rem;flex-shrink:0}.zx-card__text strong{display:block;margin-bottom:6px;color:var(--zx-green);font-size:.76rem;text-transform:uppercase;letter-spacing:.08em}.zx-card__text span{color:var(--zx-text);line-height:1.65}
-.zx-hours{padding:20px;border-radius:24px;background:var(--zx-green-soft)}.zx-hours__title{margin-bottom:12px;font-family:'Playfair Display',serif;font-size:1.05rem;color:var(--zx-green)}.zx-hours__row{display:flex;justify-content:space-between;gap:12px;padding:8px 0;color:var(--zx-muted);border-bottom:1px solid rgba(33,77,52,.08)}.zx-hours__row:last-child{border-bottom:0}
-.zx-form-header{margin-bottom:20px}.zx-form-header p{color:var(--zx-muted);line-height:1.8}.zx-form{padding:26px;border-radius:26px;background:#fff;border:1px solid var(--zx-line);box-shadow:var(--zx-shadow-soft)}.zx-form__row{display:grid;grid-template-columns:1fr 1fr;gap:18px}.zx-field{display:flex;flex-direction:column;gap:8px;margin-bottom:18px}.zx-field label{color:var(--zx-green);font-size:.78rem;font-weight:800;text-transform:uppercase;letter-spacing:.08em}.zx-field input,.zx-field textarea{width:100%;padding:14px 16px;border-radius:16px;border:1px solid var(--zx-line);background:#fcfbf8;color:var(--zx-text);font:inherit}.zx-field input:focus,.zx-field textarea:focus{outline:none;border-color:rgba(223,154,46,.55);box-shadow:0 0 0 4px rgba(223,154,46,.12);background:#fff}.zx-field textarea{min-height:140px;resize:vertical}
-.zx-chips{display:flex;flex-wrap:wrap;gap:10px}.zx-chip{padding:9px 14px;border-radius:999px;border:1px solid var(--zx-line);background:#faf8f2;color:var(--zx-muted);font:inherit;font-size:.88rem;cursor:pointer}.zx-chip.active{background:var(--zx-green);color:#fff;border-color:var(--zx-green)}
-.zx-submit{display:flex;justify-content:space-between;align-items:center;gap:18px;margin-top:10px}.zx-submit__note{color:var(--zx-muted);font-size:.88rem}.zx-btn{padding:16px 24px;border:none;border-radius:16px;background:linear-gradient(135deg,var(--zx-gold) 0%,var(--zx-gold-deep) 100%);color:#fff;font:inherit;font-weight:800;cursor:pointer}.zx-success{display:none;text-align:center;padding:54px 24px}.zx-success__icon{width:76px;height:76px;margin:0 auto 18px;border-radius:50%;background:var(--zx-green-soft);display:flex;align-items:center;justify-content:center;font-size:2rem}.zx-success h3{margin-bottom:10px;font-family:'Playfair Display',serif;font-size:2rem;color:var(--zx-green)}.zx-success p{color:var(--zx-muted);line-height:1.75}
-@media (max-width:1080px){.zx-hero__grid,.zx-body{grid-template-columns:1fr}.zx-info{position:static}}@media (max-width:768px){.zx-contact{padding:18px 0 64px}.zx-shell{width:min(100% - 24px,1320px)}.zx-hero{border-radius:24px;padding:24px 20px}.zx-form__row{grid-template-columns:1fr}.zx-submit{flex-direction:column;align-items:flex-start}}
+    :root {
+        --zx-surface: rgba(255, 255, 255, .82);
+        --zx-card: #fff;
+        --zx-line: rgba(44, 60, 38, .12);
+        --zx-text: #1d231c;
+        --zx-muted: #677064;
+        --zx-green: #214d34;
+        --zx-green-soft: #e8f0e9;
+        --zx-gold: #df9a2e;
+        --zx-gold-deep: #bf7e14;
+        --zx-shadow: 0 18px 46px rgba(23, 30, 21, .08);
+        --zx-shadow-soft: 0 12px 28px rgba(23, 30, 21, .06)
+    }
+
+    body {
+        background: radial-gradient(circle at top left, rgba(223, 154, 46, .12), transparent 24%), radial-gradient(circle at top right, rgba(33, 77, 52, .08), transparent 20%), linear-gradient(180deg, #f8f4ec 0%, #f4eee5 100%) !important
+    }
+
+    .zx-contact {
+        font-family: 'Manrope', sans-serif;
+        color: var(--zx-text);
+        padding: 34px 0 90px
+    }
+
+    .zx-shell {
+        width: min(1320px, calc(100% - 48px));
+        margin: 0 auto
+    }
+
+    .zx-hero {
+        overflow: hidden;
+        border-radius: 34px;
+        padding: clamp(28px, 5vw, 62px);
+        background: radial-gradient(circle at 85% 16%, rgba(223, 154, 46, .2), transparent 18%), radial-gradient(circle at 0% 100%, rgba(255, 255, 255, .08), transparent 28%), linear-gradient(135deg, #183a27 0%, #28553a 50%, #3d714c 100%);
+        border: 1px solid rgba(255, 255, 255, .35);
+        box-shadow: var(--zx-shadow)
+    }
+
+    .zx-hero__grid,
+    .zx-body {
+        display: grid;
+        gap: 24px
+    }
+
+    .zx-hero__grid {
+        grid-template-columns: minmax(0, 1.3fr) minmax(290px, .9fr);
+        align-items: center
+    }
+
+    .zx-body {
+        margin-top: 30px;
+        grid-template-columns: 360px 1fr;
+        align-items: start
+    }
+
+    .zx-hero__eyebrow {
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        padding: 9px 14px;
+        border-radius: 999px;
+        background: rgba(255, 255, 255, .1);
+        color: #f4ca7e;
+        font-size: .8rem;
+        font-weight: 800;
+        letter-spacing: .16em;
+        text-transform: uppercase;
+        margin-bottom: 18px
+    }
+
+    .zx-hero__eyebrow:before {
+        content: '';
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: currentColor
+    }
+
+    .zx-hero h1 {
+        margin: 0 0 16px;
+        font-family: 'Playfair Display', serif;
+        font-size: clamp(3rem, 5.4vw, 5.2rem);
+        line-height: .97;
+        color: #fffdf7
+    }
+
+    .zx-hero h1 em {
+        color: #f4ca7e;
+        font-style: normal
+    }
+
+    .zx-hero__sub {
+        margin: 0;
+        max-width: 620px;
+        color: rgba(255, 255, 255, .78);
+        line-height: 1.85;
+        font-size: 1.03rem
+    }
+
+    .zx-hero__panel {
+        display: grid;
+        gap: 14px
+    }
+
+    .zx-hero__card,
+    .zx-info,
+    .zx-form-wrap {
+        border-radius: 30px
+    }
+
+    .zx-hero__card {
+        padding: 22px;
+        background: linear-gradient(180deg, rgba(255, 255, 255, .14), rgba(255, 255, 255, .08));
+        border: 1px solid rgba(255, 255, 255, .14);
+        backdrop-filter: blur(14px)
+    }
+
+    .zx-hero__card h3 {
+        margin: 0 0 10px;
+        color: #fff;
+        font-size: 1.08rem
+    }
+
+    .zx-hero__card p {
+        margin: 0;
+        color: rgba(255, 255, 255, .72);
+        line-height: 1.7;
+        font-size: .94rem
+    }
+
+    .zx-info,
+    .zx-form-wrap {
+        background: var(--zx-surface);
+        border: 1px solid rgba(255, 255, 255, .65);
+        backdrop-filter: blur(14px);
+        box-shadow: var(--zx-shadow-soft)
+    }
+
+    .zx-info {
+        padding: 26px;
+        position: sticky;
+        top: 24px
+    }
+
+    .zx-form-wrap {
+        padding: 26px
+    }
+
+    .zx-info__label,
+    .zx-form-header__label {
+        display: inline-flex;
+        margin-bottom: 8px;
+        color: var(--zx-gold-deep);
+        font-size: .78rem;
+        font-weight: 800;
+        text-transform: uppercase;
+        letter-spacing: .12em
+    }
+
+    .zx-info__heading,
+    .zx-form-header h2 {
+        margin: 0 0 20px;
+        font-family: 'Playfair Display', serif;
+        font-size: clamp(1.9rem, 3vw, 2.5rem);
+        color: var(--zx-green);
+        line-height: 1.05
+    }
+
+    .zx-info__cards {
+        display: grid;
+        gap: 14px;
+        margin-bottom: 18px
+    }
+
+    .zx-card {
+        display: flex;
+        align-items: flex-start;
+        gap: 14px;
+        padding: 18px;
+        border-radius: 22px;
+        background: #fff;
+        border: 1px solid var(--zx-line);
+        box-shadow: var(--zx-shadow-soft);
+        color: inherit;
+        text-decoration: none
+    }
+
+    .zx-card__icon {
+        width: 48px;
+        height: 48px;
+        border-radius: 16px;
+        background: linear-gradient(135deg, rgba(223, 154, 46, .16), rgba(33, 77, 52, .12));
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.25rem;
+        flex-shrink: 0
+    }
+
+    .zx-card__text strong {
+        display: block;
+        margin-bottom: 6px;
+        color: var(--zx-green);
+        font-size: .76rem;
+        text-transform: uppercase;
+        letter-spacing: .08em
+    }
+
+    .zx-card__text span {
+        color: var(--zx-text);
+        line-height: 1.65
+    }
+
+    .zx-hours {
+        padding: 20px;
+        border-radius: 24px;
+        background: var(--zx-green-soft)
+    }
+
+    .zx-hours__title {
+        margin-bottom: 12px;
+        font-family: 'Playfair Display', serif;
+        font-size: 1.05rem;
+        color: var(--zx-green)
+    }
+
+    .zx-hours__row {
+        display: flex;
+        justify-content: space-between;
+        gap: 12px;
+        padding: 8px 0;
+        color: var(--zx-muted);
+        border-bottom: 1px solid rgba(33, 77, 52, .08)
+    }
+
+    .zx-hours__row:last-child {
+        border-bottom: 0
+    }
+
+    .zx-form-header {
+        margin-bottom: 20px
+    }
+
+    .zx-form-header p {
+        color: var(--zx-muted);
+        line-height: 1.8
+    }
+
+    .zx-form {
+        padding: 26px;
+        border-radius: 26px;
+        background: #fff;
+        border: 1px solid var(--zx-line);
+        box-shadow: var(--zx-shadow-soft)
+    }
+
+    .zx-form__row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 18px
+    }
+
+    .zx-field {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        margin-bottom: 18px
+    }
+
+    .zx-field label {
+        color: var(--zx-green);
+        font-size: .78rem;
+        font-weight: 800;
+        text-transform: uppercase;
+        letter-spacing: .08em
+    }
+
+    .zx-field input,
+    .zx-field textarea {
+        width: 100%;
+        padding: 14px 16px;
+        border-radius: 16px;
+        border: 1px solid var(--zx-line);
+        background: #fcfbf8;
+        color: var(--zx-text);
+        font: inherit
+    }
+
+    .zx-field input:focus,
+    .zx-field textarea:focus {
+        outline: none;
+        border-color: rgba(223, 154, 46, .55);
+        box-shadow: 0 0 0 4px rgba(223, 154, 46, .12);
+        background: #fff
+    }
+
+    .zx-field textarea {
+        min-height: 140px;
+        resize: vertical
+    }
+
+    .zx-chips {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px
+    }
+
+    .zx-chip {
+        padding: 9px 14px;
+        border-radius: 999px;
+        border: 1px solid var(--zx-line);
+        background: #faf8f2;
+        color: var(--zx-muted);
+        font: inherit;
+        font-size: .88rem;
+        cursor: pointer
+    }
+
+    .zx-chip.active {
+        background: var(--zx-green);
+        color: #fff;
+        border-color: var(--zx-green)
+    }
+
+    .zx-submit {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 18px;
+        margin-top: 10px
+    }
+
+    .zx-submit__note {
+        color: var(--zx-muted);
+        font-size: .88rem
+    }
+
+    .zx-btn {
+        padding: 16px 24px;
+        border: none;
+        border-radius: 16px;
+        background: linear-gradient(135deg, var(--zx-gold) 0%, var(--zx-gold-deep) 100%);
+        color: #fff;
+        font: inherit;
+        font-weight: 800;
+        cursor: pointer
+    }
+
+    .zx-success {
+        display: none;
+        text-align: center;
+        padding: 54px 24px
+    }
+
+    .zx-success__icon {
+        width: 76px;
+        height: 76px;
+        margin: 0 auto 18px;
+        border-radius: 50%;
+        background: var(--zx-green-soft);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 2rem
+    }
+
+    .zx-success h3 {
+        margin-bottom: 10px;
+        font-family: 'Playfair Display', serif;
+        font-size: 2rem;
+        color: var(--zx-green)
+    }
+
+    .zx-success p {
+        color: var(--zx-muted);
+        line-height: 1.75
+    }
+
+    @media (max-width:1080px) {
+
+        .zx-hero__grid,
+        .zx-body {
+            grid-template-columns: 1fr
+        }
+
+        .zx-info {
+            position: static
+        }
+    }
+
+    @media (max-width:768px) {
+        .zx-contact {
+            padding: 18px 0 64px
+        }
+
+        .zx-shell {
+            width: min(100% - 24px, 1320px)
+        }
+
+        .zx-hero {
+            border-radius: 24px;
+            padding: 24px 20px
+        }
+
+        .zx-form__row {
+            grid-template-columns: 1fr
+        }
+
+        .zx-submit {
+            flex-direction: column;
+            align-items: flex-start
+        }
+    }
 </style>
-<section class="zx-contact"><div class="zx-shell"><div class="zx-hero"><div class="zx-hero__grid"><div><div class="zx-hero__eyebrow">Reach ZaikaX</div><h1>Talk to us about your <em>next meal</em>.</h1><p class="zx-hero__sub">Have a question, feedback, or special food request? We would love to hear from you and help make your ZaikaX experience even better.</p></div><div class="zx-hero__panel"><div class="zx-hero__card"><h3>Questions about food or orders</h3><p>Ask us about dishes, delivery, support, or anything else related to your ZaikaX order.</p></div><div class="zx-hero__card"><h3>Feedback is always welcome</h3><p>Your thoughts help us improve flavors, service, and the overall experience we serve every day.</p></div></div></div></div><div class="zx-body"><aside class="zx-info"><div class="zx-info__label">Contact Details</div><h2 class="zx-info__heading">We are here to help</h2><div class="zx-info__cards"><a href="mailto:support@zaikax.com" class="zx-card"><div class="zx-card__icon">📧</div><div class="zx-card__text"><strong>Email</strong><span>support@zaikax.com</span></div></a><a href="tel:+919876543210" class="zx-card"><div class="zx-card__icon">📞</div><div class="zx-card__text"><strong>Phone</strong><span>+91 98765 43210</span></div></a><div class="zx-card"><div class="zx-card__icon">📍</div><div class="zx-card__text"><strong>Location</strong><span>New Delhi, India</span></div></div></div><div class="zx-hours"><div class="zx-hours__title">Support Hours</div><div class="zx-hours__row"><span>Mon - Fri</span><span>10 AM - 7 PM</span></div><div class="zx-hours__row"><span>Saturday</span><span>11 AM - 5 PM</span></div><div class="zx-hours__row"><span>Sunday</span><span>Closed</span></div></div></aside><div class="zx-form-wrap"><div class="zx-form-header"><div class="zx-form-header__label">Send A Message</div><h2>Tell us what you need</h2><p>Share your question, order issue, feedback, or partnership idea. Our team will get back to you as soon as possible.</p></div><div class="zx-form" id="contactFormBox"><form id="zxForm" novalidate><div class="zx-form__row"><div class="zx-field"><label for="zx-name">Your Name</label><input type="text" id="zx-name" placeholder="e.g. Priya Sharma" required></div><div class="zx-field"><label for="zx-email">Email Address</label><input type="email" id="zx-email" placeholder="you@example.com" required></div></div><div class="zx-form__row"><div class="zx-field"><label for="zx-phone">Phone</label><input type="tel" id="zx-phone" placeholder="+91 00000 00000"></div><div class="zx-field"><label for="zx-order">Order ID</label><input type="text" id="zx-order" placeholder="e.g. ZX-20481"></div></div><div class="zx-field"><label>Topic</label><div class="zx-chips" id="chipGroup"><button type="button" class="zx-chip active" data-topic="Order Issue">Order Issue</button><button type="button" class="zx-chip" data-topic="Product Query">Dish Query</button><button type="button" class="zx-chip" data-topic="Feedback">Feedback</button><button type="button" class="zx-chip" data-topic="Partnership">Partnership</button><button type="button" class="zx-chip" data-topic="Other">Other</button></div></div><div class="zx-field"><label for="zx-message">Your Message</label><textarea id="zx-message" placeholder="Tell us what is on your mind..." required></textarea></div><div class="zx-submit"><span class="zx-submit__note">Your details stay safe with us.</span><button type="submit" class="zx-btn">Send Message</button></div></form><div class="zx-success" id="successMsg"><div class="zx-success__icon">✅</div><h3>Message received</h3><p>Thanks for contacting ZaikaX. Our team will get back to you within 1-2 business days.</p></div></div></div></div></div></section>
+<section class="zx-contact">
+    <div class="zx-shell">
+        <div class="zx-hero">
+            <div class="zx-hero__grid">
+                <div>
+                    <div class="zx-hero__eyebrow">Reach ZaikaX</div>
+                    <h1>Talk to us about your <em>next meal</em>.</h1>
+                    <p class="zx-hero__sub">Have a question, feedback, or special food request? We would love to hear
+                        from you and help make your ZaikaX experience even better.</p>
+                </div>
+                <div class="zx-hero__panel">
+                    <div class="zx-hero__card">
+                        <h3>Questions about food or orders</h3>
+                        <p>Ask us about dishes, delivery, support, or anything else related to your ZaikaX order.</p>
+                    </div>
+                    <div class="zx-hero__card">
+                        <h3>Feedback is always welcome</h3>
+                        <p>Your thoughts help us improve flavors, service, and the overall experience we serve every
+                            day.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="zx-body">
+            <aside class="zx-info">
+                <div class="zx-info__label">Contact Details</div>
+                <h2 class="zx-info__heading">We are here to help</h2>
+                <div class="zx-info__cards"><a href="mailto:support@zaikax.com" class="zx-card">
+                        <div class="zx-card__icon">📧</div>
+                        <div class="zx-card__text"><strong>Email</strong><span>support@zaikax.com</span></div>
+                    </a><a href="tel:+919876543210" class="zx-card">
+                        <div class="zx-card__icon">📞</div>
+                        <div class="zx-card__text"><strong>Phone</strong><span>+91 98765 43210</span></div>
+                    </a>
+                    <div class="zx-card">
+                        <div class="zx-card__icon">📍</div>
+                        <div class="zx-card__text"><strong>Location</strong><span>New Delhi, India</span></div>
+                    </div>
+                </div>
+                <div class="zx-hours">
+                    <div class="zx-hours__title">Support Hours</div>
+                    <div class="zx-hours__row"><span>Mon - Fri</span><span>10 AM - 7 PM</span></div>
+                    <div class="zx-hours__row"><span>Saturday</span><span>11 AM - 5 PM</span></div>
+                    <div class="zx-hours__row"><span>Sunday</span><span>Closed</span></div>
+                </div>
+            </aside>
+            <div class="zx-form-wrap">
+                <div class="zx-form-header">
+                    <div class="zx-form-header__label">Send A Message</div>
+                    <h2>Tell us what you need</h2>
+                    <p>Share your question, order issue, feedback, or partnership idea. Our team will get back to you as
+                        soon as possible.</p>
+                </div>
+                <div class="zx-form" id="contactFormBox">
+                    <form id="zxForm" novalidate>
+                        <div class="zx-form__row">
+                            <div class="zx-field"><label for="zx-name">Your Name</label><input type="text" id="zx-name"
+                                    placeholder="e.g. Priya Sharma" required></div>
+                            <div class="zx-field"><label for="zx-email">Email Address</label><input type="email"
+                                    id="zx-email" placeholder="you@example.com" required></div>
+                        </div>
+                        <div class="zx-form__row">
+                            <div class="zx-field"><label for="zx-phone">Phone</label><input type="tel" id="zx-phone"
+                                    placeholder="+91 00000 00000"></div>
+                            <div class="zx-field"><label for="zx-order">Order ID</label><input type="text" id="zx-order"
+                                    placeholder="e.g. ZX-20481"></div>
+                        </div>
+                        <div class="zx-field"><label>Topic</label>
+                            <div class="zx-chips" id="chipGroup"><button type="button" class="zx-chip active"
+                                    data-topic="Order Issue">Order Issue</button><button type="button" class="zx-chip"
+                                    data-topic="Product Query">Dish Query</button><button type="button" class="zx-chip"
+                                    data-topic="Feedback">Feedback</button><button type="button" class="zx-chip"
+                                    data-topic="Partnership">Partnership</button><button type="button" class="zx-chip"
+                                    data-topic="Other">Other</button></div>
+                        </div>
+                        <div class="zx-field"><label for="zx-message">Your Message</label><textarea id="zx-message"
+                                placeholder="Tell us what is on your mind..." required></textarea></div>
+                        <div class="zx-submit"><span class="zx-submit__note">Your details stay safe with
+                                us.</span><button type="submit" class="zx-btn">Send Message</button></div>
+                    </form>
+                    <div class="zx-success" id="successMsg">
+                        <div class="zx-success__icon">✅</div>
+                        <h3>Message received</h3>
+                        <p>Thanks for contacting ZaikaX. Our team will get back to you within 1-2 business days.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
 <script>
-document.getElementById('chipGroup').addEventListener('click',function(e){const chip=e.target.closest('.zx-chip');if(!chip)return;this.querySelectorAll('.zx-chip').forEach(c=>c.classList.remove('active'));chip.classList.add('active');});
-document.getElementById('zxForm').addEventListener('submit',function(e){e.preventDefault();const name=document.getElementById('zx-name').value.trim();const email=document.getElementById('zx-email').value.trim();const msg=document.getElementById('zx-message').value.trim();if(!name||!email||!msg){alert('Please fill in your name, email, and message.');return;}this.style.opacity='0';this.style.transition='opacity 0.3s';setTimeout(()=>{this.style.display='none';document.getElementById('successMsg').style.display='block';},300);});
+    document.getElementById('chipGroup').addEventListener('click', function (e) { const chip = e.target.closest('.zx-chip'); if (!chip) return; this.querySelectorAll('.zx-chip').forEach(c => c.classList.remove('active')); chip.classList.add('active'); });
+    document.getElementById('zxForm').addEventListener('submit', function (e) { e.preventDefault(); const name = document.getElementById('zx-name').value.trim(); const email = document.getElementById('zx-email').value.trim(); const msg = document.getElementById('zx-message').value.trim(); if (!name || !email || !msg) { alert('Please fill in your name, email, and message.'); return; } this.style.opacity = '0'; this.style.transition = 'opacity 0.3s'; setTimeout(() => { this.style.display = 'none'; document.getElementById('successMsg').style.display = 'block'; }, 300); });
 </script>
 {% endblock %}

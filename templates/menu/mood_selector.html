@@ -1,38 +1,584 @@
 {% extends "main/base.html" %}
 {% load static %}
 {% block content %}
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700;800&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link
+    href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700;800&family=Manrope:wght@400;500;600;700;800&display=swap"
+    rel="stylesheet">
 <style>
-:root{--zx-surface:rgba(255,255,255,.82);--zx-card:#fff;--zx-line:rgba(44,60,38,.12);--zx-text:#1d231c;--zx-muted:#677064;--zx-green:#214d34;--zx-green-soft:#e8f0e9;--zx-gold:#df9a2e;--zx-gold-deep:#bf7e14;--zx-shadow:0 18px 46px rgba(23,30,21,.08);--zx-shadow-soft:0 12px 28px rgba(23,30,21,.06);}
-body{background:radial-gradient(circle at top left,rgba(223,154,46,.12),transparent 24%),radial-gradient(circle at top right,rgba(33,77,52,.08),transparent 20%),linear-gradient(180deg,#f8f4ec 0%,#f4eee5 100%)!important}
-.zx-ai{font-family:'Manrope',sans-serif;color:var(--zx-text);padding:34px 0 90px}.zx-shell{width:min(1320px,calc(100% - 48px));margin:0 auto}
-.zx-ai-hero{overflow:hidden;border-radius:34px;padding:clamp(28px,5vw,62px);background:radial-gradient(circle at 85% 15%,rgba(223,154,46,.2),transparent 18%),radial-gradient(circle at 0% 100%,rgba(255,255,255,.08),transparent 28%),linear-gradient(135deg,#183a27 0%,#28553a 50%,#3d714c 100%);border:1px solid rgba(255,255,255,.35);box-shadow:var(--zx-shadow)}
-.zx-ai-hero__grid,.zx-ai-body{display:grid;gap:24px}.zx-ai-hero__grid{grid-template-columns:minmax(0,1.3fr) minmax(290px,.9fr);align-items:center}.zx-ai-body{margin-top:30px;grid-template-columns:340px 1fr;align-items:start}
-.zx-ai-hero__eyebrow{display:inline-flex;align-items:center;gap:10px;padding:9px 14px;border-radius:999px;background:rgba(255,255,255,.1);color:#f4ca7e;font-size:.8rem;font-weight:800;letter-spacing:.16em;text-transform:uppercase;margin-bottom:18px}.zx-ai-hero__eyebrow:before{content:'';width:8px;height:8px;border-radius:50%;background:currentColor}
-.zx-ai-hero h1{margin:0 0 16px;font-family:'Playfair Display',serif;font-size:clamp(3rem,5.4vw,5.2rem);line-height:.97;color:#fffdf7}.zx-ai-hero h1 em{color:#f4ca7e;font-style:normal}.zx-ai-hero__sub{margin:0;max-width:640px;color:rgba(255,255,255,.78);line-height:1.85;font-size:1.03rem}
-.zx-ai-hero__panel{display:grid;gap:14px}.zx-ai-hero__card,.zx-filter-panel,.zx-results-panel{border-radius:30px}.zx-ai-hero__card{padding:22px;background:linear-gradient(180deg,rgba(255,255,255,.14),rgba(255,255,255,.08));border:1px solid rgba(255,255,255,.14);backdrop-filter:blur(14px)}.zx-ai-hero__card h3{margin:0 0 10px;color:#fff;font-size:1.08rem}.zx-ai-hero__card p{margin:0;color:rgba(255,255,255,.72);font-size:.94rem;line-height:1.7}
-.zx-filter-panel,.zx-results-panel{background:var(--zx-surface);border:1px solid rgba(255,255,255,.65);backdrop-filter:blur(14px);box-shadow:var(--zx-shadow-soft)}.zx-filter-panel{padding:26px;position:sticky;top:24px}.zx-results-panel{padding:26px;min-height:520px}.zx-filter-title{margin-bottom:22px;font-family:'Playfair Display',serif;font-size:1.5rem;color:var(--zx-green)}
-.zx-fp-field{margin-bottom:24px}.zx-fp-label{display:block;margin-bottom:10px;color:var(--zx-green);font-size:.78rem;font-weight:800;text-transform:uppercase;letter-spacing:.1em}.zx-mood-chips{display:grid;gap:10px}
-.zx-mood-chip{position:relative;display:flex;align-items:center;gap:12px;padding:14px 16px;border-radius:18px;border:1px solid var(--zx-line);background:rgba(255,255,255,.7);cursor:pointer;transition:.2s ease}.zx-mood-chip input[type=radio]{position:absolute;opacity:0;pointer-events:none}.zx-mood-chip.selected,.zx-mood-chip:hover{border-color:rgba(223,154,46,.45);transform:translateY(-1px);box-shadow:var(--zx-shadow-soft)}
-.zx-mood-chip__emoji{font-size:1.4rem}.zx-mood-chip__text strong{display:block;color:var(--zx-text);font-size:.95rem}.zx-mood-chip__text span{color:var(--zx-muted);font-size:.8rem}
-.zx-toggle{display:grid;grid-template-columns:1fr 1fr;gap:10px}.zx-toggle-btn,.zx-budget-input{width:100%;padding:14px 16px;border-radius:16px;border:1px solid var(--zx-line);background:rgba(255,255,255,.88);color:var(--zx-text);font:inherit;transition:.18s ease}.zx-toggle-btn{cursor:pointer;font-weight:700}.zx-toggle-btn.active,.zx-toggle-btn:hover{background:var(--zx-green);color:#fff;border-color:var(--zx-green)}.zx-budget-input:focus{outline:none;border-color:rgba(223,154,46,.55);box-shadow:0 0 0 4px rgba(223,154,46,.12)}
-.zx-slider{width:100%;margin-top:12px;-webkit-appearance:none;appearance:none;height:5px;border-radius:999px;background:linear-gradient(to right,var(--zx-gold) 0%,var(--zx-gold) 30%,#ddd7ce 30%)}.zx-slider::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;width:18px;height:18px;border-radius:50%;background:var(--zx-gold);border:3px solid #fff;box-shadow:0 2px 8px rgba(223,154,46,.35)}
-.zx-suggest-btn{width:100%;margin-top:8px;padding:16px;border:none;border-radius:16px;background:linear-gradient(135deg,var(--zx-gold) 0%,var(--zx-gold-deep) 100%);color:#fff;font:inherit;font-weight:800;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:10px}.zx-suggest-btn:disabled{opacity:.7;cursor:not-allowed}.zx-spinner{width:18px;height:18px;border-radius:50%;border:2.5px solid rgba(255,255,255,.35);border-top-color:#fff;animation:spin .7s linear infinite;display:none}@keyframes spin{to{transform:rotate(360deg)}}.zx-suggest-btn.loading .zx-spinner{display:block}.zx-suggest-btn.loading .zx-btn-label{display:none}
-.zx-results-header{display:none;align-items:center;justify-content:space-between;gap:12px;margin-bottom:18px}.zx-results-header h2{font-family:'Playfair Display',serif;font-size:1.65rem;color:var(--zx-green)}.zx-results-count{padding:8px 12px;border-radius:999px;background:var(--zx-green-soft);color:var(--zx-green);font-size:.84rem;font-weight:800}.zx-results-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:18px}
-.zx-results-idle{grid-column:1/-1;text-align:center;padding:80px 24px;background:rgba(255,255,255,.6);border-radius:24px;border:1px dashed var(--zx-line);color:var(--zx-muted)}.zx-results-idle__icon{display:block;margin-bottom:18px;font-size:3.5rem}.zx-results-idle h3{margin-bottom:10px;font-family:'Playfair Display',serif;font-size:1.9rem;color:var(--zx-green)}.zx-results-idle h3 em{color:var(--zx-gold-deep);font-style:normal}
-.zx-result-card{overflow:hidden;border-radius:24px;background:var(--zx-card);border:1px solid var(--zx-line);box-shadow:var(--zx-shadow-soft);transition:.2s ease}.zx-result-card:hover{transform:translateY(-4px);box-shadow:var(--zx-shadow)}.zx-result-card__bar{height:5px;background:linear-gradient(to right,var(--zx-green),var(--zx-gold))}.zx-result-card__body{padding:18px}.zx-result-card__name{margin-bottom:10px;font-family:'Playfair Display',serif;font-size:1.3rem;color:var(--zx-text)}.zx-result-card__meta{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:12px}.zx-result-chip{display:inline-flex;align-items:center;padding:6px 10px;border-radius:999px;font-size:.8rem;font-weight:800}.zx-chip-price{background:#fff1da;color:#805700}.zx-chip-cal{background:var(--zx-green-soft);color:var(--zx-green)}.zx-result-card__desc{margin-bottom:16px;color:var(--zx-muted);line-height:1.7;font-size:.9rem}.zx-result-card__cta{display:inline-flex;align-items:center;justify-content:center;width:100%;padding:12px 14px;border-radius:14px;background:var(--zx-green);color:#fff;text-decoration:none;font-weight:800}.zx-result-card__cta:hover{color:#fff;background:#2f6a46}
-.zx-error-msg{display:none;margin-bottom:16px;padding:16px 18px;border-radius:18px;background:#fff0ef;border:1px solid rgba(192,57,43,.18);color:#c0392b;font-weight:700}
-@media (max-width:1080px){.zx-ai-hero__grid,.zx-ai-body{grid-template-columns:1fr}}@media (max-width:768px){.zx-ai{padding:18px 0 64px}.zx-shell{width:min(100% - 24px,1320px)}.zx-ai-hero{border-radius:24px;padding:24px 20px}.zx-filter-panel{position:static}}
+    :root {
+        --zx-surface: rgba(255, 255, 255, .82);
+        --zx-card: #fff;
+        --zx-line: rgba(44, 60, 38, .12);
+        --zx-text: #1d231c;
+        --zx-muted: #677064;
+        --zx-green: #214d34;
+        --zx-green-soft: #e8f0e9;
+        --zx-gold: #df9a2e;
+        --zx-gold-deep: #bf7e14;
+        --zx-shadow: 0 18px 46px rgba(23, 30, 21, .08);
+        --zx-shadow-soft: 0 12px 28px rgba(23, 30, 21, .06);
+    }
+
+    body {
+        background: radial-gradient(circle at top left, rgba(223, 154, 46, .12), transparent 24%), radial-gradient(circle at top right, rgba(33, 77, 52, .08), transparent 20%), linear-gradient(180deg, #f8f4ec 0%, #f4eee5 100%) !important
+    }
+
+    .zx-ai {
+        font-family: 'Manrope', sans-serif;
+        color: var(--zx-text);
+        padding: 34px 0 90px
+    }
+
+    .zx-shell {
+        width: min(1320px, calc(100% - 48px));
+        margin: 0 auto
+    }
+
+    .zx-ai-hero {
+        overflow: hidden;
+        border-radius: 34px;
+        padding: clamp(28px, 5vw, 62px);
+        background: radial-gradient(circle at 85% 15%, rgba(223, 154, 46, .2), transparent 18%), radial-gradient(circle at 0% 100%, rgba(255, 255, 255, .08), transparent 28%), linear-gradient(135deg, #183a27 0%, #28553a 50%, #3d714c 100%);
+        border: 1px solid rgba(255, 255, 255, .35);
+        box-shadow: var(--zx-shadow)
+    }
+
+    .zx-ai-hero__grid,
+    .zx-ai-body {
+        display: grid;
+        gap: 24px
+    }
+
+    .zx-ai-hero__grid {
+        grid-template-columns: minmax(0, 1.3fr) minmax(290px, .9fr);
+        align-items: center
+    }
+
+    .zx-ai-body {
+        margin-top: 30px;
+        grid-template-columns: 340px 1fr;
+        align-items: start
+    }
+
+    .zx-ai-hero__eyebrow {
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        padding: 9px 14px;
+        border-radius: 999px;
+        background: rgba(255, 255, 255, .1);
+        color: #f4ca7e;
+        font-size: .8rem;
+        font-weight: 800;
+        letter-spacing: .16em;
+        text-transform: uppercase;
+        margin-bottom: 18px
+    }
+
+    .zx-ai-hero__eyebrow:before {
+        content: '';
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: currentColor
+    }
+
+    .zx-ai-hero h1 {
+        margin: 0 0 16px;
+        font-family: 'Playfair Display', serif;
+        font-size: clamp(3rem, 5.4vw, 5.2rem);
+        line-height: .97;
+        color: #fffdf7
+    }
+
+    .zx-ai-hero h1 em {
+        color: #f4ca7e;
+        font-style: normal
+    }
+
+    .zx-ai-hero__sub {
+        margin: 0;
+        max-width: 640px;
+        color: rgba(255, 255, 255, .78);
+        line-height: 1.85;
+        font-size: 1.03rem
+    }
+
+    .zx-ai-hero__panel {
+        display: grid;
+        gap: 14px
+    }
+
+    .zx-ai-hero__card,
+    .zx-filter-panel,
+    .zx-results-panel {
+        border-radius: 30px
+    }
+
+    .zx-ai-hero__card {
+        padding: 22px;
+        background: linear-gradient(180deg, rgba(255, 255, 255, .14), rgba(255, 255, 255, .08));
+        border: 1px solid rgba(255, 255, 255, .14);
+        backdrop-filter: blur(14px)
+    }
+
+    .zx-ai-hero__card h3 {
+        margin: 0 0 10px;
+        color: #fff;
+        font-size: 1.08rem
+    }
+
+    .zx-ai-hero__card p {
+        margin: 0;
+        color: rgba(255, 255, 255, .72);
+        font-size: .94rem;
+        line-height: 1.7
+    }
+
+    .zx-filter-panel,
+    .zx-results-panel {
+        background: var(--zx-surface);
+        border: 1px solid rgba(255, 255, 255, .65);
+        backdrop-filter: blur(14px);
+        box-shadow: var(--zx-shadow-soft)
+    }
+
+    .zx-filter-panel {
+        padding: 26px;
+        position: sticky;
+        top: 24px
+    }
+
+    .zx-results-panel {
+        padding: 26px;
+        min-height: 520px
+    }
+
+    .zx-filter-title {
+        margin-bottom: 22px;
+        font-family: 'Playfair Display', serif;
+        font-size: 1.5rem;
+        color: var(--zx-green)
+    }
+
+    .zx-fp-field {
+        margin-bottom: 24px
+    }
+
+    .zx-fp-label {
+        display: block;
+        margin-bottom: 10px;
+        color: var(--zx-green);
+        font-size: .78rem;
+        font-weight: 800;
+        text-transform: uppercase;
+        letter-spacing: .1em
+    }
+
+    .zx-mood-chips {
+        display: grid;
+        gap: 10px
+    }
+
+    .zx-mood-chip {
+        position: relative;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 14px 16px;
+        border-radius: 18px;
+        border: 1px solid var(--zx-line);
+        background: rgba(255, 255, 255, .7);
+        cursor: pointer;
+        transition: .2s ease
+    }
+
+    .zx-mood-chip input[type=radio] {
+        position: absolute;
+        opacity: 0;
+        pointer-events: none
+    }
+
+    .zx-mood-chip.selected,
+    .zx-mood-chip:hover {
+        border-color: rgba(223, 154, 46, .45);
+        transform: translateY(-1px);
+        box-shadow: var(--zx-shadow-soft)
+    }
+
+    .zx-mood-chip__emoji {
+        font-size: 1.4rem
+    }
+
+    .zx-mood-chip__text strong {
+        display: block;
+        color: var(--zx-text);
+        font-size: .95rem
+    }
+
+    .zx-mood-chip__text span {
+        color: var(--zx-muted);
+        font-size: .8rem
+    }
+
+    .zx-toggle {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 10px
+    }
+
+    .zx-toggle-btn,
+    .zx-budget-input {
+        width: 100%;
+        padding: 14px 16px;
+        border-radius: 16px;
+        border: 1px solid var(--zx-line);
+        background: rgba(255, 255, 255, .88);
+        color: var(--zx-text);
+        font: inherit;
+        transition: .18s ease
+    }
+
+    .zx-toggle-btn {
+        cursor: pointer;
+        font-weight: 700
+    }
+
+    .zx-toggle-btn.active,
+    .zx-toggle-btn:hover {
+        background: var(--zx-green);
+        color: #fff;
+        border-color: var(--zx-green)
+    }
+
+    .zx-budget-input:focus {
+        outline: none;
+        border-color: rgba(223, 154, 46, .55);
+        box-shadow: 0 0 0 4px rgba(223, 154, 46, .12)
+    }
+
+    .zx-slider {
+        width: 100%;
+        margin-top: 12px;
+        -webkit-appearance: none;
+        appearance: none;
+        height: 5px;
+        border-radius: 999px;
+        background: linear-gradient(to right, var(--zx-gold) 0%, var(--zx-gold) 30%, #ddd7ce 30%)
+    }
+
+    .zx-slider::-webkit-slider-thumb {
+        -webkit-appearance: none;
+        appearance: none;
+        width: 18px;
+        height: 18px;
+        border-radius: 50%;
+        background: var(--zx-gold);
+        border: 3px solid #fff;
+        box-shadow: 0 2px 8px rgba(223, 154, 46, .35)
+    }
+
+    .zx-suggest-btn {
+        width: 100%;
+        margin-top: 8px;
+        padding: 16px;
+        border: none;
+        border-radius: 16px;
+        background: linear-gradient(135deg, var(--zx-gold) 0%, var(--zx-gold-deep) 100%);
+        color: #fff;
+        font: inherit;
+        font-weight: 800;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px
+    }
+
+    .zx-suggest-btn:disabled {
+        opacity: .7;
+        cursor: not-allowed
+    }
+
+    .zx-spinner {
+        width: 18px;
+        height: 18px;
+        border-radius: 50%;
+        border: 2.5px solid rgba(255, 255, 255, .35);
+        border-top-color: #fff;
+        animation: spin .7s linear infinite;
+        display: none
+    }
+
+    @keyframes spin {
+        to {
+            transform: rotate(360deg)
+        }
+    }
+
+    .zx-suggest-btn.loading .zx-spinner {
+        display: block
+    }
+
+    .zx-suggest-btn.loading .zx-btn-label {
+        display: none
+    }
+
+    .zx-results-header {
+        display: none;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        margin-bottom: 18px
+    }
+
+    .zx-results-header h2 {
+        font-family: 'Playfair Display', serif;
+        font-size: 1.65rem;
+        color: var(--zx-green)
+    }
+
+    .zx-results-count {
+        padding: 8px 12px;
+        border-radius: 999px;
+        background: var(--zx-green-soft);
+        color: var(--zx-green);
+        font-size: .84rem;
+        font-weight: 800
+    }
+
+    .zx-results-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+        gap: 18px
+    }
+
+    .zx-results-idle {
+        grid-column: 1/-1;
+        text-align: center;
+        padding: 80px 24px;
+        background: rgba(255, 255, 255, .6);
+        border-radius: 24px;
+        border: 1px dashed var(--zx-line);
+        color: var(--zx-muted)
+    }
+
+    .zx-results-idle__icon {
+        display: block;
+        margin-bottom: 18px;
+        font-size: 3.5rem
+    }
+
+    .zx-results-idle h3 {
+        margin-bottom: 10px;
+        font-family: 'Playfair Display', serif;
+        font-size: 1.9rem;
+        color: var(--zx-green)
+    }
+
+    .zx-results-idle h3 em {
+        color: var(--zx-gold-deep);
+        font-style: normal
+    }
+
+    .zx-result-card {
+        overflow: hidden;
+        border-radius: 24px;
+        background: var(--zx-card);
+        border: 1px solid var(--zx-line);
+        box-shadow: var(--zx-shadow-soft);
+        transition: .2s ease
+    }
+
+    .zx-result-card:hover {
+        transform: translateY(-4px);
+        box-shadow: var(--zx-shadow)
+    }
+
+    .zx-result-card__bar {
+        height: 5px;
+        background: linear-gradient(to right, var(--zx-green), var(--zx-gold))
+    }
+
+    .zx-result-card__body {
+        padding: 18px
+    }
+
+    .zx-result-card__name {
+        margin-bottom: 10px;
+        font-family: 'Playfair Display', serif;
+        font-size: 1.3rem;
+        color: var(--zx-text)
+    }
+
+    .zx-result-card__meta {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        margin-bottom: 12px
+    }
+
+    .zx-result-chip {
+        display: inline-flex;
+        align-items: center;
+        padding: 6px 10px;
+        border-radius: 999px;
+        font-size: .8rem;
+        font-weight: 800
+    }
+
+    .zx-chip-price {
+        background: #fff1da;
+        color: #805700
+    }
+
+    .zx-chip-cal {
+        background: var(--zx-green-soft);
+        color: var(--zx-green)
+    }
+
+    .zx-result-card__desc {
+        margin-bottom: 16px;
+        color: var(--zx-muted);
+        line-height: 1.7;
+        font-size: .9rem
+    }
+
+    .zx-result-card__cta {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+        padding: 12px 14px;
+        border-radius: 14px;
+        background: var(--zx-green);
+        color: #fff;
+        text-decoration: none;
+        font-weight: 800
+    }
+
+    .zx-result-card__cta:hover {
+        color: #fff;
+        background: #2f6a46
+    }
+
+    .zx-error-msg {
+        display: none;
+        margin-bottom: 16px;
+        padding: 16px 18px;
+        border-radius: 18px;
+        background: #fff0ef;
+        border: 1px solid rgba(192, 57, 43, .18);
+        color: #c0392b;
+        font-weight: 700
+    }
+
+    @media (max-width:1080px) {
+
+        .zx-ai-hero__grid,
+        .zx-ai-body {
+            grid-template-columns: 1fr
+        }
+    }
+
+    @media (max-width:768px) {
+        .zx-ai {
+            padding: 18px 0 64px
+        }
+
+        .zx-shell {
+            width: min(100% - 24px, 1320px)
+        }
+
+        .zx-ai-hero {
+            border-radius: 24px;
+            padding: 24px 20px
+        }
+
+        .zx-filter-panel {
+            position: static
+        }
+    }
 </style>
-<section class="zx-ai"><div class="zx-shell"><div class="zx-ai-hero"><div class="zx-ai-hero__grid"><div class="zx-ai-hero__content"><div class="zx-ai-hero__eyebrow">Craving Assistant</div><h1>Tell us your <em>mood</em>, we will suggest the meal.</h1><p class="zx-ai-hero__sub">Whether you want something spicy, filling, light, or comforting, ZaikaX helps you discover dishes that match exactly what you are craving right now.</p></div><div class="zx-ai-hero__panel"><div class="zx-ai-hero__card"><h3>Made for real cravings</h3><p>Find dishes that suit your mood, appetite, and budget without scrolling through the whole menu.</p></div><div class="zx-ai-hero__card"><h3>From hunger to comfort food</h3><p>Pick a mood and let the recommender point you to bold flavors, lighter options, or indulgent favorites.</p></div></div></div></div><div class="zx-ai-body"><aside class="zx-filter-panel"><div class="zx-filter-title">Choose Your Craving</div><div class="zx-fp-field"><label class="zx-fp-label">Mood</label><div class="zx-mood-chips"><label class="zx-mood-chip selected" data-value="hungry"><input type="radio" id="mood" name="mood" value="hungry" checked><span class="zx-mood-chip__emoji">🍛</span><div class="zx-mood-chip__text"><strong>Hungry</strong><span>Big meal, full satisfaction</span></div></label><label class="zx-mood-chip" data-value="healthy"><input type="radio" name="mood" value="healthy"><span class="zx-mood-chip__emoji">🥗</span><div class="zx-mood-chip__text"><strong>Healthy</strong><span>Fresh and lighter picks</span></div></label><label class="zx-mood-chip" data-value="chill"><input type="radio" name="mood" value="chill"><span class="zx-mood-chip__emoji">🍜</span><div class="zx-mood-chip__text"><strong>Chill</strong><span>Comfort food vibes</span></div></label></div></div><div class="zx-fp-field"><label class="zx-fp-label">Preference</label><div class="zx-toggle"><button class="zx-toggle-btn active" data-veg="all" type="button">All</button><button class="zx-toggle-btn" data-veg="veg" type="button">Veg Only</button></div><input type="hidden" id="veg" value="all"></div><div class="zx-fp-field"><label class="zx-fp-label">Budget</label><input type="number" id="budget" class="zx-budget-input" placeholder="300" value="300" min="50" max="2000"><input type="range" id="budgetSlider" class="zx-slider" min="50" max="2000" value="300" step="50"></div><button class="zx-suggest-btn" onclick="getSuggestions()" id="suggestBtn"><div class="zx-spinner"></div><span class="zx-btn-label">Suggest My Meal</span></button></aside><div class="zx-results-panel"><div class="zx-error-msg" id="errorMsg">Something went wrong. Please try again.</div><div class="zx-results-header" id="resultsHeader"><h2>Recommended For You</h2><span class="zx-results-count" id="resultsCount">0 dishes</span></div><div class="zx-results-grid" id="results"><div class="zx-results-idle" id="idleState" style="grid-column:1/-1"><span class="zx-results-idle__icon">🍽️</span><h3>Pick a <em>mood</em> and start exploring</h3><p>Set your mood, preference, and budget, then let ZaikaX suggest dishes that feel right for the moment.</p></div></div></div></div></div></section>
+<section class="zx-ai">
+    <div class="zx-shell">
+        <div class="zx-ai-hero">
+            <div class="zx-ai-hero__grid">
+                <div class="zx-ai-hero__content">
+                    <div class="zx-ai-hero__eyebrow">Craving Assistant</div>
+                    <h1>Tell us your <em>mood</em>, we will suggest the meal.</h1>
+                    <p class="zx-ai-hero__sub">Whether you want something spicy, filling, light, or comforting, ZaikaX
+                        helps you discover dishes that match exactly what you are craving right now.</p>
+                </div>
+                <div class="zx-ai-hero__panel">
+                    <div class="zx-ai-hero__card">
+                        <h3>Made for real cravings</h3>
+                        <p>Find dishes that suit your mood, appetite, and budget without scrolling through the whole
+                            menu.</p>
+                    </div>
+                    <div class="zx-ai-hero__card">
+                        <h3>From hunger to comfort food</h3>
+                        <p>Pick a mood and let the recommender point you to bold flavors, lighter options, or indulgent
+                            favorites.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="zx-ai-body">
+            <aside class="zx-filter-panel">
+                <div class="zx-filter-title">Choose Your Craving</div>
+                <div class="zx-fp-field"><label class="zx-fp-label">Mood</label>
+                    <div class="zx-mood-chips"><label class="zx-mood-chip selected" data-value="hungry"><input
+                                type="radio" id="mood" name="mood" value="hungry" checked><span
+                                class="zx-mood-chip__emoji">🍛</span>
+                            <div class="zx-mood-chip__text"><strong>Hungry</strong><span>Big meal, full
+                                    satisfaction</span></div>
+                        </label><label class="zx-mood-chip" data-value="healthy"><input type="radio" name="mood"
+                                value="healthy"><span class="zx-mood-chip__emoji">🥗</span>
+                            <div class="zx-mood-chip__text"><strong>Healthy</strong><span>Fresh and lighter picks</span>
+                            </div>
+                        </label><label class="zx-mood-chip" data-value="chill"><input type="radio" name="mood"
+                                value="chill"><span class="zx-mood-chip__emoji">🍜</span>
+                            <div class="zx-mood-chip__text"><strong>Chill</strong><span>Comfort food vibes</span></div>
+                        </label></div>
+                </div>
+                <div class="zx-fp-field"><label class="zx-fp-label">Preference</label>
+                    <div class="zx-toggle"><button class="zx-toggle-btn active" data-veg="all"
+                            type="button">All</button><button class="zx-toggle-btn" data-veg="veg" type="button">Veg
+                            Only</button></div><input type="hidden" id="veg" value="all">
+                </div>
+                <div class="zx-fp-field"><label class="zx-fp-label">Budget</label><input type="number" id="budget"
+                        class="zx-budget-input" placeholder="300" value="300" min="50" max="2000"><input type="range"
+                        id="budgetSlider" class="zx-slider" min="50" max="2000" value="300" step="50"></div><button
+                    class="zx-suggest-btn" onclick="getSuggestions()" id="suggestBtn">
+                    <div class="zx-spinner"></div><span class="zx-btn-label">Suggest My Meal</span>
+                </button>
+            </aside>
+            <div class="zx-results-panel">
+                <div class="zx-error-msg" id="errorMsg">Something went wrong. Please try again.</div>
+                <div class="zx-results-header" id="resultsHeader">
+                    <h2>Recommended For You</h2><span class="zx-results-count" id="resultsCount">0 dishes</span>
+                </div>
+                <div class="zx-results-grid" id="results">
+                    <div class="zx-results-idle" id="idleState" style="grid-column:1/-1"><span
+                            class="zx-results-idle__icon">🍽️</span>
+                        <h3>Pick a <em>mood</em> and start exploring</h3>
+                        <p>Set your mood, preference, and budget, then let ZaikaX suggest dishes that feel right for the
+                            moment.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
 <script>
-document.querySelectorAll('.zx-mood-chip').forEach(chip=>{chip.addEventListener('click',()=>{document.querySelectorAll('.zx-mood-chip').forEach(c=>c.classList.remove('selected'));chip.classList.add('selected');});});
-document.querySelectorAll('.zx-toggle-btn').forEach(btn=>{btn.addEventListener('click',()=>{document.querySelectorAll('.zx-toggle-btn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');document.getElementById('veg').value=btn.dataset.veg;});});
-const budgetInput=document.getElementById('budget');const budgetSlider=document.getElementById('budgetSlider');
-budgetSlider.addEventListener('input',()=>{budgetInput.value=budgetSlider.value;updateSliderFill();});
-budgetInput.addEventListener('input',()=>{budgetSlider.value=Math.min(2000,Math.max(50,budgetInput.value||50));updateSliderFill();});
-function updateSliderFill(){const pct=((budgetSlider.value-50)/(2000-50))*100;budgetSlider.style.background=`linear-gradient(to right, var(--zx-gold) 0%, var(--zx-gold) ${pct}%, #ddd7ce ${pct}%)`;}
-async function getSuggestions(){const mood=document.querySelector('input[name="mood"]:checked')?.value||'hungry';const veg=document.getElementById("veg").value;const budget=document.getElementById("budget").value||500;const btn=document.getElementById('suggestBtn');const errorMsg=document.getElementById('errorMsg');const resultsHeader=document.getElementById('resultsHeader');const resultsCount=document.getElementById('resultsCount');const container=document.getElementById("results");btn.classList.add('loading');btn.disabled=true;errorMsg.style.display='none';try{const res=await fetch("/menu/mood/suggest/",{method:"POST",headers:{"Content-Type":"application/json","X-CSRFToken":document.cookie.split('csrftoken=')[1]?.split(';')[0]},body:JSON.stringify({mood,veg,budget})});if(!res.ok){errorMsg.style.display='block';return;}const data=await res.json();container.innerHTML="";if(!data.items||data.items.length===0){container.innerHTML=`<div class="zx-results-idle" style="grid-column:1/-1"><span class="zx-results-idle__icon">😕</span><h3>No matching <em>dishes</em> found</h3><p>Try increasing your budget or changing your mood to discover more options.</p></div>`;resultsHeader.style.display='none';return;}resultsHeader.style.display='flex';resultsCount.textContent=`${data.items.length} dish${data.items.length!==1?'es':''}`;data.items.forEach((item)=>{const card=document.createElement('div');card.className='zx-result-card';card.innerHTML=`<div class="zx-result-card__bar"></div><div class="zx-result-card__body"><div class="zx-result-card__name">${item.name}</div><div class="zx-result-card__meta"><span class="zx-result-chip zx-chip-price">&#8377;${item.price}</span>${item.calories?`<span class="zx-result-chip zx-chip-cal">🔥 ${item.calories}</span>`:''}</div><p class="zx-result-card__desc">${item.desc||'A delicious dish crafted with fresh ingredients and authentic spices.'}</p><a href="/menu/" class="zx-result-card__cta">View on Menu</a></div>`;container.appendChild(card);});}catch(err){console.error(err);errorMsg.style.display='block';}finally{btn.classList.remove('loading');btn.disabled=false;}}
-updateSliderFill();
+    document.querySelectorAll('.zx-mood-chip').forEach(chip => { chip.addEventListener('click', () => { document.querySelectorAll('.zx-mood-chip').forEach(c => c.classList.remove('selected')); chip.classList.add('selected'); }); });
+    document.querySelectorAll('.zx-toggle-btn').forEach(btn => { btn.addEventListener('click', () => { document.querySelectorAll('.zx-toggle-btn').forEach(b => b.classList.remove('active')); btn.classList.add('active'); document.getElementById('veg').value = btn.dataset.veg; }); });
+    const budgetInput = document.getElementById('budget'); const budgetSlider = document.getElementById('budgetSlider');
+    budgetSlider.addEventListener('input', () => { budgetInput.value = budgetSlider.value; updateSliderFill(); });
+    budgetInput.addEventListener('input', () => { budgetSlider.value = Math.min(2000, Math.max(50, budgetInput.value || 50)); updateSliderFill(); });
+    function updateSliderFill() { const pct = ((budgetSlider.value - 50) / (2000 - 50)) * 100; budgetSlider.style.background = `linear-gradient(to right, var(--zx-gold) 0%, var(--zx-gold) ${pct}%, #ddd7ce ${pct}%)`; }
+    async function getSuggestions() { const mood = document.querySelector('input[name="mood"]:checked')?.value || 'hungry'; const veg = document.getElementById("veg").value; const budget = document.getElementById("budget").value || 500; const btn = document.getElementById('suggestBtn'); const errorMsg = document.getElementById('errorMsg'); const resultsHeader = document.getElementById('resultsHeader'); const resultsCount = document.getElementById('resultsCount'); const container = document.getElementById("results"); btn.classList.add('loading'); btn.disabled = true; errorMsg.style.display = 'none'; try { const res = await fetch("/menu/mood/suggest/", { method: "POST", headers: { "Content-Type": "application/json", "X-CSRFToken": document.cookie.split('csrftoken=')[1]?.split(';')[0] }, body: JSON.stringify({ mood, veg, budget }) }); if (!res.ok) { errorMsg.style.display = 'block'; return; } const data = await res.json(); container.innerHTML = ""; if (!data.items || data.items.length === 0) { container.innerHTML = `<div class="zx-results-idle" style="grid-column:1/-1"><span class="zx-results-idle__icon">😕</span><h3>No matching <em>dishes</em> found</h3><p>Try increasing your budget or changing your mood to discover more options.</p></div>`; resultsHeader.style.display = 'none'; return; } resultsHeader.style.display = 'flex'; resultsCount.textContent = `${data.items.length} dish${data.items.length !== 1 ? 'es' : ''}`; data.items.forEach((item) => { const card = document.createElement('div'); card.className = 'zx-result-card'; card.innerHTML = `<div class="zx-result-card__bar"></div><div class="zx-result-card__body"><div class="zx-result-card__name">${item.name}</div><div class="zx-result-card__meta"><span class="zx-result-chip zx-chip-price">&#8377;${item.price}</span>${item.calories ? `<span class="zx-result-chip zx-chip-cal">🔥 ${item.calories}</span>` : ''}</div><p class="zx-result-card__desc">${item.desc || 'A delicious dish crafted with fresh ingredients and authentic spices.'}</p><a href="/menu/" class="zx-result-card__cta">View on Menu</a></div>`; container.appendChild(card); }); } catch (err) { console.error(err); errorMsg.style.display = 'block'; } finally { btn.classList.remove('loading'); btn.disabled = false; } }
+    updateSliderFill();
 </script>
 {% endblock %}

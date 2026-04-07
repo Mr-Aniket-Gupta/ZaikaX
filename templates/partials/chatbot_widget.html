@@ -4,7 +4,9 @@
 <div id="chatbot-root" class="chatbot-root" data-api-url="/faq-search/">
   <button id="chatbot-toggle" class="chatbot-button" aria-label="Open chat">
     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <path d="M12 3C7.03 3 3 6.58 3 11C3 13.08 3.92 15.03 5.5 16.46V21L9.12 18.5C10.06 18.86 11.02 19.04 12 19.04C16.97 19.04 21 15.46 21 11C21 6.54 16.97 3 12 3Z" stroke="white" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
+      <path
+        d="M12 3C7.03 3 3 6.58 3 11C3 13.08 3.92 15.03 5.5 16.46V21L9.12 18.5C10.06 18.86 11.02 19.04 12 19.04C16.97 19.04 21 15.46 21 11C21 6.54 16.97 3 12 3Z"
+        stroke="white" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" />
     </svg>
   </button>
 
@@ -19,16 +21,19 @@
 
       <div class="chatbot-suggestions-wrap">
         <button type="button" class="chatbot-suggest-prev" aria-label="Previous suggestions">‹</button>
-        <div id="chatbot-suggestions" class="chatbot-suggestions" role="listbox" tabindex="0" aria-label="Suggested questions"></div>
+        <div id="chatbot-suggestions" class="chatbot-suggestions" role="listbox" tabindex="0"
+          aria-label="Suggested questions"></div>
         <button type="button" class="chatbot-suggest-next" aria-label="Next suggestions">›</button>
       </div>
 
       <form id="chatbot-form" class="chatbot-form" action="#" onsubmit="return false;">
-        <input id="chatbot-input" type="search" placeholder="Ask about orders, delivery, payment..." aria-label="Search FAQs" autocomplete="off">
+        <input id="chatbot-input" type="search" placeholder="Ask about orders, delivery, payment..."
+          aria-label="Search FAQs" autocomplete="off">
       </form>
     </div>
 
-    <div class="chatbot-footer">Tip: Try keywords like <strong>delivery</strong> or <strong>payment</strong>. Press <kbd>Enter</kbd> to ask.</div>
+    <div class="chatbot-footer">Tip: Try keywords like <strong>delivery</strong> or <strong>payment</strong>. Press
+      <kbd>Enter</kbd> to ask.</div>
   </div>
 </div>
 

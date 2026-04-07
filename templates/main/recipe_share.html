@@ -1,0 +1,166 @@
+{% extends 'main/base.html' %}
+
+{% block content %}
+<section class="zx-share-page">
+    <style>
+        .zx-share-page {
+            max-width: 980px;
+            margin: 0 auto;
+            padding: 34px 20px 72px
+        }
+
+        .zx-share-shell {
+            background: #fff;
+            border-radius: 32px;
+            overflow: hidden;
+            box-shadow: 0 24px 60px rgba(24, 54, 41, .08);
+            border: 1px solid rgba(23, 76, 53, .08)
+        }
+
+        .zx-share-head {
+            padding: 34px;
+            background: linear-gradient(135deg, #184c35, #2e6843 58%, #d69a22);
+            color: #fff
+        }
+
+        .zx-share-head h1 {
+            margin: 0 0 12px;
+            font-size: clamp(2rem, 4vw, 3.3rem)
+        }
+
+        .zx-share-head p {
+            margin: 0;
+            max-width: 700px;
+            line-height: 1.8;
+            color: rgba(255, 255, 255, .88)
+        }
+
+        .zx-share-form {
+            padding: 30px;
+            display: grid;
+            gap: 22px
+        }
+
+        .zx-form-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 18px
+        }
+
+        .zx-field {
+            display: grid;
+            gap: 9px
+        }
+
+        .zx-field label {
+            font-weight: 700;
+            color: #173b2c
+        }
+
+        .zx-field input,
+        .zx-field textarea {
+            width: 100%;
+            padding: 15px 16px;
+            border-radius: 18px;
+            border: 1px solid rgba(23, 76, 53, .12);
+            background: #fcfaf5;
+            font: inherit
+        }
+
+        .zx-field textarea {
+            min-height: 140px;
+            resize: vertical
+        }
+
+        .zx-field--full {
+            grid-column: 1/-1
+        }
+
+        .zx-submit {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 15px 22px;
+            border: none;
+            border-radius: 999px;
+            background: #d89416;
+            color: #fff;
+            font-weight: 700;
+            font-size: 1rem;
+            cursor: pointer
+        }
+
+        .zx-note {
+            padding: 16px 18px;
+            border-radius: 20px;
+            background: #f7efe0;
+            color: #8b6116
+        }
+
+        @media (max-width: 760px) {
+            .zx-form-grid {
+                grid-template-columns: 1fr
+            }
+        }
+    </style>
+
+    <div class="zx-share-shell">
+        <div class="zx-share-head">
+            <h1>Apni recipe ko spotlight do.</h1>
+            <p>Dish ki kahani, ingredients aur step-by-step method share karo. Agar tum chaho to is recipe ke liye
+                custom order requests bhi open rakh sakte ho.</p>
+        </div>
+
+        <form method="post" class="zx-share-form">
+            {% csrf_token %}
+            <div class="zx-form-grid">
+                <div class="zx-field">
+                    <label for="title">Recipe title</label>
+                    <input type="text" id="title" name="title" placeholder="Smoky Chicken Handi" required>
+                </div>
+                <div class="zx-field">
+                    <label for="image_url">Recipe image URL</label>
+                    <input type="url" id="image_url" name="image_url" placeholder="https://example.com/recipe.jpg">
+                </div>
+                <div class="zx-field">
+                    <label for="servings">Servings</label>
+                    <input type="number" id="servings" name="servings" min="1" value="2" required>
+                </div>
+                <div class="zx-field">
+                    <label for="prep_time_minutes">Prep time in minutes</label>
+                    <input type="number" id="prep_time_minutes" name="prep_time_minutes" min="5" value="30" required>
+                </div>
+                <div class="zx-field zx-field--full">
+                    <label for="short_description">Short description</label>
+                    <input type="text" id="short_description" name="short_description" maxlength="240"
+                        placeholder="Rich gravy, slow-cooked spices, and a homestyle finish." required>
+                </div>
+                <div class="zx-field zx-field--full">
+                    <label for="story">Recipe story</label>
+                    <textarea id="story" name="story"
+                        placeholder="Batayein ye recipe kahan se inspired hai aur isme khaas kya hai..."
+                        required></textarea>
+                </div>
+                <div class="zx-field zx-field--full">
+                    <label for="ingredients">Ingredients</label>
+                    <textarea id="ingredients" name="ingredients"
+                        placeholder="Chicken - 500g&#10;Curd - 1 cup&#10;Tandoori masala - 2 tbsp" required></textarea>
+                </div>
+                <div class="zx-field zx-field--full">
+                    <label for="steps">Steps</label>
+                    <textarea id="steps" name="steps"
+                        placeholder="1. Chicken ko marinate karo...&#10;2. Gravy slow flame par pakao...&#10;3. Butter finish ke saath serve karo..."
+                        required></textarea>
+                </div>
+            </div>
+
+            <label class="zx-note">
+                <input type="checkbox" name="allow_custom_orders" checked style="margin-right:8px;">
+                Dusre users is recipe ko custom order ke liye request kar sakte hain
+            </label>
+
+            <button type="submit" class="zx-submit">Share Recipe</button>
+        </form>
+    </div>
+</section>
+{% endblock %}

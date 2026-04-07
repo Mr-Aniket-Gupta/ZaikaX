@@ -9,16 +9,17 @@ body{background:radial-gradient(circle at top left,rgba(223,154,46,.12),transpar
 .zx-cart-hero{overflow:hidden;border-radius:34px;padding:clamp(28px,5vw,62px);background:radial-gradient(circle at 85% 16%,rgba(223,154,46,.2),transparent 18%),radial-gradient(circle at 0% 100%,rgba(255,255,255,.08),transparent 28%),linear-gradient(135deg,#183a27 0%,#28553a 50%,#3d714c 100%);border:1px solid rgba(255,255,255,.35);box-shadow:var(--zx-shadow)}
 .zx-cart-hero__eyebrow{display:inline-flex;align-items:center;gap:10px;padding:9px 14px;border-radius:999px;background:rgba(255,255,255,.1);color:#f4ca7e;font-size:.8rem;font-weight:800;letter-spacing:.16em;text-transform:uppercase;margin-bottom:18px}.zx-cart-hero__eyebrow:before{content:'';width:8px;height:8px;border-radius:50%;background:currentColor}
 .zx-cart-hero h1{margin:0 0 14px;font-family:'Playfair Display',serif;font-size:clamp(3rem,5vw,5rem);line-height:.97;color:#fffdf7}.zx-cart-hero h1 em{color:#f4ca7e;font-style:normal}.zx-cart-hero p{margin:0;max-width:620px;color:rgba(255,255,255,.76);line-height:1.8}
-.zx-cart-body{margin-top:30px;display:grid;grid-template-columns:1fr 360px;gap:24px;align-items:start}.zx-cart-items{display:grid;gap:18px}
+.zx-cart-body{margin-top:30px;display:grid;grid-template-columns:1fr;gap:24px;align-items:start}.zx-cart-items{display:grid;gap:18px}
 .zx-item-card,.zx-summary-box,.zx-empty,.zx-suggest{background:var(--zx-surface);border:1px solid rgba(255,255,255,.65);backdrop-filter:blur(14px);box-shadow:var(--zx-shadow-soft);border-radius:28px}
 .zx-item-card{display:grid;grid-template-columns:96px 1fr auto;gap:18px;padding:18px;align-items:center}.zx-item-img{width:96px;height:96px;object-fit:cover;border-radius:20px;background:#f3eee5}.zx-item-name{margin-bottom:8px;font-family:'Playfair Display',serif;font-size:1.45rem;color:var(--zx-text)}.zx-item-meta{margin-bottom:10px;color:var(--zx-muted);line-height:1.6}.zx-item-subtotal{display:inline-flex;padding:7px 12px;border-radius:999px;background:#fff1da;color:#805700;font-size:.86rem;font-weight:800}
 .zx-item-actions{display:flex;flex-direction:column;align-items:flex-end;gap:10px}.zx-qty-control{display:inline-flex;align-items:center;gap:8px;padding:4px;border-radius:14px;background:var(--zx-green-soft);border:1px solid rgba(33,77,52,.08)}.zx-qty-btn{width:34px;height:34px;border-radius:10px;border:none;background:#fff;color:var(--zx-green);font-size:1rem;font-weight:800;cursor:pointer}.zx-qty-value{min-width:24px;text-align:center;color:var(--zx-green);font-weight:800}
 .zx-btn-remove{padding:9px 14px;border-radius:999px;border:1px solid rgba(192,57,43,.15);background:#fff0ef;color:var(--zx-red);font:inherit;font-size:.84rem;font-weight:800;cursor:pointer}
-.zx-summary{position:sticky;top:24px}.zx-summary-box{padding:24px}.zx-summary-label,.zx-suggest-label{display:inline-flex;margin-bottom:8px;color:var(--zx-gold-deep);font-size:.78rem;font-weight:800;text-transform:uppercase;letter-spacing:.12em}.zx-summary-title{margin-bottom:22px;font-family:'Playfair Display',serif;font-size:1.7rem;color:var(--zx-green)}.zx-summary-line{display:flex;justify-content:space-between;gap:12px;padding:10px 0;border-bottom:1px solid rgba(44,60,38,.08);color:var(--zx-muted)}.zx-summary-line strong{color:var(--zx-text)}.zx-summary-total-row{display:flex;justify-content:space-between;align-items:center;margin-top:20px;padding-top:20px;border-top:2px solid var(--zx-green-soft)}.zx-summary-total-label{font-family:'Playfair Display',serif;font-size:1.15rem;color:var(--zx-green)}.zx-summary-total-amount{font-family:'Playfair Display',serif;font-size:1.9rem;color:var(--zx-green);font-weight:800}
+.zx-summary{width:min(100%,820px)}.zx-summary-box{padding:24px}.zx-summary-label,.zx-suggest-label{display:inline-flex;margin-bottom:8px;color:var(--zx-gold-deep);font-size:.78rem;font-weight:800;text-transform:uppercase;letter-spacing:.12em}.zx-summary-title{margin-bottom:22px;font-family:'Playfair Display',serif;font-size:1.7rem;color:var(--zx-green)}.zx-summary-line{display:flex;justify-content:space-between;gap:12px;padding:10px 0;border-bottom:1px solid rgba(44,60,38,.08);color:var(--zx-muted)}.zx-summary-line strong{color:var(--zx-text)}.zx-summary-total-row{display:flex;justify-content:space-between;align-items:center;margin-top:20px;padding-top:20px;border-top:2px solid var(--zx-green-soft)}.zx-summary-total-label{font-family:'Playfair Display',serif;font-size:1.15rem;color:var(--zx-green)}.zx-summary-total-amount{font-family:'Playfair Display',serif;font-size:1.9rem;color:var(--zx-green);font-weight:800}
 .zx-delivery-note{margin-top:18px;padding:16px;border-radius:18px;background:#fff7e9;color:#805700;line-height:1.65;font-size:.9rem}.zx-btn-checkout,.zx-btn-browse,.zx-suggest-btn{display:inline-flex;align-items:center;justify-content:center;width:100%;margin-top:16px;padding:16px 20px;border-radius:16px;background:linear-gradient(135deg,var(--zx-gold) 0%,var(--zx-gold-deep) 100%);color:#fff;text-decoration:none;font-weight:800}.zx-btn-checkout:hover,.zx-btn-browse:hover,.zx-suggest-btn:hover{color:#fff}.zx-continue{display:inline-flex;margin-top:12px;color:var(--zx-green);text-decoration:none;font-weight:800}
+.zx-coupon-box{margin-top:16px;padding:16px;border-radius:18px;background:#fff;border:1px solid var(--zx-line)}.zx-coupon-pill{display:inline-flex;align-items:center;justify-content:space-between;width:100%;gap:12px;padding:10px 12px;border-radius:14px;background:var(--zx-green-soft);color:var(--zx-green);font-size:.9rem;font-weight:800}.zx-coupon-form{display:flex;gap:8px;margin-top:12px}.zx-coupon-form input{flex:1;padding:12px 14px;border-radius:14px;border:1px solid var(--zx-line);background:#fcfbf8}.zx-coupon-small{padding:12px 14px;border-radius:14px;border:none;background:#f2f5f3;color:var(--zx-green);font-weight:800;cursor:pointer}.zx-offers{margin-top:12px;display:grid;gap:10px}.zx-offer{padding:12px;border-radius:14px;background:#f8faf8;border:1px solid var(--zx-line)}.zx-offer strong{display:block}.zx-offer span{display:block;color:var(--zx-muted);font-size:.86rem;line-height:1.6}
 .zx-empty{text-align:center;padding:80px 24px}.zx-empty__bowl{display:block;margin-bottom:18px;font-size:4.8rem}.zx-empty h2{margin-bottom:10px;font-family:'Playfair Display',serif;font-size:2.6rem;color:var(--zx-green)}.zx-empty h2 em{color:var(--zx-gold-deep);font-style:normal}.zx-empty p{max-width:440px;margin:0 auto;color:var(--zx-muted);line-height:1.8}
 .zx-suggest{margin-top:30px;padding:24px}.zx-suggest-title{margin:0;font-family:'Playfair Display',serif;font-size:2rem;color:var(--zx-green)}.zx-suggest-copy{margin:8px 0 0;color:var(--zx-muted);line-height:1.7}.zx-suggest-chip{display:inline-flex;margin-top:12px;padding:8px 12px;border-radius:999px;background:#fff1da;color:#805700;font-size:.82rem;font-weight:800}.zx-suggest-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:18px;margin-top:18px}.zx-suggest-card{overflow:hidden;border-radius:24px;background:var(--zx-card);border:1px solid var(--zx-line);box-shadow:var(--zx-shadow-soft)}.zx-suggest-img{width:100%;height:170px;object-fit:cover;background:#f3eee5}.zx-suggest-body{padding:16px}.zx-suggest-top{display:flex;justify-content:space-between;gap:10px;margin-bottom:10px}.zx-suggest-tag{display:inline-flex;padding:7px 11px;border-radius:999px;background:var(--zx-green-soft);color:var(--zx-green);font-size:.76rem;font-weight:800;text-transform:uppercase}.zx-suggest-price{color:var(--zx-gold-deep);font-weight:800}.zx-suggest-name{margin-bottom:10px;font-family:'Playfair Display',serif;font-size:1.35rem;color:var(--zx-text)}.zx-suggest-desc{margin-bottom:14px;color:var(--zx-muted);line-height:1.7}
-@media (max-width:1080px){.zx-cart-body{grid-template-columns:1fr}.zx-summary{position:static}}@media (max-width:768px){.zx-cart{padding:18px 0 64px}.zx-shell{width:min(100% - 24px,1320px)}.zx-cart-hero{border-radius:24px;padding:24px 20px}.zx-item-card{grid-template-columns:1fr}.zx-item-actions{align-items:flex-start}}
+@media (max-width:768px){.zx-cart{padding:18px 0 64px}.zx-shell{width:min(100% - 24px,1320px)}.zx-cart-hero{border-radius:24px;padding:24px 20px}.zx-item-card{grid-template-columns:1fr}.zx-item-actions{align-items:flex-start}.zx-summary{width:100%}}
 </style>
 <section class="zx-cart">
     <div class="zx-shell">
@@ -71,15 +72,45 @@ body{background:radial-gradient(circle at top left,rgba(223,154,46,.12),transpar
                     <div class="zx-summary-label">Order Summary</div>
                     <div class="zx-summary-title">Ready for checkout?</div>
                     <div class="zx-summary-line"><span>Items</span><strong>{{ items|length }}</strong></div>
-                    <div class="zx-summary-line"><span>Subtotal</span><strong>&#8377;{{ total }}</strong></div>
-                    <div class="zx-summary-line"><span>Delivery</span><strong>Calculated at checkout</strong></div>
+                    <div class="zx-summary-line"><span>Subtotal</span><strong>&#8377;{{ subtotal }}</strong></div>
+                    <div class="zx-summary-line"><span>Delivery</span><strong>{% if delivery_fee %}&#8377;{{ delivery_fee }}{% else %}FREE{% endif %}</strong></div>
+                    <div class="zx-summary-line"><span>Discount</span><strong>- &#8377;{{ discount_amount }}</strong></div>
                     <div class="zx-summary-total-row">
                         <div class="zx-summary-total-label">Grand Total</div>
                         <div class="zx-summary-total-amount">&#8377;{{ total }}</div>
                     </div>
+                    <div class="zx-coupon-box">
+                        {% if applied_coupon %}
+                        <div class="zx-coupon-pill">
+                            <span>{{ applied_coupon.code }} applied</span>
+                            <form method="POST" action="{% url 'remove_coupon' %}">
+                                {% csrf_token %}
+                                <input type="hidden" name="next" value="cart">
+                                <button type="submit" class="zx-coupon-small">Remove</button>
+                            </form>
+                        </div>
+                        {% endif %}
+                        <form method="POST" action="{% url 'apply_coupon' %}" class="zx-coupon-form">
+                            {% csrf_token %}
+                            <input type="hidden" name="next" value="cart">
+                            <input type="text" name="coupon_code" placeholder="Enter coupon code">
+                            <button type="submit" class="zx-coupon-small">Apply</button>
+                        </form>
+                        {% if available_coupons %}
+                        <div class="zx-offers">
+                            {% for coupon in available_coupons %}
+                            <div class="zx-offer">
+                                <strong>{{ coupon.code }} - {{ coupon.title }}</strong>
+                                <span>{{ coupon.description|default:"Save on your next order." }}</span>
+                            </div>
+                            {% endfor %}
+                        </div>
+                        {% endif %}
+                    </div>
                     <div class="zx-delivery-note">Free delivery on orders above &#8377;499. Estimated arrival time: 30-45 minutes.</div>
                     <a href="{% url 'checkout' %}" class="zx-btn-checkout">Proceed to Checkout</a>
                     <a href="{% url 'menu_list' %}" class="zx-continue">Continue browsing menu</a>
+                    <a href="{% url 'order_history' %}" class="zx-continue">Track past orders</a>
                 </div>
             </div>
             {% else %}

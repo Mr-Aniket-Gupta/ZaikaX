@@ -627,6 +627,7 @@
     }
 
     @media (max-width: 1080px) {
+
         .zx-home-hero__grid,
         .zx-feature-grid {
             grid-template-columns: 1fr;
@@ -677,7 +678,8 @@
                 <div class="zx-home-hero__content">
                     <div class="zx-home-hero__eyebrow">Authentic Indian Flavours</div>
                     <h1>Fresh, hot, and <em>full of flavour</em>.</h1>
-                    <p>From smoky tandoori bites to rich curries and satisfying biryanis, ZaikaX serves food that looks irresistible and tastes even better with every order.</p>
+                    <p>From smoky tandoori bites to rich curries and satisfying biryanis, ZaikaX serves food that looks
+                        irresistible and tastes even better with every order.</p>
 
                     <div class="zx-home-hero__actions">
                         <a href="{% url 'menu_list' %}" class="zx-home-btn zx-home-btn--primary">Explore Full Menu</a>
@@ -703,11 +705,13 @@
                 <div class="zx-home-hero__spotlight">
                     <div class="zx-home-hero__card">
                         <h3>Made for every craving</h3>
-                        <p>Whether you want spicy starters, comforting mains, or refreshing drinks, there is always something delicious waiting for you.</p>
+                        <p>Whether you want spicy starters, comforting mains, or refreshing drinks, there is always
+                            something delicious waiting for you.</p>
                     </div>
                     <div class="zx-home-hero__card">
                         <h3>Cooked to tempt at first sight</h3>
-                        <p>Loaded with vibrant dishes, rich aromas, and comforting classics that make every meal feel special.</p>
+                        <p>Loaded with vibrant dishes, rich aromas, and comforting classics that make every meal feel
+                            special.</p>
                     </div>
                 </div>
             </div>
@@ -718,7 +722,8 @@
                 <div>
                     <span class="zx-home-section__eyebrow">Browse</span>
                     <h2>Discover Menu Categories</h2>
-                    <p class="zx-home-section__desc">Start with what you are craving today, from spicy starters and rich curries to biryanis, breads, snacks, and refreshing drinks.</p>
+                    <p class="zx-home-section__desc">Start with what you are craving today, from spicy starters and rich
+                        curries to biryanis, breads, snacks, and refreshing drinks.</p>
                 </div>
                 <a href="{% url 'menu_list' %}" class="zx-home-link">Open Menu</a>
             </div>
@@ -753,7 +758,8 @@
                 <div>
                     <span class="zx-home-section__eyebrow">Popular</span>
                     <h2>Guest Favorites</h2>
-                    <p class="zx-home-section__desc">A mouth-watering lineup of dishes our customers love most, picked to make your next order easier and more tempting.</p>
+                    <p class="zx-home-section__desc">A mouth-watering lineup of dishes our customers love most, picked
+                        to make your next order easier and more tempting.</p>
                 </div>
                 <a href="{% url 'menu_list' %}" class="zx-home-link">See Everything</a>
             </div>
@@ -787,17 +793,20 @@
                 <div class="zx-home-highlight">
                     <div class="zx-highlight-card">
                         <h3>Bold flavors in every bite</h3>
-                        <p>Expect rich gravies, smoky grills, perfectly spiced rice, and fresh ingredients that bring real restaurant taste to your table.</p>
+                        <p>Expect rich gravies, smoky grills, perfectly spiced rice, and fresh ingredients that bring
+                            real restaurant taste to your table.</p>
                     </div>
 
                     <div class="zx-highlight-card">
                         <h3>Something for every mood</h3>
-                        <p>Planning a family meal, evening snack, or late-night treat? Our menu has comforting picks for every appetite.</p>
+                        <p>Planning a family meal, evening snack, or late-night treat? Our menu has comforting picks for
+                            every appetite.</p>
                     </div>
 
                     <div class="zx-highlight-card zx-highlight-card--cta">
                         <h3>Ready for a delicious meal?</h3>
-                        <p>Pick your favorites, satisfy your cravings, and enjoy restaurant-style food delivered with full flavor.</p>
+                        <p>Pick your favorites, satisfy your cravings, and enjoy restaurant-style food delivered with
+                            full flavor.</p>
                         <a href="{% url 'menu_list' %}" class="zx-home-btn zx-home-btn--primary">Go To Menu</a>
                     </div>
                 </div>
@@ -835,10 +844,12 @@
                             <span class="zx-suggestion-card__price">&#8377;{{ card.dish.price }}</span>
                         </div>
                         <h3>{{ card.dish.name }}</h3>
-                        <p>{{ card.dish.description|default:"A delicious pick chosen from real customer ordering patterns."|truncatechars:95 }}</p>
+                        <p>{{ card.dish.description|default:"A delicious pick chosen from real customer ordering
+                            patterns."|truncatechars:95 }}</p>
                         <div class="zx-suggestion-note" style="margin-bottom:14px;">{{ card.reason }}</div>
                         <a href="{% url 'add_to_cart' card.dish.id %}" class="zx-dish-card__cta">Add to cart</a>
-                        <a href="{% url 'menu_item_detail' card.dish.id %}" class="zx-dish-card__cta" style="margin-left:14px;">View details</a>
+                        <a href="{% url 'menu_item_detail' card.dish.id %}" class="zx-dish-card__cta"
+                            style="margin-left:14px;">View details</a>
                     </div>
                 </article>
                 {% endfor %}
@@ -852,7 +863,8 @@
                 <div>
                     <span class="zx-home-section__eyebrow">Why ZaikaX</span>
                     <h2>A smoother ordering experience</h2>
-                    <p class="zx-home-section__desc">Everything at ZaikaX is crafted to make your meal feel more satisfying, flavorful, and worth coming back for.</p>
+                    <p class="zx-home-section__desc">Everything at ZaikaX is crafted to make your meal feel more
+                        satisfying, flavorful, and worth coming back for.</p>
                 </div>
             </div>
 
@@ -860,19 +872,22 @@
                 <article class="zx-info-card">
                     <div class="zx-info-card__icon">01</div>
                     <h3>Authentic taste</h3>
-                    <p>From classic Indian favorites to crowd-pleasing comfort food, every dish is packed with familiar, satisfying flavor.</p>
+                    <p>From classic Indian favorites to crowd-pleasing comfort food, every dish is packed with familiar,
+                        satisfying flavor.</p>
                 </article>
 
                 <article class="zx-info-card">
                     <div class="zx-info-card__icon">02</div>
                     <h3>Freshly prepared dishes</h3>
-                    <p>Enjoy food that feels freshly made, well-seasoned, and ready to turn an ordinary meal into something special.</p>
+                    <p>Enjoy food that feels freshly made, well-seasoned, and ready to turn an ordinary meal into
+                        something special.</p>
                 </article>
 
                 <article class="zx-info-card">
                     <div class="zx-info-card__icon">03</div>
                     <h3>Food worth sharing</h3>
-                    <p>Perfect for solo cravings, family dinners, or group orders with dishes everyone at the table can enjoy.</p>
+                    <p>Perfect for solo cravings, family dinners, or group orders with dishes everyone at the table can
+                        enjoy.</p>
                 </article>
             </div>
         </section>

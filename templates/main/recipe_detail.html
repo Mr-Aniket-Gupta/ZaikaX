@@ -1,0 +1,322 @@
+{% extends 'main/base.html' %}
+
+{% block content %}
+<section class="zx-recipe-detail-page">
+    <style>
+        .zx-recipe-detail-page {
+            max-width: 1180px;
+            margin: 0 auto;
+            padding: 32px 20px 72px
+        }
+
+        .zx-detail-shell {
+            display: grid;
+            grid-template-columns: 1.2fr .8fr;
+            gap: 28px
+        }
+
+        .zx-panel {
+            background: #fff;
+            border-radius: 30px;
+            border: 1px solid rgba(23, 76, 53, .08);
+            box-shadow: 0 22px 54px rgba(24, 54, 41, .08);
+            overflow: hidden
+        }
+
+        .zx-hero-image {
+            height: 340px;
+            background: linear-gradient(135deg, #f2dcc0, #fff7ec 55%, #d29a29)
+        }
+
+        .zx-hero-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block
+        }
+
+        .zx-panel-body {
+            padding: 28px
+        }
+
+        .zx-overline {
+            display: inline-flex;
+            padding: 8px 14px;
+            border-radius: 999px;
+            background: #f5e7cb;
+            color: #8d5e0f;
+            font-weight: 700;
+            margin-bottom: 14px
+        }
+
+        .zx-panel-body h1 {
+            margin: 0 0 12px;
+            font-size: clamp(2rem, 3vw, 3rem);
+            color: #173b2c
+        }
+
+        .zx-lead {
+            color: #546a60;
+            line-height: 1.8;
+            font-size: 1.02rem
+        }
+
+        .zx-stat-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin: 22px 0
+        }
+
+        .zx-stat {
+            padding: 10px 14px;
+            border-radius: 18px;
+            background: #f8f3ea;
+            color: #315645;
+            font-weight: 700
+        }
+
+        .zx-content-block {
+            margin-top: 26px
+        }
+
+        .zx-content-block h3 {
+            margin: 0 0 12px;
+            color: #173b2c
+        }
+
+        .zx-list {
+            display: grid;
+            gap: 12px;
+            padding: 0;
+            margin: 0;
+            list-style: none
+        }
+
+        .zx-list li {
+            padding: 14px 16px;
+            border-radius: 18px;
+            background: #fbf8f2;
+            color: #4f6159
+        }
+
+        .zx-side-stack {
+            display: grid;
+            gap: 22px
+        }
+
+        .zx-side-card {
+            padding: 24px
+        }
+
+        .zx-reaction-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px
+        }
+
+        .zx-button {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 14px 18px;
+            border: none;
+            border-radius: 999px;
+            background: #d69319;
+            color: #fff;
+            font-weight: 700;
+            cursor: pointer;
+            text-decoration: none
+        }
+
+        .zx-button--muted {
+            background: #edf2ee;
+            color: #234d39
+        }
+
+        .zx-field {
+            display: grid;
+            gap: 8px;
+            margin-bottom: 14px
+        }
+
+        .zx-field input,
+        .zx-field textarea,
+        .zx-field select {
+            width: 100%;
+            padding: 14px 15px;
+            border-radius: 18px;
+            border: 1px solid rgba(23, 76, 53, .12);
+            background: #fcfaf5;
+            font: inherit
+        }
+
+        .zx-mini-card {
+            padding: 16px;
+            border-radius: 20px;
+            background: #fbf8f2;
+            border: 1px solid rgba(23, 76, 53, .08)
+        }
+
+        .zx-mini-card h4 {
+            margin: 0 0 8px;
+            color: #173b2c
+        }
+
+        .zx-mini-card p {
+            margin: 0;
+            color: #64776e;
+            line-height: 1.7
+        }
+
+        @media (max-width: 920px) {
+            .zx-detail-shell {
+                grid-template-columns: 1fr
+            }
+
+            .zx-reaction-grid {
+                grid-template-columns: 1fr
+            }
+        }
+    </style>
+
+    <div class="zx-detail-shell">
+        <article class="zx-panel">
+            <div class="zx-hero-image">
+                {% if recipe.image_url %}
+                <img src="{{ recipe.image_url }}" alt="{{ recipe.title }}">
+                {% endif %}
+            </div>
+            <div class="zx-panel-body">
+                <span class="zx-overline">Shared by {{ recipe.author.username }}</span>
+                <h1>{{ recipe.title }}</h1>
+                <p class="zx-lead">{{ recipe.short_description }}</p>
+
+                <div class="zx-stat-row">
+                    <span class="zx-stat">{{ recipe.prep_time_minutes }} mins</span>
+                    <span class="zx-stat">Serves {{ recipe.servings }}</span>
+                    <span class="zx-stat">{{ recipe.likes_count }} likes</span>
+                    <span class="zx-stat">{{ recipe.dislikes_count }} dislikes</span>
+                    <span class="zx-stat">{{ recipe.average_rating }}/5 rating</span>
+                </div>
+
+                <div class="zx-content-block">
+                    <h3>Recipe story</h3>
+                    <p class="zx-lead">{{ recipe.story|linebreaksbr }}</p>
+                </div>
+
+                <div class="zx-content-block">
+                    <h3>Ingredients</h3>
+                    <ul class="zx-list">
+                        {% for ingredient in recipe.ingredients_list %}
+                        <li>{{ ingredient }}</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+
+                <div class="zx-content-block">
+                    <h3>Steps</h3>
+                    <ul class="zx-list">
+                        {% for step in recipe.steps_list %}
+                        <li>{{ forloop.counter }}. {{ step }}</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+        </article>
+
+        <div class="zx-side-stack">
+            <div class="zx-panel zx-side-card">
+                <h3>Like, dislike and rate</h3>
+                {% if user.is_authenticated %}
+                <form method="post" action="{% url 'react_to_recipe' recipe.id %}">
+                    {% csrf_token %}
+                    <div class="zx-reaction-grid">
+                        <button class="zx-button zx-button--muted" type="submit" name="reaction" value="like">Like
+                            recipe</button>
+                        <button class="zx-button zx-button--muted" type="submit" name="reaction" value="dislike">Dislike
+                            recipe</button>
+                    </div>
+                    <div class="zx-field" style="margin-top:14px;">
+                        <label for="rating">Your rating</label>
+                        <select name="rating" id="rating">
+                            <option value="">Choose rating</option>
+                            {% for star in '12345' %}
+                            <option value="{{ star }}" {% if user_reaction and user_reaction.rating|stringformat:'s' == star %}selected{% endif %}>{{ star }}/5</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <button class="zx-button" type="submit">Save feedback</button>
+                </form>
+                {% else %}
+                <p class="zx-lead">Feedback dene ke liye login karo.</p>
+                <a href="{% url 'login' %}" class="zx-button">Login to continue</a>
+                {% endif %}
+            </div>
+
+            <div class="zx-panel zx-side-card" id="order-this-recipe">
+                <h3>Order this recipe</h3>
+                {% if recipe.allow_custom_orders %}
+                {% if user.is_authenticated %}
+                <form method="post" action="{% url 'request_recipe_order' recipe.id %}">
+                    {% csrf_token %}
+                    <div class="zx-field">
+                        <label for="quantity">Quantity</label>
+                        <input type="number" id="quantity" name="quantity" min="1" value="1" required>
+                    </div>
+                    <div class="zx-field">
+                        <label for="serving_note">Serving note</label>
+                        <input type="text" id="serving_note" name="serving_note"
+                            placeholder="Family dinner, party pack, extra spicy">
+                    </div>
+                    <div class="zx-field">
+                        <label for="custom_notes">Custom notes</label>
+                        <textarea id="custom_notes" name="custom_notes"
+                            placeholder="Any spice level, garnish, packing, or timing notes"></textarea>
+                    </div>
+                    <button class="zx-button" type="submit">Send custom order request</button>
+                </form>
+                {% else %}
+                <p class="zx-lead">Custom order request bhejne ke liye login karo. Admin final amount decide karke aapko
+                    batayega.</p>
+                <a href="{% url 'login' %}" class="zx-button">Login to request</a>
+                {% endif %}
+                {% else %}
+                <p class="zx-lead">Abhi ye recipe sirf inspiration ke liye share ki gayi hai. Custom ordering
+                    temporarily off hai.</p>
+                {% endif %}
+            </div>
+
+            <div class="zx-panel zx-side-card">
+                <h3>Recent requests</h3>
+                {% for recipe_request in recent_requests %}
+                <div class="zx-mini-card" style="margin-bottom:12px;">
+                    <h4>{{ recipe_request.requester.username }}</h4>
+                    <p>{{ recipe_request.quantity }} qty · {{ recipe_request.get_status_display }}</p>
+                </div>
+                {% empty %}
+                <div class="zx-mini-card">
+                    <p>Abhi tak koi custom request nahi aayi.</p>
+                </div>
+                {% endfor %}
+            </div>
+
+            <div class="zx-panel zx-side-card">
+                <h3>More recipes</h3>
+                {% for item in similar_recipes %}
+                <div class="zx-mini-card" style="margin-bottom:12px;">
+                    <h4>{{ item.title }}</h4>
+                    <p>{{ item.short_description }}</p>
+                    <a href="{% url 'recipe_detail' item.id %}" class="zx-button zx-button--muted"
+                        style="margin-top:12px;">Open recipe</a>
+                </div>
+                {% empty %}
+                <div class="zx-mini-card">
+                    <p>Abhi aur recipes add hote hi yahan suggestions dikhenge.</p>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

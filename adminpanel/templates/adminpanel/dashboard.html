@@ -186,20 +186,29 @@
         color: var(--zx-admin-text);
     }
 
+    .zx-analysis-stack {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 24px;
+        margin-bottom: 24px;
+    }
+
     @media (max-width: 1100px) {
         .zx-chart-grid {
             grid-template-columns: 1fr;
         }
 
         .zx-micro-grid,
-        .zx-analysis-grid {
+        .zx-analysis-grid,
+        .zx-analysis-stack {
             grid-template-columns: repeat(2, minmax(0, 1fr));
         }
     }
 
     @media (max-width: 700px) {
         .zx-micro-grid,
-        .zx-analysis-grid {
+        .zx-analysis-grid,
+        .zx-analysis-stack {
             grid-template-columns: 1fr;
         }
     }
@@ -268,6 +277,14 @@
         <small>Items Sold</small>
         <strong id="kpiItemsSold">{{ dashboard_analytics.items_sold }}</strong>
     </div>
+    <div class="zx-micro-card">
+        <small>Coupon Orders</small>
+        <strong id="kpiCouponOrders">{{ dashboard_analytics.coupon_orders }}</strong>
+    </div>
+    <div class="zx-micro-card">
+        <small>Discounts Given</small>
+        <strong id="kpiDiscounts">&#8377;{{ dashboard_analytics.discounts_given|floatformat:0 }}</strong>
+    </div>
 </div>
 
 <div class="zx-chart-grid">
@@ -288,6 +305,86 @@
         <div class="card-header"><i class="fas fa-chart-pie me-2"></i>Status Breakdown</div>
         <div class="card-body">
             <canvas id="statusChart" height="220"></canvas>
+        </div>
+    </div>
+</div>
+
+<div class="zx-analysis-stack">
+    <div class="card h-100">
+        <div class="card-header"><i class="fas fa-city me-2"></i>City Demand</div>
+        <div class="card-body">
+            <div class="zx-insight-list" id="cityBreakdownList">
+                {% for city in dashboard_analytics.city_breakdown %}
+                <div class="zx-insight-item">
+                    <div>
+                        <strong>{{ city.city }}</strong>
+                        <span>{{ city.orders }} orders</span>
+                    </div>
+                    <strong>&#8377;{{ city.revenue|floatformat:0 }}</strong>
+                </div>
+                {% empty %}
+                <div class="zx-admin-empty"><i class="fas fa-city"></i><div>No city trend yet.</div></div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+    <div class="card h-100">
+        <div class="card-header"><i class="fas fa-calendar-week me-2"></i>Weekday Pattern</div>
+        <div class="card-body">
+            <div class="zx-insight-list" id="weekdayBreakdownList">
+                {% for day in dashboard_analytics.weekday_breakdown %}
+                <div class="zx-insight-item">
+                    <div>
+                        <strong>{{ day.day }}</strong>
+                        <span>{{ day.orders }} orders</span>
+                    </div>
+                    <strong>&#8377;{{ day.revenue|floatformat:0 }}</strong>
+                </div>
+                {% empty %}
+                <div class="zx-admin-empty"><i class="fas fa-calendar"></i><div>No weekday pattern yet.</div></div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="zx-analysis-stack">
+    <div class="card h-100">
+        <div class="card-header"><i class="fas fa-ticket me-2"></i>Coupon Usage</div>
+        <div class="card-body">
+            <div class="zx-insight-list" id="couponUsageList">
+                {% for coupon in dashboard_analytics.coupon_usage %}
+                <div class="zx-insight-item">
+                    <div>
+                        <strong>{{ coupon.code }}</strong>
+                        <span>{{ coupon.orders }} orders</span>
+                    </div>
+                    <strong>&#8377;{{ coupon.savings|floatformat:0 }}</strong>
+                </div>
+                {% empty %}
+                <div class="zx-admin-empty"><i class="fas fa-ticket"></i><div>No coupon usage in this range.</div></div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+    <div class="card h-100">
+        <div class="card-header"><i class="fas fa-seedling me-2"></i>Low Performing Items</div>
+        <div class="card-body">
+            <div class="zx-insight-list" id="lowItemsList">
+                {% for item in dashboard_analytics.low_performing_items %}
+                <div class="zx-insight-item">
+                    <div>
+                        <strong>{{ item.name }}</strong>
+                        <span>Slow moving item</span>
+                    </div>
+                    <strong>{{ item.qty }}</strong>
+                </div>
+                {% empty %}
+                <div class="zx-admin-empty"><i class="fas fa-seedling"></i><div>No low-performing items in this range.</div></div>
+                {% endfor %}
+            </div>
         </div>
     </div>
 </div>
@@ -469,7 +566,7 @@ function setTrend(el, value) {
     el.classList.toggle('is-negative', num < 0);
 }
 
-function renderInsightList(targetId, items, emptyIcon, emptyText, labelFn) {
+function renderInsightList(targetId, items, emptyIcon, emptyText, labelFn, valueFn) {
     const container = document.getElementById(targetId);
     if (!container) return;
     if (!items || !items.length) {
@@ -482,7 +579,7 @@ function renderInsightList(targetId, items, emptyIcon, emptyText, labelFn) {
                 <strong>${item.name || item.username}</strong>
                 <span>${labelFn(item)}</span>
             </div>
-            <strong>${currency(item.revenue ?? item.spent ?? 0)}</strong>
+            <strong>${valueFn ? valueFn(item) : currency(item.revenue ?? item.spent ?? 0)}</strong>
         </div>
     `).join('');
 }
@@ -585,6 +682,8 @@ function renderDashboard(data) {
     document.getElementById('kpiItems').textContent = data.total_items;
     document.getElementById('kpiUsers').textContent = data.total_users;
     document.getElementById('kpiItemsSold').textContent = data.items_sold;
+    document.getElementById('kpiCouponOrders').textContent = data.coupon_orders;
+    document.getElementById('kpiDiscounts').textContent = currency(data.discounts_given);
     document.getElementById('statVegItems').textContent = data.veg_items;
     document.getElementById('statNonVegItems').textContent = data.non_veg_items;
     document.getElementById('statItemsPerCategory').textContent = data.total_categories ? `${data.total_items} / ${data.total_categories}` : '0';
@@ -602,6 +701,10 @@ function renderDashboard(data) {
     renderInsightList('topCategoriesList', data.top_categories, 'fas fa-tags', 'No category data yet.', item => `${item.qty} items sold`);
     renderInsightList('topItemsList', data.top_items, 'fas fa-bowl-food', 'No item data yet.', item => `${item.qty} quantities sold`);
     renderInsightList('topUsersList', data.top_users, 'fas fa-user-group', 'No customer data yet.', item => `${item.orders} orders`);
+    renderInsightList('cityBreakdownList', data.city_breakdown, 'fas fa-city', 'No city trend yet.', item => `${item.orders} orders`);
+    renderInsightList('weekdayBreakdownList', data.weekday_breakdown, 'fas fa-calendar', 'No weekday pattern yet.', item => `${item.orders} orders`);
+    renderInsightList('couponUsageList', data.coupon_usage, 'fas fa-ticket', 'No coupon usage in this range.', item => `${item.orders} orders`);
+    renderInsightList('lowItemsList', data.low_performing_items, 'fas fa-seedling', 'No low-performing items in this range.', item => `${item.qty} sold`, item => `${item.qty}`);
     renderRecentOrders(data.recent_orders);
     renderCharts(data);
 }

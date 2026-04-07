@@ -1,0 +1,317 @@
+{% extends 'main/base.html' %}
+
+{% block content %}
+<section class="zx-recipes-page">
+    <style>
+        .zx-recipes-page {
+            max-width: 1220px;
+            margin: 0 auto;
+            padding: 32px 20px 72px;
+            color: #173b2c
+        }
+
+        .zx-recipes-hero {
+            display: grid;
+            grid-template-columns: 1.4fr .9fr;
+            gap: 24px;
+            padding: 32px;
+            border-radius: 32px;
+            background: linear-gradient(135deg, #174c35, #2f6a43 58%, #d89c26);
+            color: #fff;
+            box-shadow: 0 24px 60px rgba(23, 76, 53, .18)
+        }
+
+        .zx-recipes-hero h1 {
+            font-size: clamp(2.2rem, 4vw, 4.6rem);
+            line-height: .95;
+            margin: 0 0 14px
+        }
+
+        .zx-recipes-hero p {
+            font-size: 1.05rem;
+            line-height: 1.8;
+            max-width: 720px;
+            color: rgba(255, 255, 255, .88)
+        }
+
+        .zx-hero-actions,
+        .zx-inline-actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 14px;
+            margin-top: 22px
+        }
+
+        .zx-btn-main,
+        .zx-btn-alt {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 14px 20px;
+            border-radius: 999px;
+            text-decoration: none;
+            font-weight: 700
+        }
+
+        .zx-btn-main {
+            background: #f3b23d;
+            color: #173b2c
+        }
+
+        .zx-btn-alt {
+            background: rgba(255, 255, 255, .15);
+            color: #fff;
+            border: 1px solid rgba(255, 255, 255, .24)
+        }
+
+        .zx-highlight-box {
+            padding: 24px;
+            border-radius: 28px;
+            background: rgba(255, 255, 255, .12);
+            backdrop-filter: blur(8px)
+        }
+
+        .zx-highlight-box h3 {
+            margin: 0 0 12px;
+            font-size: 1.3rem
+        }
+
+        .zx-highlight-list {
+            display: grid;
+            gap: 14px
+        }
+
+        .zx-highlight-item {
+            padding: 16px 18px;
+            border-radius: 20px;
+            background: rgba(255, 255, 255, .1)
+        }
+
+        .zx-recipes-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 28px;
+            margin-top: 30px
+        }
+
+        .zx-card-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 22px
+        }
+
+        .zx-recipe-card,
+        .zx-side-card {
+            background: #fff;
+            border: 1px solid rgba(23, 76, 53, .08);
+            border-radius: 28px;
+            overflow: hidden;
+            box-shadow: 0 18px 40px rgba(24, 54, 41, .08)
+        }
+
+        .zx-recipe-media {
+            height: 220px;
+            background: linear-gradient(135deg, #efd7a6, #f9f3e7 45%, #d59b22)
+        }
+
+        .zx-recipe-media img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block
+        }
+
+        .zx-recipe-body {
+            padding: 22px
+        }
+
+        .zx-meta-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 12px
+        }
+
+        .zx-chip {
+            padding: 7px 12px;
+            border-radius: 999px;
+            background: #f4ead5;
+            color: #8d5b0b;
+            font-size: .86rem;
+            font-weight: 700
+        }
+
+        .zx-recipe-body h3 {
+            margin: 0 0 10px;
+            font-size: 1.45rem
+        }
+
+        .zx-recipe-body p {
+            margin: 0 0 16px;
+            color: #57675f;
+            line-height: 1.7
+        }
+
+        .zx-recipe-stats {
+            display: flex;
+            gap: 16px;
+            flex-wrap: wrap;
+            color: #315645;
+            font-weight: 700;
+            margin-bottom: 18px
+        }
+
+        .zx-side-card {
+            padding: 24px
+        }
+
+        .zx-side-card h3 {
+            margin: 0 0 14px;
+            font-size: 1.35rem
+        }
+
+        .zx-side-list {
+            display: grid;
+            gap: 14px
+        }
+
+        .zx-side-item {
+            padding: 16px;
+            border-radius: 20px;
+            background: #fbf8f2;
+            border: 1px solid rgba(23, 76, 53, .07)
+        }
+
+        .zx-side-item strong,
+        .zx-side-item h4 {
+            display: block;
+            color: #173b2c
+        }
+
+        .zx-side-item span,
+        .zx-side-item p {
+            color: #64776e;
+            margin-top: 6px
+        }
+
+        .zx-link {
+            color: #1b5b40;
+            font-weight: 700;
+            text-decoration: none
+        }
+
+        @media (max-width: 920px) {
+
+            .zx-recipes-hero,
+            .zx-recipes-grid {
+                grid-template-columns: 1fr
+            }
+        }
+    </style>
+
+    <div class="zx-recipes-hero">
+        <div>
+            <h1>Ghar ki special recipes, ab ZaikaX par.</h1>
+            <p>Apni favourite recipe detail me share karo, dusre food lovers se likes, dislikes aur ratings lo, aur agar
+                koi us taste ko order karna chahe to custom request bhi bhej sakta hai.</p>
+            <div class="zx-hero-actions">
+                <a href="{% url 'share_recipe' %}" class="zx-btn-main">Share Your Recipe</a>
+                {% if user.is_authenticated %}
+                <a href="{% url 'my_recipe_orders' %}" class="zx-btn-alt">My Recipe Orders</a>
+                {% endif %}
+            </div>
+        </div>
+        <div class="zx-highlight-box">
+            <h3>Custom order flow</h3>
+            <div class="zx-highlight-list">
+                <div class="zx-highlight-item">User recipe share karega with ingredients, steps aur story.</div>
+                <div class="zx-highlight-item">Dusre users like, dislike aur rating de sakte hain.</div>
+                <div class="zx-highlight-item">Admin final price decide karke user ko quote bhejega.</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="zx-recipes-grid">
+        <div>
+            <div class="zx-inline-actions">
+                <a href="{% url 'share_recipe' %}" class="zx-btn-main">Post a New Recipe</a>
+            </div>
+
+            <div class="zx-card-grid" style="margin-top:24px;">
+                {% for recipe in recipes %}
+                <article class="zx-recipe-card">
+                    <div class="zx-recipe-media">
+                        {% if recipe.image_url %}
+                        <img src="{{ recipe.image_url }}" alt="{{ recipe.title }}">
+                        {% endif %}
+                    </div>
+                    <div class="zx-recipe-body">
+                        <div class="zx-meta-row">
+                            <span class="zx-chip">{{ recipe.prep_time_minutes }} mins</span>
+                            <span class="zx-chip">Serves {{ recipe.servings }}</span>
+                            {% if recipe.allow_custom_orders %}<span class="zx-chip">Custom order open</span>{% endif %}
+                        </div>
+                        <h3>{{ recipe.title }}</h3>
+                        <p>{{ recipe.short_description }}</p>
+                        <div class="zx-recipe-stats">
+                            <span>{{ recipe.likes_count }} likes</span>
+                            <span>{{ recipe.dislikes_count }} dislikes</span>
+                            <span>{{ recipe.average_rating }}/5 rating</span>
+                        </div>
+                        <div class="zx-inline-actions" style="margin-top:18px;">
+                            <a href="{% url 'recipe_detail' recipe.id %}" class="zx-link">View full recipe</a>
+                            {% if recipe.allow_custom_orders %}
+                            <a href="{% url 'recipe_detail' recipe.id %}#order-this-recipe" class="zx-btn-main">Order this recipe</a>
+                            {% endif %}
+                        </div>
+                    </div>
+                </article>
+                {% empty %}
+                <article class="zx-recipe-card">
+                    <div class="zx-recipe-body">
+                        <h3>Abhi tak koi recipe share nahi hui.</h3>
+                        <p>Sabse pehli signature recipe aap share kar sakte ho aur community start kar sakte ho.</p>
+                    </div>
+                </article>
+                {% endfor %}
+            </div>
+        </div>
+
+        <aside class="zx-side-card">
+            <h3>Trending recipes</h3>
+            <div class="zx-side-list">
+                {% for recipe in top_recipes %}
+                <div class="zx-side-item">
+                    <strong>{{ recipe.title }}</strong>
+                    <span>By {{ recipe.author.username }} · {{ recipe.average_rating }}/5</span>
+                    <div class="zx-inline-actions" style="margin-top:10px;">
+                        <a href="{% url 'recipe_detail' recipe.id %}" class="zx-link"
+                            style="display:inline-block;">Open recipe</a>
+                        {% if recipe.allow_custom_orders %}
+                        <a href="{% url 'recipe_detail' recipe.id %}#order-this-recipe" class="zx-btn-main"
+                            style="padding:10px 14px;font-size:.88rem;">Order</a>
+                        {% endif %}
+                    </div>
+                </div>
+                {% empty %}
+                <div class="zx-side-item">
+                    <strong>Recipe spotlight coming soon</strong>
+                    <span>Jab recipes aayengi tab yahan trending picks dikhengi.</span>
+                </div>
+                {% endfor %}
+
+                {% if user.is_authenticated %}
+                <div class="zx-side-item">
+                    <h4>Your custom requests</h4>
+                    {% for recipe_request in user_recipe_requests %}
+                    <p>{{ recipe_request.recipe.title }} · {{ recipe_request.get_status_display }}</p>
+                    {% empty %}
+                    <p>Abhi aapne koi recipe order request send nahi ki.</p>
+                    {% endfor %}
+                </div>
+                {% endif %}
+            </div>
+        </aside>
+    </div>
+</section>
+{% endblock %}

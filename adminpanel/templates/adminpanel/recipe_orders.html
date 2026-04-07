@@ -1,0 +1,104 @@
+{% extends 'adminpanel/base_admin.html' %}
+
+{% block content %}
+<section class="d-grid gap-4">
+    <div class="card border-0 shadow-sm rounded-4">
+        <div class="card-body p-4 p-lg-5">
+            <div class="d-flex flex-wrap justify-content-between align-items-start gap-3">
+                <div>
+                    <span class="text-uppercase small fw-semibold text-muted">Custom Kitchen Requests</span>
+                    <h2 class="mt-2 mb-2">Recipe Order Requests</h2>
+                    <p class="text-muted mb-0">Yahan admin quoted amount, status, aur custom message set kar sakta hai. User ko ye quote uske recipe orders page par dikh jayega.</p>
+                </div>
+                <form method="get" class="d-flex gap-2 align-items-center">
+                    <select class="form-select rounded-4" name="status" onchange="this.form.submit()">
+                        <option value="">All statuses</option>
+                        {% for value, label in status_choices %}
+                        <option value="{{ value }}" {% if request.GET.status == value %}selected{% endif %}>{{ label }}</option>
+                        {% endfor %}
+                    </select>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="d-grid gap-3">
+        {% for recipe_request in recipe_requests %}
+        <div class="card border-0 shadow-sm rounded-4">
+            <div class="card-body p-4">
+                <div class="d-flex flex-wrap justify-content-between gap-3 mb-3">
+                    <div>
+                        <h4 class="mb-1">{{ recipe_request.recipe.title }}</h4>
+                        <div class="text-muted">Requested by {{ recipe_request.requester.username }} · Shared by {{ recipe_request.recipe.author.username }}</div>
+                    </div>
+                    <div class="d-flex gap-2 flex-wrap">
+                        <span class="badge rounded-pill text-bg-warning">{{ recipe_request.get_status_display }}</span>
+                        <span class="badge rounded-pill text-bg-dark">{{ recipe_request.get_payment_status_display }}</span>
+                    </div>
+                </div>
+
+                <div class="row g-3 mb-3">
+                    <div class="col-md-3">
+                        <div class="p-3 bg-light rounded-4 h-100">
+                            <div class="small text-muted">Quantity</div>
+                            <div class="fw-semibold">{{ recipe_request.quantity }}</div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="p-3 bg-light rounded-4 h-100">
+                            <div class="small text-muted">Serving note</div>
+                            <div class="fw-semibold">{{ recipe_request.serving_note|default:"-" }}</div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="p-3 bg-light rounded-4 h-100">
+                            <div class="small text-muted">Quoted amount</div>
+                            <div class="fw-semibold">{% if recipe_request.quoted_price %}₹{{ recipe_request.quoted_price }}{% else %}Not set{% endif %}</div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="p-3 bg-light rounded-4 h-100">
+                            <div class="small text-muted">Requested on</div>
+                            <div class="fw-semibold">{{ recipe_request.created_at|date:"d M Y, h:i A" }}</div>
+                        </div>
+                    </div>
+                </div>
+
+                {% if recipe_request.custom_notes %}
+                <div class="alert alert-light border rounded-4 mb-3">
+                    <strong>User notes:</strong> {{ recipe_request.custom_notes }}
+                </div>
+                {% endif %}
+
+                <form method="post" action="{% url 'update_recipe_order_request' recipe_request.id %}" class="row g-3 align-items-end">
+                    {% csrf_token %}
+                    <div class="col-md-3">
+                        <label class="form-label">Status</label>
+                        <select class="form-select rounded-4" name="status">
+                            {% for value, label in status_choices %}
+                            <option value="{{ value }}" {% if recipe_request.status == value %}selected{% endif %}>{{ label }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label">Quoted price</label>
+                        <input type="number" step="0.01" min="0" class="form-control rounded-4" name="quoted_price" value="{{ recipe_request.quoted_price|default:'' }}" placeholder="650.00">
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label">Admin note</label>
+                        <input type="text" class="form-control rounded-4" name="admin_note" value="{{ recipe_request.admin_note }}" placeholder="Preparation time, payment note, delivery info">
+                    </div>
+                    <div class="col-md-2">
+                        <button type="submit" class="btn btn-dark w-100 rounded-pill py-3">Update</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+        {% empty %}
+        <div class="card border-0 shadow-sm rounded-4">
+            <div class="card-body p-5 text-center text-muted">No recipe order requests yet.</div>
+        </div>
+        {% endfor %}
+    </div>
+</section>
+{% endblock %}

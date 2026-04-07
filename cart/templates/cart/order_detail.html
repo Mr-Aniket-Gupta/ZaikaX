@@ -1,0 +1,54 @@
+{% extends 'main/base.html' %}
+{% block content %}
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700;800&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--zx-surface:rgba(255,255,255,.84);--zx-line:rgba(44,60,38,.12);--zx-text:#1d231c;--zx-muted:#677064;--zx-green:#214d34;--zx-green-soft:#e8f0e9;--zx-gold:#df9a2e;--zx-shadow:0 18px 46px rgba(23,30,21,.08)}
+body{background:radial-gradient(circle at top left,rgba(223,154,46,.12),transparent 24%),radial-gradient(circle at top right,rgba(33,77,52,.08),transparent 20%),linear-gradient(180deg,#f8f4ec 0%,#f4eee5 100%)!important}
+.zx-order{font-family:'Manrope',sans-serif;color:var(--zx-text);padding:34px 0 90px}.zx-shell{width:min(1200px,calc(100% - 48px));margin:0 auto}.zx-card{background:var(--zx-surface);border:1px solid rgba(255,255,255,.65);backdrop-filter:blur(14px);box-shadow:var(--zx-shadow);border-radius:28px;padding:28px}.zx-head{display:flex;justify-content:space-between;gap:18px;align-items:start;margin-bottom:24px}.zx-head h1{margin:0 0 8px;font-family:'Playfair Display',serif;font-size:clamp(2.4rem,4vw,4rem);color:var(--zx-green)}.zx-head p{margin:0;color:var(--zx-muted)}.zx-statuses{display:flex;gap:10px;flex-wrap:wrap}.zx-badge{display:inline-flex;padding:8px 12px;border-radius:999px;background:var(--zx-green-soft);color:var(--zx-green);font-size:.78rem;font-weight:800}.zx-grid{display:grid;grid-template-columns:1.1fr .9fr;gap:24px}.zx-section{padding:22px;border-radius:22px;background:#fff;border:1px solid var(--zx-line)}.zx-section h2{margin:0 0 14px;font-family:'Playfair Display',serif;color:var(--zx-green)}.zx-row{display:flex;justify-content:space-between;gap:12px;padding:10px 0;border-bottom:1px solid rgba(44,60,38,.08)}.zx-row:last-child{border-bottom:none}.zx-row span{color:var(--zx-muted)}.zx-timeline{display:grid;gap:10px}.zx-step{padding:12px 14px;border-radius:16px;background:#f5f8f6;color:var(--zx-muted);font-weight:700}.zx-step.is-active{background:var(--zx-green-soft);color:var(--zx-green)}.zx-btn-light{display:inline-flex;align-items:center;justify-content:center;padding:12px 16px;border-radius:14px;background:#f2f5f3;color:var(--zx-green);text-decoration:none;font-weight:800;margin-top:18px}@media (max-width:900px){.zx-grid{grid-template-columns:1fr}}@media (max-width:768px){.zx-order{padding:18px 0 64px}.zx-shell{width:min(100% - 24px,1200px)}.zx-head{flex-direction:column;align-items:flex-start}}
+</style>
+<section class="zx-order">
+    <div class="zx-shell">
+        <div class="zx-card">
+            <div class="zx-head">
+                <div>
+                    <h1>Order #{{ order.id }}</h1>
+                    <p>{{ order.created_at|date:"d M Y, h:i A" }} • {{ order.city }}</p>
+                </div>
+                <div class="zx-statuses">
+                    <span class="zx-badge">{{ order.status }}</span>
+                    <span class="zx-badge">{{ order.payment_method }}</span>
+                    <span class="zx-badge">{{ order.payment_status }}</span>
+                </div>
+            </div>
+
+            <div class="zx-grid">
+                <div class="zx-section">
+                    <h2>Items In This Order</h2>
+                    {% for item in order.items.all %}
+                    <div class="zx-row"><span>{{ item.item.name }} x {{ item.quantity }}</span><strong>&#8377;{{ item.get_total_price }}</strong></div>
+                    {% endfor %}
+                </div>
+
+                <div class="zx-section">
+                    <h2>Tracking & Billing</h2>
+                    <div class="zx-timeline">
+                        <div class="zx-step {% if order.status == 'Pending' %}is-active{% endif %}">Pending</div>
+                        <div class="zx-step {% if order.status == 'Placed' %}is-active{% endif %}">Placed</div>
+                        <div class="zx-step {% if order.status == 'Processing' %}is-active{% endif %}">Processing</div>
+                        <div class="zx-step {% if order.status == 'Shipped' %}is-active{% endif %}">Shipped</div>
+                        <div class="zx-step {% if order.status == 'Delivered' %}is-active{% endif %}">Delivered</div>
+                        <div class="zx-step {% if order.status == 'Cancelled' %}is-active{% endif %}">Cancelled</div>
+                    </div>
+                    <div class="zx-row"><span>Subtotal</span><strong>&#8377;{{ order.subtotal_price }}</strong></div>
+                    <div class="zx-row"><span>Delivery Fee</span><strong>&#8377;{{ order.delivery_fee }}</strong></div>
+                    <div class="zx-row"><span>Discount</span><strong>- &#8377;{{ order.discount_amount }}</strong></div>
+                    <div class="zx-row"><span>Total</span><strong>&#8377;{{ order.total_price }}</strong></div>
+                    {% if order.coupon_code %}<div class="zx-row"><span>Coupon</span><strong>{{ order.coupon_code }}</strong></div>{% endif %}
+                    <div class="zx-row"><span>Deliver To</span><strong>{{ order.full_name }}, {{ order.city }}</strong></div>
+                    <a href="{% url 'order_history' %}" class="zx-btn-light">Back to Order History</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

@@ -3,6 +3,7 @@ from django.http import JsonResponse
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from .models import Dish
+from cart.models import Coupon
 from menu.models import Category, MenuItem, DEFAULT_CATEGORY_META
 from django.contrib.auth.models import User, Group
 from django.contrib import messages
@@ -11,10 +12,11 @@ from django.views.decorators.http import require_POST
 from urllib.request import urlopen
 from django.core.files.base import ContentFile
 from django.db.models import Count, Sum, F, DecimalField, ExpressionWrapper
-from django.db.models.functions import TruncDay, TruncMonth
+from django.db.models.functions import ExtractWeekDay, TruncDay, TruncMonth
 from django.utils import timezone
 from django.utils.text import slugify
 import datetime
+from main.models import RecipeOrderRequest, RecipeShare
 
 
 def _percent_change(current, previous):
@@ -25,6 +27,18 @@ def _percent_change(current, previous):
             return 0.0
         return 100.0
     return round(((current - previous) / previous) * 100, 1)
+
+
+def _parse_datetime_local(value):
+    if not value:
+        return None
+    try:
+        parsed = datetime.datetime.fromisoformat(value)
+    except ValueError:
+        return None
+    if timezone.is_naive(parsed):
+        parsed = timezone.make_aware(parsed, timezone.get_current_timezone())
+    return parsed
 
 
 def _dashboard_analytics(days=30):
@@ -55,6 +69,8 @@ def _dashboard_analytics(days=30):
     prev_active_customers = prev_orders_qs.values("user").distinct().count()
     average_order = (revenue / total_orders) if total_orders else 0
     prev_average_order = (prev_revenue / prev_total_orders) if prev_total_orders else 0
+    discounts_given = orders_qs.aggregate(total=Sum("discount_amount"))["total"] or 0
+    coupon_orders = orders_qs.exclude(applied_coupon__isnull=True).count()
 
     total_categories = Category.objects.count()
     total_items = MenuItem.objects.count()
@@ -158,6 +174,62 @@ def _dashboard_analytics(days=30):
         for row in top_users_rows
     ]
 
+    city_rows = (
+        orders_qs.values("city")
+        .annotate(total_orders=Count("id"), revenue=Sum("total_price"))
+        .order_by("-total_orders", "-revenue")[:6]
+    )
+    city_breakdown = [
+        {
+            "city": row["city"] or "Unknown",
+            "orders": row["total_orders"],
+            "revenue": float(row["revenue"] or 0),
+        }
+        for row in city_rows
+    ]
+
+    weekday_map = {1: "Sun", 2: "Mon", 3: "Tue", 4: "Wed", 5: "Thu", 6: "Fri", 7: "Sat"}
+    weekday_rows = (
+        orders_qs.annotate(weekday=ExtractWeekDay("created_at"))
+        .values("weekday")
+        .annotate(total_orders=Count("id"), revenue=Sum("total_price"))
+        .order_by("weekday")
+    )
+    weekday_breakdown = [
+        {
+            "day": weekday_map.get(row["weekday"], str(row["weekday"])),
+            "orders": row["total_orders"],
+            "revenue": float(row["revenue"] or 0),
+        }
+        for row in weekday_rows
+    ]
+
+    low_item_rows = (
+        OrderItem.objects.filter(order__created_at__gte=start_dt, order__created_at__lte=end_dt)
+        .values("item__id", "item__name")
+        .annotate(total_qty=Sum("quantity"))
+        .order_by("total_qty", "item__name")[:5]
+    )
+    low_performing_items = [
+        {"name": row["item__name"], "qty": row["total_qty"] or 0}
+        for row in low_item_rows
+    ]
+
+    coupon_rows = (
+        orders_qs.exclude(applied_coupon__isnull=True)
+        .values("coupon_code")
+        .annotate(total_orders=Count("id"), savings=Sum("discount_amount"))
+        .order_by("-total_orders", "-savings")[:5]
+    )
+    coupon_usage = [
+        {
+            "code": row["coupon_code"],
+            "orders": row["total_orders"],
+            "savings": float(row["savings"] or 0),
+        }
+        for row in coupon_rows
+    ]
+
     recent_orders = (
         orders_qs.select_related("user")
         .order_by("-created_at")[:6]
@@ -169,6 +241,8 @@ def _dashboard_analytics(days=30):
         "orders": total_orders,
         "active_customers": active_customers,
         "average_order": float(average_order or 0),
+        "discounts_given": float(discounts_given or 0),
+        "coupon_orders": coupon_orders,
         "total_categories": total_categories,
         "total_items": total_items,
         "total_users": total_users,
@@ -194,6 +268,10 @@ def _dashboard_analytics(days=30):
         "top_items": top_items,
         "top_categories": top_categories,
         "top_users": top_users,
+        "city_breakdown": city_breakdown,
+        "weekday_breakdown": weekday_breakdown,
+        "low_performing_items": low_performing_items,
+        "coupon_usage": coupon_usage,
         "recent_orders": list(recent_orders),
     }
 
@@ -315,6 +393,8 @@ def dashboard_analytics_data(request):
         "orders": analytics["orders"],
         "active_customers": analytics["active_customers"],
         "average_order": analytics["average_order"],
+        "discounts_given": analytics["discounts_given"],
+        "coupon_orders": analytics["coupon_orders"],
         "total_categories": analytics["total_categories"],
         "total_items": analytics["total_items"],
         "total_users": analytics["total_users"],
@@ -340,6 +420,10 @@ def dashboard_analytics_data(request):
         "top_items": analytics["top_items"],
         "top_categories": analytics["top_categories"],
         "top_users": analytics["top_users"],
+        "city_breakdown": analytics["city_breakdown"],
+        "weekday_breakdown": analytics["weekday_breakdown"],
+        "low_performing_items": analytics["low_performing_items"],
+        "coupon_usage": analytics["coupon_usage"],
         "recent_orders": [
             {
                 "id": order.id,
@@ -652,6 +736,71 @@ def orders(request):
 
 
 @login_required(login_url="admin_login")
+def offers(request):
+    coupons = Coupon.objects.all().order_by("-created_at")
+    return render(request, "adminpanel/offers.html", {"coupons": coupons})
+
+
+@login_required(login_url="admin_login")
+@require_POST
+def add_offer(request):
+    code = (request.POST.get("code") or "").strip().upper()
+    if not code:
+        messages.error(request, "Coupon code is required.")
+        return redirect("admin_offers")
+
+    if Coupon.objects.filter(code=code).exists():
+        messages.error(request, "Coupon code already exists.")
+        return redirect("admin_offers")
+
+    valid_until = _parse_datetime_local(request.POST.get("valid_until"))
+    Coupon.objects.create(
+        code=code,
+        title=(request.POST.get("title") or "").strip() or code,
+        description=(request.POST.get("description") or "").strip(),
+        discount_type=request.POST.get("discount_type") or Coupon.DISCOUNT_PERCENT,
+        discount_value=request.POST.get("discount_value") or 0,
+        min_order_amount=request.POST.get("min_order_amount") or 0,
+        max_discount_amount=request.POST.get("max_discount_amount") or None,
+        usage_limit=request.POST.get("usage_limit") or None,
+        per_user_limit=request.POST.get("per_user_limit") or 1,
+        valid_until=valid_until,
+        is_active=bool(request.POST.get("is_active")),
+    )
+    messages.success(request, f"Offer {code} created.")
+    return redirect("admin_offers")
+
+
+@login_required(login_url="admin_login")
+@require_POST
+def update_offer(request, coupon_id):
+    coupon = get_object_or_404(Coupon, id=coupon_id)
+    coupon.code = (request.POST.get("code") or coupon.code).strip().upper()
+    coupon.title = (request.POST.get("title") or coupon.title).strip()
+    coupon.description = (request.POST.get("description") or "").strip()
+    coupon.discount_type = request.POST.get("discount_type") or coupon.discount_type
+    coupon.discount_value = request.POST.get("discount_value") or coupon.discount_value
+    coupon.min_order_amount = request.POST.get("min_order_amount") or 0
+    coupon.max_discount_amount = request.POST.get("max_discount_amount") or None
+    coupon.usage_limit = request.POST.get("usage_limit") or None
+    coupon.per_user_limit = request.POST.get("per_user_limit") or 1
+    coupon.valid_until = _parse_datetime_local(request.POST.get("valid_until"))
+    coupon.is_active = bool(request.POST.get("is_active"))
+    coupon.save()
+    messages.success(request, f"Offer {coupon.code} updated.")
+    return redirect("admin_offers")
+
+
+@login_required(login_url="admin_login")
+@require_POST
+def delete_offer(request, coupon_id):
+    coupon = get_object_or_404(Coupon, id=coupon_id)
+    coupon.delete()
+    messages.success(request, "Offer deleted.")
+    return redirect("admin_offers")
+
+
+@login_required(login_url="admin_login")
 @require_POST
 def update_order_status(request, order_id):
     if not request.user.is_staff:
@@ -668,6 +817,69 @@ def update_order_status(request, order_id):
     else:
         messages.error(request, "Invalid status")
     return redirect('admin_orders')
+
+
+@login_required(login_url="admin_login")
+def recipe_shares(request):
+    recipes = RecipeShare.objects.select_related("author").all()
+    return render(
+        request,
+        "adminpanel/recipes.html",
+        {
+            "recipes": recipes,
+            "total_recipes": recipes.count(),
+            "open_custom_orders": recipes.filter(allow_custom_orders=True).count(),
+        },
+    )
+
+
+@login_required(login_url="admin_login")
+def recipe_order_requests(request):
+    requests_qs = RecipeOrderRequest.objects.select_related("recipe", "requester", "recipe__author").all()
+    status_filter = request.GET.get("status")
+    if status_filter:
+        requests_qs = requests_qs.filter(status=status_filter)
+
+    return render(
+        request,
+        "adminpanel/recipe_orders.html",
+        {
+            "recipe_requests": requests_qs,
+            "status_choices": RecipeOrderRequest.STATUS_CHOICES,
+        },
+    )
+
+
+@login_required(login_url="admin_login")
+@require_POST
+def update_recipe_order_request(request, request_id):
+    recipe_request = get_object_or_404(RecipeOrderRequest, id=request_id)
+    status = request.POST.get("status") or recipe_request.status
+    valid_statuses = {choice[0] for choice in RecipeOrderRequest.STATUS_CHOICES}
+    if status not in valid_statuses:
+        messages.error(request, "Invalid recipe request status.")
+        return redirect("admin_recipe_orders")
+
+    quoted_price = (request.POST.get("quoted_price") or "").strip()
+    recipe_request.admin_note = (request.POST.get("admin_note") or "").strip()
+    recipe_request.status = status
+
+    if quoted_price:
+        recipe_request.quoted_price = quoted_price
+        recipe_request.payment_status = RecipeOrderRequest.PAYMENT_AWAITING
+        recipe_request.quote_sent_at = timezone.now()
+        if recipe_request.status == RecipeOrderRequest.STATUS_REQUESTED:
+            recipe_request.status = RecipeOrderRequest.STATUS_QUOTED
+
+    if recipe_request.status == RecipeOrderRequest.STATUS_COMPLETED:
+        recipe_request.payment_status = RecipeOrderRequest.PAYMENT_PAID
+
+    if recipe_request.status == RecipeOrderRequest.STATUS_REJECTED:
+        recipe_request.payment_status = RecipeOrderRequest.PAYMENT_PENDING
+
+    recipe_request.save()
+    messages.success(request, f"Recipe request #{recipe_request.id} updated.")
+    return redirect("admin_recipe_orders")
 
 
 @login_required(login_url="admin_login")

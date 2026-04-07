@@ -184,6 +184,7 @@ def create_sample_orders():
         address = _default_address_for(user)
         order_time = _planned_order_time(timezone.now(), i, address.city)
         status = STATUS_CYCLE[i % len(STATUS_CYCLE)]
+        payment_status = Order.PAYMENT_PAID if status in {Order.STATUS_SHIPPED, Order.STATUS_DELIVERED} else Order.PAYMENT_PENDING
 
         combo_pool = _build_persona_combo_pool(menu_items, user, address)
         combo = combo_pool[i % len(combo_pool)] if combo_pool else random.sample(menu_items, min(3, len(menu_items)))
@@ -211,6 +212,8 @@ def create_sample_orders():
             pincode=address.pincode,
             phone=address.phone,
             status=status,
+            payment_method=Order.PAYMENT_METHOD_COD,
+            payment_status=payment_status,
             instructions=f"Seeded order #{i + 1} for analytics and recommendations",
         )
 
@@ -229,8 +232,12 @@ def create_sample_orders():
             )
             total_order_price += menu_item.price * quantity
 
-        order.total_price = total_order_price
-        order.save(update_fields=["total_price", "updated_at"])
+        delivery_fee = 0 if total_order_price >= 499 else 40
+        order.subtotal_price = total_order_price
+        order.delivery_fee = delivery_fee
+        order.discount_amount = 0
+        order.total_price = total_order_price + delivery_fee
+        order.save(update_fields=["subtotal_price", "delivery_fee", "discount_amount", "total_price", "updated_at"])
 
         orders_created.append(order)
         print(

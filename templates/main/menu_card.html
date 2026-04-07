@@ -1,22 +1,18 @@
 {% load static %}
 
-<div
-    class="zx-menu-card"
-    data-menu-item
-    data-name="{{ item.name|lower }}"
-    data-description="{{ item.description|default:''|lower }}"
-    data-category="{{ item.category }}"
-    data-veg="{% if item.is_veg %}veg{% else %}nonveg{% endif %}"
-    data-price="{{ item.price }}"
->
+<div class="zx-menu-card" data-menu-item data-name="{{ item.name|lower }}"
+    data-description="{{ item.description|default:''|lower }}" data-category="{{ item.category }}"
+    data-veg="{% if item.is_veg %}veg{% else %}nonveg{% endif %}" data-price="{{ item.price }}">
     <div class="zx-card-img-wrap">
         {% if item.image %}
-            <img src="{{ item.image.url }}" alt="{{ item.name }}" loading="lazy" onerror="this.onerror=null;this.src='{% static 'images/default-food.svg' %}';">
+        <img src="{{ item.image.url }}" alt="{{ item.name }}" loading="lazy"
+            onerror="this.onerror=null;this.src='{% static 'images/default-food.svg' %}';">
         {% else %}
-            <img src="{% static 'images/default-food.svg' %}" alt="{{ item.name }}" loading="lazy">
+        <img src="{% static 'images/default-food.svg' %}" alt="{{ item.name }}" loading="lazy">
         {% endif %}
 
-        <div class="zx-veg-badge{% if not item.is_veg %} zx-veg-badge--nonveg{% endif %}" title="{% if item.is_veg %}Vegetarian{% else %}Non-Vegetarian{% endif %}"></div>
+        <div class="zx-veg-badge{% if not item.is_veg %} zx-veg-badge--nonveg{% endif %}"
+            title="{% if item.is_veg %}Vegetarian{% else %}Non-Vegetarian{% endif %}"></div>
     </div>
 
     <div class="zx-card-body">
@@ -35,7 +31,8 @@
         <p class="zx-card-desc">A delicious dish crafted with authentic spices and fresh ingredients.</p>
         {% endif %}
 
-        <a href="{% url 'menu_item_detail' item.id %}" class="zx-card-tag" style="width:max-content; text-decoration:none;">View details</a>
+        <a href="{% url 'menu_item_detail' item.id %}" class="zx-card-tag"
+            style="width:max-content; text-decoration:none;">View details</a>
 
         <div class="zx-card-footer">
             <div class="zx-price-block">
@@ -45,7 +42,7 @@
 
             <a href="{% url 'add_to_cart' item.id %}" class="zx-add-btn" aria-label="Add {{ item.name }} to cart">
                 <svg width="15" height="15" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M7.5 1v13M1 7.5h13" stroke="white" stroke-width="2" stroke-linecap="round"/>
+                    <path d="M7.5 1v13M1 7.5h13" stroke="white" stroke-width="2" stroke-linecap="round" />
                 </svg>
                 Add
             </a>

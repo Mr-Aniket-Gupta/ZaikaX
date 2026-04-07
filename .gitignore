@@ -80,9 +80,6 @@ ZaikaX/local_settings.py
 *.key
 config.json
 
-# Media uploads (exclude production)
-media/uploads/*
-
 # Logs
 logs/
 *.log

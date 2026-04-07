@@ -29,6 +29,7 @@
                 <tr>
                     <th>Order ID</th>
                     <th>Customer</th>
+                    <th>Billing</th>
                     <th>Total</th>
                     <th>Status</th>
                     <th>Date</th>
@@ -42,6 +43,10 @@
                     <td>
                         <div><strong>{{ order.user.username }}</strong></div>
                         <div class="zx-data-note">{{ order.user.email }}</div>
+                    </td>
+                    <td>
+                        <div><strong>{{ order.payment_method }}</strong> / {{ order.payment_status }}</div>
+                        <div class="zx-data-note">{% if order.coupon_code %}Coupon: {{ order.coupon_code }}{% else %}No coupon{% endif %}</div>
                     </td>
                     <td><strong style="color:#bf7e14;">&#8377;{{ order.total_price }}</strong></td>
                     <td>
@@ -69,7 +74,7 @@
                     </td>
                 </tr>
                 {% empty %}
-                <tr><td colspan="6"><div class="zx-admin-empty"><i class="fas fa-inbox"></i><div>No orders found.</div></div></td></tr>
+                <tr><td colspan="7"><div class="zx-admin-empty"><i class="fas fa-inbox"></i><div>No orders found.</div></div></td></tr>
                 {% endfor %}
             </tbody>
         </table>

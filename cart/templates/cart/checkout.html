@@ -1,597 +1,156 @@
 {% extends 'main/base.html' %}
 {% block content %}
-
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
-
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700;800&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
-    :root {
-        --gold: #f3a000;
-        --gold-light: #ffc94a;
-        --gold-pale: #fff8ec;
-        --green: #387040;
-        --green-dark: #254d2b;
-        --green-light: #eef5ef;
-        --ink: #1a1a1a;
-        --muted: #6b6b6b;
-        --cream: #faf8f4;
-        --white: #ffffff;
-        --shadow: 0 8px 40px rgba(0,0,0,0.07);
-        --radius: 16px;
-    }
-
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
-    body { background: var(--cream) !important; }
-    main, .content, .page-content, .main-content {
-        padding: 0 !important; margin: 0 !important; width: 100% !important;
-    }
-
-    .zx-checkout { font-family: 'DM Sans', sans-serif; color: var(--ink); }
-
-    /* ── HERO ── */
-    .zx-co-hero {
-        position: relative;
-        background: var(--green-dark);
-        min-height: 220px;
-        display: flex; align-items: flex-end;
-        padding: 0 6% 52px;
-        overflow: hidden;
-    }
-
-    .zx-co-hero__bg {
-        position: absolute; inset: 0;
-        background-image:
-            radial-gradient(circle at 10% 60%, rgba(243,160,0,0.16) 0%, transparent 50%),
-            radial-gradient(circle at 88% 10%, rgba(56,112,64,0.45) 0%, transparent 50%);
-        pointer-events: none;
-    }
-
-    .zx-co-hero__deco {
-        position: absolute; right: -60px; top: -60px;
-        width: 340px; height: 340px; border-radius: 50%;
-        border: 68px solid rgba(243,160,0,0.07);
-        pointer-events: none;
-    }
-
-    .zx-co-hero__content {
-        position: relative; z-index: 1;
-        animation: fadeUp 0.8s cubic-bezier(0.22,1,0.36,1) both;
-    }
-
-    @keyframes fadeUp {
-        from { opacity: 0; transform: translateY(24px); }
-        to   { opacity: 1; transform: translateY(0); }
-    }
-
-    .zx-co-hero__eyebrow {
-        display: inline-flex; align-items: center; gap: 10px;
-        font-size: 0.75rem; font-weight: 500; letter-spacing: 0.2em;
-        text-transform: uppercase; color: var(--gold); margin-bottom: 12px;
-    }
-    .zx-co-hero__eyebrow::before {
-        content: ''; display: block; width: 28px; height: 2px; background: var(--gold);
-    }
-
-    .zx-co-hero h1 {
-        font-family: 'Playfair Display', serif;
-        font-size: clamp(2.2rem, 5vw, 3.6rem);
-        font-weight: 900; color: var(--white);
-        line-height: 1.05; letter-spacing: -0.02em;
-    }
-    .zx-co-hero h1 em { font-style: italic; color: var(--gold); }
-
-    /* ── BODY LAYOUT ── */
-    .zx-co-body {
-        max-width: 1100px;
-        margin: 0 auto;
-        padding: 60px 5% 96px;
-        display: grid;
-        grid-template-columns: 1fr 340px;
-        gap: 36px;
-        align-items: start;
-    }
-
-    /* ── USER INFO STRIP ── */
-    .zx-user-strip {
-        display: flex; align-items: center; gap: 16px;
-        padding: 18px 22px;
-        background: var(--white);
-        border-radius: var(--radius);
-        box-shadow: var(--shadow);
-        margin-bottom: 24px;
-        border-left: 4px solid var(--gold);
-        animation: fadeUp 0.6s 0.05s cubic-bezier(0.22,1,0.36,1) both;
-    }
-
-    .zx-user-avatar {
-        width: 48px; height: 48px; border-radius: 50%;
-        background: var(--green-light);
-        display: flex; align-items: center; justify-content: center;
-        font-size: 1.4rem; flex-shrink: 0;
-    }
-
-    .zx-user-info strong {
-        display: block; font-size: 1rem; font-weight: 600; color: var(--ink);
-    }
-    .zx-user-info span {
-        font-size: 0.85rem; color: var(--muted);
-    }
-
-    /* ── FORM CARD ── */
-    .zx-form-card {
-        background: var(--white);
-        border-radius: var(--radius);
-        padding: 36px 38px;
-        box-shadow: var(--shadow);
-        animation: fadeUp 0.6s 0.1s cubic-bezier(0.22,1,0.36,1) both;
-    }
-
-    .zx-form-card-title {
-        font-family: 'Playfair Display', serif;
-        font-size: 1.5rem; font-weight: 700;
-        color: var(--green-dark); margin-bottom: 28px;
-        display: flex; align-items: center; gap: 10px;
-    }
-
-    .zx-form-card-title span { font-size: 1.3rem; }
-
-    /* Select */
-    .zx-field { display: flex; flex-direction: column; gap: 7px; margin-bottom: 20px; }
-
-    .zx-field label {
-        font-size: 0.78rem; font-weight: 500;
-        letter-spacing: 0.1em; text-transform: uppercase;
-        color: var(--green-dark);
-    }
-
-    .zx-field input,
-    .zx-field select,
-    .zx-field textarea {
-        width: 100%;
-        padding: 13px 16px;
-        font-family: 'DM Sans', sans-serif;
-        font-size: 0.95rem; color: var(--ink);
-        background: var(--cream);
-        border: 1.5px solid #e2ddd6;
-        border-radius: 10px;
-        outline: none;
-        transition: border-color 0.2s, box-shadow 0.2s, background 0.2s;
-        -webkit-appearance: none;
-    }
-
-    .zx-field select {
-        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%236b6b6b' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
-        background-repeat: no-repeat;
-        background-position: right 16px center;
-        background-color: var(--cream);
-        padding-right: 40px; cursor: pointer;
-    }
-
-    .zx-field textarea { resize: vertical; min-height: 90px; }
-
-    .zx-field input:focus,
-    .zx-field select:focus,
-    .zx-field textarea:focus {
-        border-color: var(--gold);
-        background: var(--white);
-        box-shadow: 0 0 0 3px rgba(243,160,0,0.12);
-    }
-
-    .zx-field input::placeholder,
-    .zx-field textarea::placeholder { color: #b5b0a8; }
-
-    /* Two-column grid for address fields */
-    .zx-field-grid {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 16px;
-    }
-
-    /* New address box */
-    .zx-new-address {
-        background: var(--green-light);
-        border: 1.5px solid rgba(56,112,64,0.2);
-        border-radius: 12px;
-        padding: 24px;
-        margin-bottom: 20px;
-    }
-
-    .zx-new-address-title {
-        font-size: 0.78rem; font-weight: 500;
-        letter-spacing: 0.1em; text-transform: uppercase;
-        color: var(--green-dark); margin-bottom: 18px;
-        display: flex; align-items: center; gap: 8px;
-    }
-
-    /* Divider */
-    .zx-divider {
-        height: 1px; background: #ede9e2;
-        margin: 24px 0;
-    }
-
-    /* ── SIDEBAR ── */
-    .zx-co-sidebar {
-        position: sticky; top: 30px;
-        animation: fadeInRight 0.7s 0.2s cubic-bezier(0.22,1,0.36,1) both;
-    }
-
-    @keyframes fadeInRight {
-        from { opacity: 0; transform: translateX(18px); }
-        to   { opacity: 1; transform: translateX(0); }
-    }
-
-    .zx-co-sidebar-box {
-        background: var(--white);
-        border-radius: var(--radius);
-        padding: 30px;
-        box-shadow: var(--shadow);
-        margin-bottom: 16px;
-    }
-
-    .zx-sidebar-label {
-        font-size: 0.72rem; font-weight: 500;
-        letter-spacing: 0.2em; text-transform: uppercase;
-        color: var(--muted); margin-bottom: 6px;
-    }
-
-    .zx-sidebar-title {
-        font-family: 'Playfair Display', serif;
-        font-size: 1.5rem; font-weight: 700;
-        color: var(--green-dark); margin-bottom: 24px;
-    }
-
-    .zx-sidebar-row {
-        display: flex; justify-content: space-between; align-items: center;
-        padding: 10px 0;
-        border-bottom: 1px solid #f0ece6;
-        font-size: 0.92rem; color: var(--muted);
-    }
-    .zx-sidebar-row:last-of-type { border-bottom: none; }
-    .zx-sidebar-row strong { color: var(--ink); font-weight: 600; }
-
-    .zx-sidebar-total {
-        display: flex; justify-content: space-between; align-items: center;
-        margin-top: 20px; padding-top: 20px;
-        border-top: 2px solid var(--green-light);
-    }
-
-    .zx-sidebar-total-label {
-        font-family: 'Playfair Display', serif;
-        font-size: 1rem; font-weight: 700; color: var(--green-dark);
-    }
-
-    .zx-sidebar-total-amount {
-        font-family: 'Playfair Display', serif;
-        font-size: 1.7rem; font-weight: 900; color: var(--green-dark);
-    }
-
-    /* Trust badges */
-    .zx-trust {
-        display: flex; flex-direction: column; gap: 10px;
-        padding: 20px;
-        background: var(--gold-pale);
-        border: 1px solid rgba(243,160,0,0.25);
-        border-radius: 12px;
-        margin-bottom: 16px;
-    }
-
-    .zx-trust-item {
-        display: flex; align-items: center; gap: 10px;
-        font-size: 0.83rem; color: #7a5800;
-    }
-
-    .zx-trust-item span { font-size: 1rem; flex-shrink: 0; }
-
-    /* Place Order Button */
-    .zx-btn-place {
-        display: flex; align-items: center; justify-content: center; gap: 10px;
-        width: 100%; padding: 18px;
-        background: var(--gold); color: var(--white);
-        font-family: 'DM Sans', sans-serif;
-        font-size: 1.02rem; font-weight: 500;
-        border: none; border-radius: 100px; cursor: pointer;
-        transition: background 0.2s, transform 0.2s, box-shadow 0.2s;
-        letter-spacing: 0.03em;
-    }
-
-    .zx-btn-place:hover {
-        background: #d98f00;
-        transform: translateY(-2px);
-        box-shadow: 0 10px 32px rgba(243,160,0,0.35);
-    }
-
-    .zx-btn-place:active { transform: translateY(0); }
-    .zx-btn-place svg { transition: transform 0.2s; }
-    .zx-btn-place:hover svg { transform: translateX(4px); }
-
-    /* ── SUCCESS MODAL ── */
-    .zx-modal-overlay {
-        display: none;
-        position: fixed; inset: 0;
-        background: rgba(0,0,0,0.55);
-        z-index: 9999;
-        align-items: center; justify-content: center;
-        backdrop-filter: blur(4px);
-        -webkit-backdrop-filter: blur(4px);
-    }
-
-    .zx-modal-overlay.active { display: flex; }
-
-    .zx-modal {
-        background: var(--white);
-        border-radius: 24px;
-        padding: 52px 44px;
-        max-width: 420px; width: 90%;
-        text-align: center;
-        box-shadow: 0 32px 80px rgba(0,0,0,0.2);
-        animation: popIn 0.5s cubic-bezier(0.34,1.56,0.64,1) both;
-    }
-
-    @keyframes popIn {
-        from { opacity: 0; transform: scale(0.7); }
-        to   { opacity: 1; transform: scale(1); }
-    }
-
-    .zx-modal__icon {
-        width: 80px; height: 80px; border-radius: 50%;
-        background: var(--green-light);
-        display: flex; align-items: center; justify-content: center;
-        font-size: 2.4rem;
-        margin: 0 auto 24px;
-    }
-
-    .zx-modal h3 {
-        font-family: 'Playfair Display', serif;
-        font-size: 1.9rem; font-weight: 900;
-        color: var(--green-dark); margin-bottom: 12px;
-    }
-
-    .zx-modal h3 em { font-style: italic; color: var(--gold); }
-
-    .zx-modal p {
-        font-size: 0.97rem; color: var(--muted);
-        line-height: 1.65; margin-bottom: 32px;
-    }
-
-    .zx-modal-btn {
-        display: inline-flex; align-items: center; justify-content: center; gap: 8px;
-        padding: 15px 40px;
-        background: var(--green-dark); color: var(--white);
-        font-family: 'DM Sans', sans-serif;
-        font-size: 0.95rem; font-weight: 500;
-        border-radius: 100px; text-decoration: none;
-        transition: background 0.2s, transform 0.2s;
-    }
-    .zx-modal-btn:hover {
-        background: var(--green);
-        transform: translateY(-2px);
-        color: var(--white); text-decoration: none;
-    }
-
-    /* ── RESPONSIVE ── */
-    @media (max-width: 860px) {
-        .zx-co-body {
-            grid-template-columns: 1fr;
-            padding: 40px 5% 72px;
-        }
-        .zx-co-sidebar { position: static; }
-        .zx-form-card { padding: 28px 22px; }
-    }
-
-    @media (max-width: 560px) {
-        .zx-field-grid { grid-template-columns: 1fr; }
-    }
+:root{--zx-surface:rgba(255,255,255,.84);--zx-card:#fff;--zx-line:rgba(44,60,38,.12);--zx-text:#1d231c;--zx-muted:#677064;--zx-green:#214d34;--zx-green-soft:#e8f0e9;--zx-gold:#df9a2e;--zx-gold-deep:#bf7e14;--zx-red:#c0392b;--zx-shadow:0 18px 46px rgba(23,30,21,.08);--zx-shadow-soft:0 12px 28px rgba(23,30,21,.06)}
+body{background:radial-gradient(circle at top left,rgba(223,154,46,.12),transparent 24%),radial-gradient(circle at top right,rgba(33,77,52,.08),transparent 20%),linear-gradient(180deg,#f8f4ec 0%,#f4eee5 100%)!important}
+.zx-checkout{font-family:'Manrope',sans-serif;color:var(--zx-text);padding:34px 0 90px}.zx-shell{width:min(1320px,calc(100% - 48px));margin:0 auto}.zx-hero{overflow:hidden;border-radius:34px;padding:clamp(28px,5vw,62px);background:radial-gradient(circle at 85% 16%,rgba(223,154,46,.2),transparent 18%),radial-gradient(circle at 0% 100%,rgba(255,255,255,.08),transparent 28%),linear-gradient(135deg,#183a27 0%,#28553a 50%,#3d714c 100%);border:1px solid rgba(255,255,255,.35);box-shadow:var(--zx-shadow)}.zx-hero__eyebrow{display:inline-flex;align-items:center;gap:10px;padding:9px 14px;border-radius:999px;background:rgba(255,255,255,.1);color:#f4ca7e;font-size:.8rem;font-weight:800;letter-spacing:.16em;text-transform:uppercase;margin-bottom:18px}.zx-hero__eyebrow:before{content:'';width:8px;height:8px;border-radius:50%;background:currentColor}.zx-hero h1{margin:0 0 14px;font-family:'Playfair Display',serif;font-size:clamp(3rem,5vw,5rem);line-height:.97;color:#fffdf7}.zx-hero h1 em{color:#f4ca7e;font-style:normal}.zx-hero p{margin:0;max-width:620px;color:rgba(255,255,255,.76);line-height:1.8}
+.zx-layout{margin-top:30px;display:grid;grid-template-columns:1fr 360px;gap:24px;align-items:start}.zx-card{background:var(--zx-surface);border:1px solid rgba(255,255,255,.65);backdrop-filter:blur(14px);box-shadow:var(--zx-shadow-soft);border-radius:30px;padding:26px}.zx-card h2{margin-bottom:18px;font-family:'Playfair Display',serif;font-size:2rem;color:var(--zx-green)}.zx-field{display:flex;flex-direction:column;gap:8px;margin-bottom:18px}.zx-field label{display:block;color:var(--zx-green);font-size:.78rem;font-weight:800;text-transform:uppercase;letter-spacing:.08em}.zx-field input,.zx-field select,.zx-field textarea{width:100%;padding:14px 16px;border-radius:16px;border:1px solid var(--zx-line);background:#fcfbf8;color:var(--zx-text);font:inherit}.zx-field input:focus,.zx-field select:focus,.zx-field textarea:focus{outline:none;border-color:rgba(223,154,46,.55);box-shadow:0 0 0 4px rgba(223,154,46,.12);background:#fff}.zx-grid-2{display:grid;grid-template-columns:1fr 1fr;gap:16px}.zx-note{padding:16px;border-radius:18px;background:#fff7e9;color:#805700;line-height:1.65;font-size:.9rem}.zx-payment-options{display:grid;gap:12px;margin-bottom:18px}.zx-radio{display:flex;gap:12px;align-items:flex-start;padding:16px;border-radius:18px;background:#fff;border:1px solid var(--zx-line)}.zx-radio input{margin-top:4px}.zx-radio strong{display:block;color:var(--zx-text)}.zx-radio span{display:block;color:var(--zx-muted);font-size:.9rem;line-height:1.6}
+.zx-coupon-box,.zx-summary-box{display:grid;gap:14px}.zx-coupon-form{display:flex;gap:10px}.zx-coupon-form input{flex:1;padding:14px 16px;border-radius:16px;border:1px solid var(--zx-line);background:#fff}.zx-btn,.zx-btn-light{display:inline-flex;align-items:center;justify-content:center;padding:14px 18px;border-radius:16px;border:none;font-weight:800;text-decoration:none;cursor:pointer}.zx-btn{background:linear-gradient(135deg,var(--zx-gold) 0%,var(--zx-gold-deep) 100%);color:#fff}.zx-btn-light{background:#f2f5f3;color:var(--zx-green)}.zx-coupon-pill{display:inline-flex;align-items:center;justify-content:space-between;gap:12px;padding:14px 16px;border-radius:18px;background:var(--zx-green-soft);color:var(--zx-green);font-weight:800}.zx-offer-list{display:grid;gap:10px}.zx-offer{padding:14px 16px;border-radius:18px;background:#fff;border:1px solid var(--zx-line)}.zx-offer strong{display:block;color:var(--zx-text)}.zx-offer span{display:block;color:var(--zx-muted);font-size:.9rem;line-height:1.6}.zx-summary-row{display:flex;justify-content:space-between;gap:12px;padding:10px 0;border-bottom:1px solid rgba(44,60,38,.08);color:var(--zx-muted)}.zx-summary-row strong{color:var(--zx-text)}.zx-summary-total{display:flex;justify-content:space-between;align-items:center;margin-top:12px;padding-top:18px;border-top:2px solid var(--zx-green-soft)}.zx-summary-total strong{font-family:'Playfair Display',serif;font-size:1.7rem;color:var(--zx-green)}.zx-items-mini{display:grid;gap:10px}.zx-mini-item{display:flex;justify-content:space-between;gap:12px;padding:12px 0;border-bottom:1px solid rgba(44,60,38,.08)}.zx-mini-item:last-child{border-bottom:none}.zx-mini-item span{color:var(--zx-muted)}.zx-sidebar-actions{display:grid;gap:12px;margin-top:18px}
+@media (max-width:980px){.zx-layout{grid-template-columns:1fr}}@media (max-width:768px){.zx-checkout{padding:18px 0 64px}.zx-shell{width:min(100% - 24px,1320px)}.zx-hero{border-radius:24px;padding:24px 20px}.zx-grid-2,.zx-coupon-form{grid-template-columns:1fr;display:grid}}
 </style>
-
 <section class="zx-checkout">
-
-    <!-- ── HERO ── -->
-    <div class="zx-co-hero">
-        <div class="zx-co-hero__bg"></div>
-        <div class="zx-co-hero__deco"></div>
-        <div class="zx-co-hero__content">
-            <div class="zx-co-hero__eyebrow">Almost There</div>
+    <div class="zx-shell">
+        <div class="zx-hero">
+            <div class="zx-hero__eyebrow">Almost There</div>
             <h1>Final <em>Checkout</em></h1>
+            <p>Choose your address, apply offers, and place the order with a clear full-price breakdown.</p>
         </div>
-    </div>
 
-    <!-- ── BODY ── -->
-    <div class="zx-co-body">
+        <div class="zx-layout">
+            <div>
+                <div class="zx-card" style="margin-bottom:24px;">
+                    <h2>Delivery Details</h2>
+                    <form id="checkoutForm" method="POST" action="{% url 'process_order' %}">
+                        {% csrf_token %}
 
-        <!-- LEFT COLUMN -->
-        <div>
+                        <div class="zx-field">
+                            <label for="selected_address">Delivery Address</label>
+                            <select name="selected_address" id="selected_address">
+                                <option value="">Choose a saved address</option>
+                                {% for a in addresses %}
+                                <option value="{{ a.id }}" {% if default_address_id and a.id == default_address_id %}selected{% endif %}>{{ a.full_name }} - {{ a.address_line1 }}, {{ a.city }} ({{ a.pincode }})</option>
+                                {% endfor %}
+                                <option value="new">Add a new address</option>
+                            </select>
+                        </div>
 
-            <!-- User strip -->
-            <div class="zx-user-strip">
-                <div class="zx-user-avatar">👤</div>
-                <div class="zx-user-info">
-                    <strong>{{ request.user.username }}</strong>
-                    <span>{{ request.user.email }}</span>
-                </div>
-            </div>
-
-            <!-- Delivery Form -->
-            <div class="zx-form-card">
-                <div class="zx-form-card-title">
-                    <span>🛵</span> Delivery Information
-                </div>
-
-                <form id="checkoutForm" method="POST" action="{% url 'process_order' %}">
-                    {% csrf_token %}
-
-                    <!-- Saved address select -->
-                    <div class="zx-field">
-                        <label for="selected_address">Delivery Address</label>
-                        <select name="selected_address" id="selected_address">
-                            <option value="">— Choose a saved address —</option>
-                            {% for a in addresses %}
-                                <option value="{{ a.id }}" {% if default_address_id and a.id == default_address_id %}selected{% endif %}>
-                                    {{ a.full_name }} — {{ a.address_line1 }}, {{ a.city }} ({{ a.pincode }})
-                                </option>
-                            {% endfor %}
-                            <option value="new">+ Add a new delivery address</option>
-                        </select>
-                    </div>
-
-                    <!-- New address fields -->
-                    <div id="newAddressBox" style="display:none;">
-                        <div class="zx-new-address">
-                            <div class="zx-new-address-title">📍 New Address Details</div>
-
-                            <div class="zx-field-grid">
-                                <div class="zx-field">
-                                    <label>Full Name</label>
-                                    <input name="full_name" placeholder="e.g. Rahul Sharma">
-                                </div>
-                                <div class="zx-field">
-                                    <label>Phone</label>
-                                    <input name="phone" placeholder="+91 00000 00000">
-                                </div>
+                        <div id="newAddressBox" style="display:none;">
+                            <div class="zx-grid-2">
+                                <div class="zx-field"><label>Full Name</label><input name="full_name" placeholder="Rahul Sharma"></div>
+                                <div class="zx-field"><label>Phone</label><input name="phone" placeholder="+91 00000 00000"></div>
                             </div>
-
-                            <div class="zx-field">
-                                <label>Address Line 1</label>
-                                <input name="address_line1" placeholder="House / Flat No., Street">
+                            <div class="zx-field"><label>Address Line 1</label><input name="address_line1" placeholder="House / Flat / Street"></div>
+                            <div class="zx-field"><label>Address Line 2</label><input name="address_line2" placeholder="Landmark (optional)"></div>
+                            <div class="zx-grid-2">
+                                <div class="zx-field"><label>City</label><input name="city" placeholder="New Delhi"></div>
+                                <div class="zx-field"><label>State</label><input name="state" placeholder="Delhi"></div>
                             </div>
-
-                            <div class="zx-field">
-                                <label>Address Line 2 <small style="text-transform:none;letter-spacing:0;font-size:0.75rem;color:var(--muted)">(Optional)</small></label>
-                                <input name="address_line2" placeholder="Landmark, Colony">
-                            </div>
-
-                            <div class="zx-field-grid">
-                                <div class="zx-field">
-                                    <label>City</label>
-                                    <input name="city" placeholder="e.g. New Delhi">
-                                </div>
-                                <div class="zx-field">
-                                    <label>State</label>
-                                    <input name="state" placeholder="e.g. Delhi">
-                                </div>
-                            </div>
-
-                            <div class="zx-field-grid">
-                                <div class="zx-field">
-                                    <label>Pincode</label>
-                                    <input name="pincode" placeholder="110001">
-                                </div>
-                                <div class="zx-field">
-                                    <label>Country</label>
-                                    <input name="country" placeholder="India">
-                                </div>
+                            <div class="zx-grid-2">
+                                <div class="zx-field"><label>Pincode</label><input name="pincode" placeholder="110001"></div>
+                                <div class="zx-field"><label>Country</label><input name="country" placeholder="India"></div>
                             </div>
                         </div>
+
+                        <div class="zx-field">
+                            <label>Payment Method</label>
+                            <div class="zx-payment-options">
+                                <label class="zx-radio">
+                                    <input type="radio" name="payment_method" value="COD" checked>
+                                    <div><strong>Cash on Delivery</strong><span>Place order instantly and pay at delivery.</span></div>
+                                </label>
+                                <label class="zx-radio">
+                                    <input type="radio" name="payment_method" value="ONLINE" disabled>
+                                    <div><strong>Online Payment</strong><span>Coming next through secure payment confirmation flow.</span></div>
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="zx-field">
+                            <label>Delivery Instructions</label>
+                            <textarea name="instructions" placeholder="Leave at door, call on arrival, avoid ringing bell..."></textarea>
+                        </div>
+                    </form>
+                </div>
+
+                <div class="zx-card">
+                    <h2>Offers & Coupons</h2>
+                    <div class="zx-coupon-box">
+                        {% if applied_coupon %}
+                        <div class="zx-coupon-pill">
+                            <span>{{ applied_coupon.code }} applied</span>
+                            <form method="POST" action="{% url 'remove_coupon' %}">
+                                {% csrf_token %}
+                                <input type="hidden" name="next" value="checkout">
+                                <button class="zx-btn-light" type="submit">Remove</button>
+                            </form>
+                        </div>
+                        {% endif %}
+
+                        <form method="POST" action="{% url 'apply_coupon' %}" class="zx-coupon-form">
+                            {% csrf_token %}
+                            <input type="hidden" name="next" value="checkout">
+                            <input type="text" name="coupon_code" placeholder="Enter coupon code">
+                            <button type="submit" class="zx-btn">Apply</button>
+                        </form>
+
+                        {% if available_coupons %}
+                        <div class="zx-offer-list">
+                            {% for coupon in available_coupons %}
+                            <div class="zx-offer">
+                                <strong>{{ coupon.code }} - {{ coupon.title }}</strong>
+                                <span>{{ coupon.description|default:"Save more on your current order." }}</span>
+                            </div>
+                            {% endfor %}
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+            <div>
+                <div class="zx-card">
+                    <h2>Order Summary</h2>
+                    <div class="zx-items-mini">
+                        {% for item in items %}
+                        <div class="zx-mini-item">
+                            <div><strong>{{ item.item.name }}</strong><span>{{ item.quantity }} x &#8377;{{ item.item.price }}</span></div>
+                            <strong>&#8377;{{ item.total_price }}</strong>
+                        </div>
+                        {% endfor %}
                     </div>
 
-                    <div class="zx-divider"></div>
-
-                    <!-- Instructions -->
-                    <div class="zx-field">
-                        <label>Delivery Instructions <small style="text-transform:none;letter-spacing:0;font-size:0.75rem;color:var(--muted)">(Optional)</small></label>
-                        <textarea name="instructions" placeholder="e.g. Leave at door, call on arrival, avoid ringing bell…"></textarea>
+                    <div class="zx-summary-box">
+                        <div class="zx-summary-row"><span>Subtotal</span><strong>&#8377;{{ subtotal }}</strong></div>
+                        <div class="zx-summary-row"><span>Delivery Fee</span><strong>{% if delivery_fee %}&#8377;{{ delivery_fee }}{% else %}FREE{% endif %}</strong></div>
+                        <div class="zx-summary-row"><span>Discount</span><strong>- &#8377;{{ discount_amount }}</strong></div>
+                        <div class="zx-summary-total"><span>Total Payable</span><strong>&#8377;{{ total }}</strong></div>
                     </div>
 
-                    <!-- Mobile-only submit (hidden on desktop via sidebar) -->
-                    <button type="submit" class="zx-btn-place" style="display:none" id="mobilePlaceBtn">
-                        Place Order
-                        <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-                            <path d="M3 8h10M9 4l4 4-4 4" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
-                        </svg>
-                    </button>
+                    <div class="zx-note">Free delivery starts at &#8377;499 subtotal. Active coupons are applied before final total is confirmed.</div>
 
-                </form>
-            </div>
-        </div>
-
-        <!-- RIGHT COLUMN: SIDEBAR -->
-        <div class="zx-co-sidebar">
-
-            <div class="zx-co-sidebar-box">
-                <div class="zx-sidebar-label">Your Order</div>
-                <div class="zx-sidebar-title">Order Summary</div>
-
-                <div class="zx-sidebar-row">
-                    <span>Items</span>
-                    <strong>{{ items|length }}</strong>
-                </div>
-                <div class="zx-sidebar-row">
-                    <span>Subtotal</span>
-                    <strong>₹{{ total }}</strong>
-                </div>
-                <div class="zx-sidebar-row">
-                    <span>Delivery</span>
-                    <strong>{% if total >= 499 %}FREE 🎉{% else %}₹40{% endif %}</strong>
-                </div>
-
-                <div class="zx-sidebar-total">
-                    <div class="zx-sidebar-total-label">Grand Total</div>
-                    <div class="zx-sidebar-total-amount">₹{{ total }}</div>
+                    <div class="zx-sidebar-actions">
+                        <button type="submit" form="checkoutForm" class="zx-btn">Place Order</button>
+                        <a href="{% url 'order_history' %}" class="zx-btn-light">View Order History</a>
+                    </div>
                 </div>
             </div>
-
-            <div class="zx-trust">
-                <div class="zx-trust-item"><span>🔒</span> Secure & encrypted checkout</div>
-                <div class="zx-trust-item"><span>🛵</span> Delivery in 30–45 minutes</div>
-                <div class="zx-trust-item"><span>✅</span> Easy cancellation before dispatch</div>
-            </div>
-
-            <button type="submit" form="checkoutForm" class="zx-btn-place">
-                Place Order
-                <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-                    <path d="M3 8h10M9 4l4 4-4 4" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
-                </svg>
-            </button>
-
         </div>
     </div>
 </section>
 
-<!-- ── ORDER SUCCESS MODAL ── -->
-<div id="orderModal" class="zx-modal-overlay">
-    <div class="zx-modal">
-        <div class="zx-modal__icon">🎉</div>
-        <h3>Order <em>Placed!</em></h3>
-        <p>Your order has been placed successfully. Our kitchen is already on it — get ready for something delicious!</p>
-        <a href="/" class="zx-modal-btn">
-            Back to Home
-            <svg width="14" height="14" viewBox="0 0 16 16" fill="none">
-                <path d="M3 8h10M9 4l4 4-4 4" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
-            </svg>
-        </a>
-    </div>
-</div>
-
 <script>
 document.addEventListener("DOMContentLoaded", function () {
-
-    /* ── Address toggle — original logic untouched ── */
-    const selectAddr = document.getElementById('selected_address');
-    const newAddressBox = document.getElementById('newAddressBox');
-
-    if (selectAddr && newAddressBox) {
-        selectAddr.addEventListener('change', function(e){
-            newAddressBox.style.display = e.target.value === 'new' ? 'block' : 'none';
-        });
-        if (selectAddr.value === 'new') {
-            newAddressBox.style.display = 'block';
-        }
+    const selectAddr = document.getElementById("selected_address");
+    const newAddressBox = document.getElementById("newAddressBox");
+    function toggleAddressBox() {
+        if (!selectAddr || !newAddressBox) return;
+        newAddressBox.style.display = selectAddr.value === "new" ? "block" : "none";
     }
-
-    /* ── Show modal if success=1 in URL — original logic untouched ── */
-    const params = new URLSearchParams(window.location.search);
-    if (params.get("success") === "1") {
-        document.getElementById("orderModal").classList.add("active");
+    if (selectAddr) {
+        selectAddr.addEventListener("change", toggleAddressBox);
+        toggleAddressBox();
     }
-
-    /* ── Show mobile submit on small screens ── */
-    function toggleMobileBtn() {
-        const btn = document.getElementById('mobilePlaceBtn');
-        if (btn) btn.style.display = window.innerWidth <= 860 ? 'flex' : 'none';
-    }
-    toggleMobileBtn();
-    window.addEventListener('resize', toggleMobileBtn);
-
 });
 </script>
-
 {% endblock %}

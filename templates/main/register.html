@@ -2,20 +2,22 @@
 {% load static %}
 {% block content %}
 
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700;800&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link
+    href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700;800&family=Manrope:wght@400;500;600;700;800&display=swap"
+    rel="stylesheet">
 
 <style>
     :root {
-        --zx-surface: rgba(255,255,255,0.82);
-        --zx-line: rgba(44,60,38,0.12);
+        --zx-surface: rgba(255, 255, 255, 0.82);
+        --zx-line: rgba(44, 60, 38, 0.12);
         --zx-text: #1d231c;
         --zx-muted: #677064;
         --zx-green: #214d34;
         --zx-green-soft: #e8f0e9;
         --zx-gold: #df9a2e;
         --zx-gold-deep: #bf7e14;
-        --zx-shadow: 0 18px 46px rgba(23,30,21,0.08);
-        --zx-shadow-soft: 0 12px 28px rgba(23,30,21,0.06);
+        --zx-shadow: 0 18px 46px rgba(23, 30, 21, 0.08);
+        --zx-shadow-soft: 0 12px 28px rgba(23, 30, 21, 0.06);
         --zx-error-bg: #fff4f1;
         --zx-error-border: #f5cdc4;
         --zx-error-text: #b2432e;
@@ -23,8 +25,8 @@
 
     body {
         background:
-            radial-gradient(circle at top left, rgba(223,154,46,0.12), transparent 24%),
-            radial-gradient(circle at top right, rgba(33,77,52,0.08), transparent 20%),
+            radial-gradient(circle at top left, rgba(223, 154, 46, 0.12), transparent 24%),
+            radial-gradient(circle at top right, rgba(33, 77, 52, 0.08), transparent 20%),
             linear-gradient(180deg, #f8f4ec 0%, #f4eee5 100%) !important;
     }
 
@@ -51,10 +53,10 @@
         border-radius: 34px;
         padding: clamp(28px, 5vw, 48px);
         background:
-            radial-gradient(circle at 85% 15%, rgba(223,154,46,0.2), transparent 18%),
-            radial-gradient(circle at 0% 100%, rgba(255,255,255,0.08), transparent 28%),
+            radial-gradient(circle at 85% 15%, rgba(223, 154, 46, 0.2), transparent 18%),
+            radial-gradient(circle at 0% 100%, rgba(255, 255, 255, 0.08), transparent 28%),
             linear-gradient(135deg, #183a27 0%, #28553a 50%, #3d714c 100%);
-        border: 1px solid rgba(255,255,255,0.35);
+        border: 1px solid rgba(255, 255, 255, 0.35);
         box-shadow: var(--zx-shadow);
         position: sticky;
         top: 24px;
@@ -66,7 +68,7 @@
         gap: 10px;
         padding: 9px 14px;
         border-radius: 999px;
-        background: rgba(255,255,255,0.1);
+        background: rgba(255, 255, 255, 0.1);
         color: #f4ca7e;
         font-size: 0.8rem;
         font-weight: 800;
@@ -98,7 +100,7 @@
 
     .zx-auth-intro p {
         margin: 0;
-        color: rgba(255,255,255,0.78);
+        color: rgba(255, 255, 255, 0.78);
         line-height: 1.8;
     }
 
@@ -111,7 +113,7 @@
 
     .zx-auth-panel {
         background: var(--zx-surface);
-        border: 1px solid rgba(255,255,255,0.65);
+        border: 1px solid rgba(255, 255, 255, 0.65);
         backdrop-filter: blur(14px);
         box-shadow: var(--zx-shadow-soft);
         border-radius: 30px;
@@ -177,8 +179,8 @@
 
     .zx-form-group .form-control:focus {
         outline: none;
-        border-color: rgba(223,154,46,0.55);
-        box-shadow: 0 0 0 4px rgba(223,154,46,0.12);
+        border-color: rgba(223, 154, 46, 0.55);
+        box-shadow: 0 0 0 4px rgba(223, 154, 46, 0.12);
         background: #fff;
     }
 
@@ -191,7 +193,7 @@
     .zx-section-divider {
         margin: 18px 0 14px;
         padding-top: 16px;
-        border-top: 1px dashed rgba(44,60,38,0.18);
+        border-top: 1px dashed rgba(44, 60, 38, 0.18);
         font-size: 0.78rem;
         font-weight: 800;
         letter-spacing: 0.1em;
@@ -263,8 +265,10 @@
             <div class="zx-auth-intro">
                 <p class="zx-auth-kicker">Join ZaikaX</p>
                 <h1>Create an account for <em>faster cravings</em>.</h1>
-                <p>Sign up once and keep your profile, cart, and delivery address ready so your next favorite meal is always just a few clicks away.</p>
-                <img src="{% static 'images/auth-register.svg' %}" alt="Register illustration" class="zx-auth-art" onerror="this.style.display='none';">
+                <p>Sign up once and keep your profile, cart, and delivery address ready so your next favorite meal is
+                    always just a few clicks away.</p>
+                <img src="{% static 'images/auth-register.svg' %}" alt="Register illustration" class="zx-auth-art"
+                    onerror="this.style.display='none';">
             </div>
 
             <div class="zx-auth-panel">
@@ -274,53 +278,60 @@
                 <form method="POST" novalidate>
                     {% csrf_token %}
                     {% if form.non_field_errors %}
-                        <div class="zx-form-alert">{{ form.non_field_errors|striptags }}</div>
+                    <div class="zx-form-alert">{{ form.non_field_errors|striptags }}</div>
                     {% endif %}
 
                     {% if form %}
-                        <div class="zx-form-grid">
-                            <div class="zx-form-group">
-                                {{ form.username.label_tag }}
-                                {{ form.username }}
-                                {% if form.username.errors %}<div class="field-errors">{{ form.username.errors|striptags }}</div>{% endif %}
-                            </div>
-                            <div class="zx-form-group">
-                                {{ form.email.label_tag }}
-                                {{ form.email }}
-                                {% if form.email.errors %}<div class="field-errors">{{ form.email.errors|striptags }}</div>{% endif %}
-                            </div>
-
-                            <div class="zx-form-group">
-                                {{ form.password.label_tag }}
-                                {{ form.password }}
-                                {% if form.password.errors %}<div class="field-errors">{{ form.password.errors|striptags }}</div>{% endif %}
-                            </div>
-                            <div class="zx-form-group">
-                                {{ form.confirm.label_tag }}
-                                {{ form.confirm }}
-                                {% if form.confirm.errors %}<div class="field-errors">{{ form.confirm.errors|striptags }}</div>{% endif %}
-                            </div>
+                    <div class="zx-form-grid">
+                        <div class="zx-form-group">
+                            {{ form.username.label_tag }}
+                            {{ form.username }}
+                            {% if form.username.errors %}<div class="field-errors">{{ form.username.errors|striptags }}
+                            </div>{% endif %}
+                        </div>
+                        <div class="zx-form-group">
+                            {{ form.email.label_tag }}
+                            {{ form.email }}
+                            {% if form.email.errors %}<div class="field-errors">{{ form.email.errors|striptags }}</div>
+                            {% endif %}
                         </div>
 
-                        <div class="zx-section-divider">Delivery Address</div>
+                        <div class="zx-form-group">
+                            {{ form.password.label_tag }}
+                            {{ form.password }}
+                            {% if form.password.errors %}<div class="field-errors">{{ form.password.errors|striptags }}
+                            </div>{% endif %}
+                        </div>
+                        <div class="zx-form-group">
+                            {{ form.confirm.label_tag }}
+                            {{ form.confirm }}
+                            {% if form.confirm.errors %}<div class="field-errors">{{ form.confirm.errors|striptags }}
+                            </div>{% endif %}
+                        </div>
+                    </div>
 
-                        <div class="zx-form-grid">
-                            <div class="zx-form-group zx-col-2">
-                                {{ form.full_name.label_tag }}
-                                {{ form.full_name }}
-                                {% if form.full_name.errors %}<div class="field-errors">{{ form.full_name.errors|striptags }}</div>{% endif %}
-                            </div>
+                    <div class="zx-section-divider">Delivery Address</div>
 
-                            <div class="zx-form-group">
-                                {{ form.phone.label_tag }}
-                                {{ form.phone }}
-                                {% if form.phone.errors %}<div class="field-errors">{{ form.phone.errors|striptags }}</div>{% endif %}
-                            </div>
-                            <div class="zx-form-group">
-                                {{ form.pincode.label_tag }}
-                                {{ form.pincode }}
-                                {% if form.pincode.errors %}<div class="field-errors">{{ form.pincode.errors|striptags }}</div>{% endif %}
-                            </div>
+                    <div class="zx-form-grid">
+                        <div class="zx-form-group zx-col-2">
+                            {{ form.full_name.label_tag }}
+                            {{ form.full_name }}
+                            {% if form.full_name.errors %}<div class="field-errors">{{ form.full_name.errors|striptags
+                                }}</div>{% endif %}
+                        </div>
+
+                        <div class="zx-form-group">
+                            {{ form.phone.label_tag }}
+                            {{ form.phone }}
+                            {% if form.phone.errors %}<div class="field-errors">{{ form.phone.errors|striptags }}</div>
+                            {% endif %}
+                        </div>
+                        <div class="zx-form-group">
+                            {{ form.pincode.label_tag }}
+                            {{ form.pincode }}
+                            {% if form.pincode.errors %}<div class="field-errors">{{ form.pincode.errors|striptags }}
+                            </div>{% endif %}
+                        </div>
 
                             <div class="zx-form-group zx-col-2">
                                 {{ form.address_line1.label_tag }}
@@ -334,23 +345,25 @@
                                 {% if form.address_line2.errors %}<div class="field-errors">{{ form.address_line2.errors|striptags }}</div>{% endif %}
                             </div>
 
-                            <div class="zx-form-group">
-                                {{ form.city.label_tag }}
-                                {{ form.city }}
-                                {% if form.city.errors %}<div class="field-errors">{{ form.city.errors|striptags }}</div>{% endif %}
-                            </div>
-                            <div class="zx-form-group">
-                                {{ form.state.label_tag }}
-                                {{ form.state }}
-                                {% if form.state.errors %}<div class="field-errors">{{ form.state.errors|striptags }}</div>{% endif %}
-                            </div>
-
-                            <div class="zx-form-group zx-col-2">
-                                {{ form.country.label_tag }}
-                                {{ form.country }}
-                                {% if form.country.errors %}<div class="field-errors">{{ form.country.errors|striptags }}</div>{% endif %}
-                            </div>
+                        <div class="zx-form-group">
+                            {{ form.city.label_tag }}
+                            {{ form.city }}
+                            {% if form.city.errors %}<div class="field-errors">{{ form.city.errors|striptags }}</div>{% endif %}
                         </div>
+                        <div class="zx-form-group">
+                            {{ form.state.label_tag }}
+                            {{ form.state }}
+                            {% if form.state.errors %}<div class="field-errors">{{ form.state.errors|striptags }}</div>
+                            {% endif %}
+                        </div>
+
+                        <div class="zx-form-group zx-col-2">
+                            {{ form.country.label_tag }}
+                            {{ form.country }}
+                            {% if form.country.errors %}<div class="field-errors">{{ form.country.errors|striptags }}
+                            </div>{% endif %}
+                        </div>
+                    </div>
                     {% endif %}
 
                     <button class="submit-btn" type="submit">Create Account</button>

@@ -1,0 +1,71 @@
+{% extends 'adminpanel/base_admin.html' %}
+
+{% block content %}
+<section class="d-grid gap-4">
+    <div class="card border-0 shadow-sm rounded-4">
+        <div class="card-body p-4 p-lg-5">
+            <div class="d-flex flex-wrap justify-content-between align-items-start gap-3">
+                <div>
+                    <span class="text-uppercase small fw-semibold text-muted">Community Kitchen</span>
+                    <h2 class="mt-2 mb-2">Shared Recipes</h2>
+                    <p class="text-muted mb-0">User-shared recipes ko yahan monitor karo. Aap dekh sakte ho kaunsi dishes custom order ke liye open hain aur kis recipe ko sabse zyada engagement mil raha hai.</p>
+                </div>
+                <div class="d-flex gap-3 flex-wrap">
+                    <div class="rounded-4 px-4 py-3 bg-light">
+                        <div class="small text-muted">Total recipes</div>
+                        <div class="fs-3 fw-bold">{{ total_recipes }}</div>
+                    </div>
+                    <div class="rounded-4 px-4 py-3 bg-light">
+                        <div class="small text-muted">Open custom orders</div>
+                        <div class="fs-3 fw-bold">{{ open_custom_orders }}</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card border-0 shadow-sm rounded-4">
+        <div class="card-body p-4">
+            <div class="table-responsive">
+                <table class="table align-middle mb-0">
+                    <thead>
+                        <tr>
+                            <th>Recipe</th>
+                            <th>Author</th>
+                            <th>Prep</th>
+                            <th>Engagement</th>
+                            <th>Custom Order</th>
+                            <th>Created</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for recipe in recipes %}
+                        <tr>
+                            <td>
+                                <div class="fw-semibold">{{ recipe.title }}</div>
+                                <div class="text-muted small">{{ recipe.short_description }}</div>
+                            </td>
+                            <td>{{ recipe.author.username }}</td>
+                            <td>{{ recipe.prep_time_minutes }} min · {{ recipe.servings }} servings</td>
+                            <td>{{ recipe.likes_count }} likes · {{ recipe.average_rating }}/5</td>
+                            <td>
+                                {% if recipe.allow_custom_orders %}
+                                <span class="badge text-bg-success">Open</span>
+                                {% else %}
+                                <span class="badge text-bg-secondary">Closed</span>
+                                {% endif %}
+                            </td>
+                            <td>{{ recipe.created_at|date:"d M Y" }}</td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="6" class="text-center text-muted py-5">No shared recipes yet.</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

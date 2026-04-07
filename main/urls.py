@@ -8,6 +8,13 @@ urlpatterns = [
     # Extra pages
     path('about/', views.about, name='about'),
     path('contact/', views.contact, name='contact'),
+    path('recipes/', views.recipes, name='recipes'),
+    path('recipes/share/', views.share_recipe, name='share_recipe'),
+    path('recipes/orders/', views.my_recipe_orders, name='my_recipe_orders'),
+    path('recipes/orders/<int:request_id>/accept/', views.accept_recipe_quote, name='accept_recipe_quote'),
+    path('recipes/<int:recipe_id>/', views.recipe_detail, name='recipe_detail'),
+    path('recipes/<int:recipe_id>/react/', views.react_to_recipe, name='react_to_recipe'),
+    path('recipes/<int:recipe_id>/request-order/', views.request_recipe_order, name='request_recipe_order'),
 
     # Authentication
     path('login/', views.login_user, name='login'),

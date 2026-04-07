@@ -1,0 +1,49 @@
+{% extends 'main/base.html' %}
+{% block content %}
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700;800&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--zx-surface:rgba(255,255,255,.84);--zx-line:rgba(44,60,38,.12);--zx-text:#1d231c;--zx-muted:#677064;--zx-green:#214d34;--zx-green-soft:#e8f0e9;--zx-gold:#df9a2e;--zx-shadow:0 18px 46px rgba(23,30,21,.08)}
+body{background:radial-gradient(circle at top left,rgba(223,154,46,.12),transparent 24%),radial-gradient(circle at top right,rgba(33,77,52,.08),transparent 20%),linear-gradient(180deg,#f8f4ec 0%,#f4eee5 100%)!important}
+.zx-orders{font-family:'Manrope',sans-serif;color:var(--zx-text);padding:34px 0 90px}.zx-shell{width:min(1200px,calc(100% - 48px));margin:0 auto}.zx-head{margin-bottom:24px}.zx-head h1{margin:0 0 10px;font-family:'Playfair Display',serif;font-size:clamp(2.4rem,4vw,4rem);color:var(--zx-green)}.zx-head p{margin:0;color:var(--zx-muted);line-height:1.75}.zx-list{display:grid;gap:18px}.zx-card{background:var(--zx-surface);border:1px solid rgba(255,255,255,.65);backdrop-filter:blur(14px);box-shadow:var(--zx-shadow);border-radius:28px;padding:24px}.zx-top{display:flex;justify-content:space-between;gap:16px;align-items:start;margin-bottom:16px}.zx-order-id{font-weight:800;color:var(--zx-green)}.zx-meta{color:var(--zx-muted)}.zx-badges{display:flex;gap:10px;flex-wrap:wrap}.zx-badge{display:inline-flex;padding:8px 12px;border-radius:999px;background:var(--zx-green-soft);color:var(--zx-green);font-size:.78rem;font-weight:800}.zx-items{display:grid;gap:8px;margin-bottom:16px}.zx-item{display:flex;justify-content:space-between;gap:12px;color:var(--zx-muted)}.zx-actions{display:flex;justify-content:space-between;gap:16px;align-items:center;flex-wrap:wrap}.zx-total{font-family:'Playfair Display',serif;font-size:1.5rem;color:var(--zx-green)}.zx-btn{display:inline-flex;align-items:center;justify-content:center;padding:12px 16px;border-radius:14px;background:linear-gradient(135deg,var(--zx-gold) 0%,#bf7e14 100%);color:#fff;text-decoration:none;font-weight:800}.zx-empty{padding:40px;border-radius:24px;background:var(--zx-surface);color:var(--zx-muted);text-align:center}@media (max-width:768px){.zx-orders{padding:18px 0 64px}.zx-shell{width:min(100% - 24px,1200px)}.zx-top,.zx-actions{flex-direction:column;align-items:flex-start}}
+</style>
+<section class="zx-orders">
+    <div class="zx-shell">
+        <div class="zx-head">
+            <h1>Your Order History</h1>
+            <p>Track all your previous orders, payment status, applied offers, and current delivery progress from one place.</p>
+        </div>
+
+        {% if orders %}
+        <div class="zx-list">
+            {% for order in orders %}
+            <article class="zx-card">
+                <div class="zx-top">
+                    <div>
+                        <div class="zx-order-id">Order #{{ order.id }}</div>
+                        <div class="zx-meta">{{ order.created_at|date:"d M Y, h:i A" }} • {{ order.city }}</div>
+                    </div>
+                    <div class="zx-badges">
+                        <span class="zx-badge">{{ order.status }}</span>
+                        <span class="zx-badge">{{ order.payment_method }}</span>
+                        <span class="zx-badge">{{ order.payment_status }}</span>
+                        {% if order.coupon_code %}<span class="zx-badge">Coupon {{ order.coupon_code }}</span>{% endif %}
+                    </div>
+                </div>
+                <div class="zx-items">
+                    {% for item in order.items.all|slice:":3" %}
+                    <div class="zx-item"><span>{{ item.item.name }} x {{ item.quantity }}</span><strong>&#8377;{{ item.get_total_price }}</strong></div>
+                    {% endfor %}
+                </div>
+                <div class="zx-actions">
+                    <div class="zx-total">&#8377;{{ order.total_price }}</div>
+                    <a href="{% url 'order_detail' order.id %}" class="zx-btn">View Details</a>
+                </div>
+            </article>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="zx-empty">No orders yet. Once you place one, it will appear here.</div>
+        {% endif %}
+    </div>
+</section>
+{% endblock %}
