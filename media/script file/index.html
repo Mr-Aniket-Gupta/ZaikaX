@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>ZaikaX — Price Compare</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <link rel="stylesheet" href="style.css" />
+  <script src="cart.js"></script>
+  <script src="login.js"></script>
+  <script src="main.js"></script>
+
+  <body>
+    <header>
+      <div class="brand">
+        <img
+          src="/mnt/data/Screenshot 2025-11-23 113421.png"
+          alt="logo"
+          style="height: 30px; border-radius: 6px"
+        />
+        <span>Zaika<span class="green">X</span></span>
+      </div>
+      <nav class="nav">
+        <button class="btn" onclick="scrollToHero()">Home</button>
+      </nav>
+    </header>
+
+    <main>
+      <section class="hero" id="hero">
+        <div class="hero-bg" aria-hidden>
+          <!-- Optional GIF background -->
+          <!-- <img src="/mnt/data/bg_anim.gif" style="width:100%;height:100%;object-fit:cover;opacity:.18"> -->
+          <div class="animated-grad"></div>
+        </div>
+        <div class="badge">⚡ Compare & Save on Every Order</div>
+        <h1>
+          Find the <span class="accent-orange">Cheapest</span>
+          <span class="accent-green">Price</span><br />for Your Favorite Food
+        </h1>
+        <p class="lead">
+          Compare prices from Zomato and Swiggy instantly. Order from the
+          cheapest platform and save money on every meal.
+        </p>
+        <div class="hero-cta">
+          <button class="btn" onclick="scrollToGrid()">Get Started</button>
+        </div>
+        <div class="stats">
+          <div class="stat">
+            <div class="num">₹50-100</div>
+            <small>Average Savings</small>
+          </div>
+          <div class="stat">
+            <div class="num">500+</div>
+            <small>Restaurants</small>
+          </div>
+          <div class="stat">
+            <div class="num">Real-time</div>
+            <small>Price Updates</small>
+          </div>
+        </div>
+      </section>
+
+      <section class="search" style="text-align: center">
+        <input
+          id="search"
+          type="search"
+          placeholder="Search for restaurants or cuisines..."
+          oninput="renderGrid()"
+        />
+      </section>
+
+      <section class="grid" id="grid"></section>
+    </main>
+
+    <div class="cart-bar" id="cartBar">
+      <div>
+        <div style="font-size: 13px; color: #7b6f66">Cart</div>
+        <div class="total" id="cartTotal">₹0</div>
+      </div>
+      <button class="btn" onclick="toggleCart()">View</button>
+    </div>
+
+    <aside class="modal" id="cartModal">
+      <h3>Your Cart</h3>
+      <div id="cartItems"></div>
+      <div style="margin-top: 12px; font-weight: 700">
+        Total: <span id="cartTotalModal">₹0</span>
+      </div>
+    </aside>
+
+    <script src="script.js"></script>
+  </body>
+</html>
