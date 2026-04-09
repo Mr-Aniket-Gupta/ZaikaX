@@ -128,8 +128,11 @@
                     </div>
                     <div class="zx-meta-box">
                         <strong>Admin note</strong>
-                        <span>{{ recipe_order.admin_note|default:"Admin quote aane ke baad details yahan dikhenge."
-                            }}</span>
+                        {% if recipe_order.admin_note %}
+                        <span>{{ recipe_order.admin_note }}</span>
+                        {% else %}
+                        <span class="zx-muted-note">Admin quote aane ke baad details yahan dikhenge.</span>
+                        {% endif %}
                     </div>
                 </div>
 

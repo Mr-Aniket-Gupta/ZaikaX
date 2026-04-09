@@ -1,141 +1,191 @@
 import json
-import requests
 import random
+
 from django.http import JsonResponse
 from django.shortcuts import render
+
 from menu.models import MenuItem
 
 
+EMOTION_TO_MOOD = {
+    "happy": "chill",
+    "sad": "comfort",
+    "angry": "hungry",
+    "surprised": "hungry",
+    "fearful": "comfort",
+    "disgusted": "healthy",
+    "neutral": "healthy",
+}
 
-# 🔹 PAGE
+MOOD_PROFILES = {
+    "hungry": {
+        "categories": {"main_course", "biryani", "rice", "rolls"},
+        "keywords": {"biryani", "thali", "butter", "fried", "curry", "masala", "meal", "gravy"},
+        "description": "Big, filling dishes for strong cravings.",
+    },
+    "healthy": {
+        "categories": {"south_indian", "beverages", "rice"},
+        "keywords": {"salad", "grilled", "fresh", "lime", "tandoori", "steamed", "light", "soup"},
+        "description": "Cleaner and lighter picks for a balanced mood.",
+    },
+    "chill": {
+        "categories": {"snacks", "fast_food", "beverages", "desserts", "chinese"},
+        "keywords": {"coffee", "fries", "noodles", "sandwich", "shake", "cold", "crispy", "comfort"},
+        "description": "Relaxed comfort food for easy-going moments.",
+    },
+    "comfort": {
+        "categories": {"main_course", "breads", "desserts", "beverages", "snacks"},
+        "keywords": {"naan", "chai", "paratha", "dal", "paneer", "sweet", "lassi", "warm"},
+        "description": "Warm and soothing food for a softer mood.",
+    },
+}
+
+FALLBACK_ITEMS = [
+    {"name": "Paneer Tikka", "price": 250, "is_veg": True, "moods": ["hungry"], "cal": "320 kcal"},
+    {"name": "Veg Burger", "price": 150, "is_veg": True, "moods": ["chill"], "cal": "280 kcal"},
+    {"name": "Chicken Biryani", "price": 350, "is_veg": False, "moods": ["hungry"], "cal": "500 kcal"},
+    {"name": "Fruit Smoothie", "price": 170, "is_veg": True, "moods": ["healthy", "chill"], "cal": "150 kcal"},
+    {"name": "Dal Khichdi", "price": 190, "is_veg": True, "moods": ["healthy", "comfort"], "cal": "210 kcal"},
+    {"name": "Masala Chai", "price": 90, "is_veg": True, "moods": ["comfort"], "cal": "120 kcal"},
+]
+
+
 def mood_selector_page(request):
-    return render(request, "menu/mood_selector.html")
+    return render(
+        request,
+        "menu/mood_selector.html",
+        {
+            "emotion_to_mood": EMOTION_TO_MOOD,
+            "supported_moods": MOOD_PROFILES,
+        },
+    )
+
+
+def _safe_budget(value, default=500):
+    try:
+        budget = int(value)
+    except (TypeError, ValueError):
+        return default
+    return max(50, min(2000, budget))
+
+
+def _normalize_emotion(emotion):
+    return (emotion or "").strip().lower()
+
+
+def _resolve_mood(payload):
+    mood = (payload.get("mood") or "").strip().lower()
+    emotion = _normalize_emotion(payload.get("detectedEmotion") or payload.get("detected_emotion"))
+    derived = EMOTION_TO_MOOD.get(emotion)
+
+    if mood == "auto":
+        mood = derived or "chill"
+
+    if mood not in MOOD_PROFILES:
+        mood = derived or "hungry"
+
+    return mood, emotion
+
+
+def _score_item(item, mood):
+    profile = MOOD_PROFILES.get(mood, {})
+    score = 0
+    text = f"{item.name} {item.description} {item.category}".lower()
+
+    if item.category in profile.get("categories", set()):
+        score += 5
+
+    for keyword in profile.get("keywords", set()):
+        if keyword in text:
+            score += 2
+
+    if item.price <= 250:
+        score += 1
+
+    if item.is_veg and mood in {"healthy", "comfort"}:
+        score += 1
+
+    return score
+
+
+def _serialize_item(item, mood, score):
+    image = ""
+    if item.image:
+        try:
+            image = item.image.url
+        except ValueError:
+            image = ""
+
+    category_label = item.category.replace("_", " ").title()
+    insight_bits = [f"Fits a {mood} craving", f"{category_label} pick"]
+    if score >= 7:
+        insight_bits.insert(0, "Strong match")
+
+    return {
+        "name": item.name,
+        "price": float(item.price),
+        "image": image,
+        "calories": "Chef pick",
+        "desc": " . ".join(insight_bits) + ".",
+    }
+
+
+def _fallback_results(mood, veg, budget):
+    filtered = [
+        item for item in FALLBACK_ITEMS
+        if item["price"] <= budget and (veg != "veg" or item["is_veg"])
+    ]
+
+    mood_match = [item for item in filtered if mood in item["moods"]]
+    if mood_match:
+        filtered = mood_match
+
+    random.shuffle(filtered)
+    return [
+        {
+            "name": item["name"],
+            "price": item["price"],
+            "image": "",
+            "calories": item["cal"],
+            "desc": f"Picked for a {mood} mood.",
+        }
+        for item in filtered[:5]
+    ]
 
 
 def get_suggestions(request):
-    if request.method == "POST":
-        try:
-            data = json.loads(request.body)
+    if request.method != "POST":
+        return JsonResponse({"error": "Invalid request"}, status=400)
 
-            mood = data.get("mood")
-            veg = data.get("veg")
+    try:
+        payload = json.loads(request.body or "{}")
+    except json.JSONDecodeError:
+        return JsonResponse({"error": "Invalid JSON payload"}, status=400)
 
-            try:
-                budget = int(data.get("budget", 500))
-            except:
-                budget = 500
+    mood, detected_emotion = _resolve_mood(payload)
+    veg = (payload.get("veg") or "all").strip().lower()
+    budget = _safe_budget(payload.get("budget", 500))
+    detection_confidence = payload.get("detectionConfidence") or payload.get("detection_confidence")
 
-            items = MenuItem.objects.all()
+    items = MenuItem.objects.all()
+    if veg == "veg":
+        items = items.filter(is_veg=True)
+    items = items.filter(price__lte=budget)
 
-            # =====================================================
-            # 🔴 MOCK DATA
-            # =====================================================
-            if not items.exists():
+    results = []
+    if items.exists():
+        ranked_items = list(items)
+        ranked_items.sort(key=lambda item: (_score_item(item, mood), -float(item.price)), reverse=True)
+        results = [_serialize_item(item, mood, _score_item(item, mood)) for item in ranked_items[:5]]
+    else:
+        results = _fallback_results(mood, veg, budget)
 
-                mock_items = [
-                    {"name": "Paneer Tikka", "price": 250, "is_veg": True, "mood": ["party", "hungry"], "cal": 320},
-                    {"name": "Veg Burger", "price": 150, "is_veg": True, "mood": ["chill", "quick"], "cal": 280},
-                    {"name": "Pizza", "price": 300, "is_veg": True, "mood": ["party", "hungry"], "cal": 400},
-                    {"name": "Pasta", "price": 280, "is_veg": True, "mood": ["chill"], "cal": 350},
-                    {"name": "French Fries", "price": 120, "is_veg": True, "mood": ["chill", "quick"], "cal": 300},
-                    {"name": "Cold Coffee", "price": 130, "is_veg": True, "mood": ["chill"], "cal": 220},
-                    {"name": "Chocolate Shake", "price": 160, "is_veg": True, "mood": ["chill"], "cal": 350},
-                    {"name": "Chicken Biryani", "price": 350, "is_veg": False, "mood": ["hungry"], "cal": 500},
-                    {"name": "Grilled Chicken", "price": 400, "is_veg": False, "mood": ["healthy"], "cal": 280},
-                    {"name": "Egg Roll", "price": 180, "is_veg": False, "mood": ["quick"], "cal": 320},
-                    {"name": "Salad Bowl", "price": 200, "is_veg": True, "mood": ["healthy"], "cal": 180},
-                    {"name": "Fruit Smoothie", "price": 170, "is_veg": True, "mood": ["healthy", "chill"], "cal": 150},
-                    {"name": "Momos", "price": 140, "is_veg": False, "mood": ["quick", "chill"], "cal": 260},
-                    {"name": "Sandwich", "price": 130, "is_veg": True, "mood": ["quick"], "cal": 240},
-                    {"name": "Paneer Wrap", "price": 220, "is_veg": True, "mood": ["quick", "hungry"], "cal": 330},
-                    {"name": "Dal Khichdi", "price": 190, "is_veg": True, "mood": ["healthy"], "cal": 210},
-                    {"name": "Ice Cream", "price": 110, "is_veg": True, "mood": ["chill"], "cal": 270},
-                    {"name": "Chicken Wings", "price": 320, "is_veg": False, "mood": ["party"], "cal": 450},
-                    {"name": "Maggi", "price": 90, "is_veg": True, "mood": ["quick", "chill"], "cal": 250},
-                    {"name": "Soup", "price": 140, "is_veg": True, "mood": ["healthy"], "cal": 120},
-                ]
-
-                filtered = mock_items
-
-                # ✅ STEP 1: BUDGET FILTER
-                
-
-                # ✅ STEP 2: VEG FILTER
-                if veg == "veg":
-                    filtered = [i for i in filtered if i["is_veg"]]
-
-                # ✅ STEP 3: MOOD FILTER (STRICT)
-                if mood:
-                    mood_filtered = [i for i in filtered if mood in i["mood"]]
-
-                    # only fallback if NOTHING found
-                    if mood_filtered:
-                        filtered = mood_filtered
-                        
-                filtered = [i for i in filtered if i["price"] <= budget]
-                # ❌ REMOVE SORTING (THIS WAS YOUR BUG)
-
-                # ✅ RANDOMIZE ONLY
-                random.shuffle(filtered)
-                filtered = filtered[:5]
-
-                results = []
-
-                for item in filtered:
-
-                    ai_text = f"{item['cal']} kcal\nPerfect for {mood or 'your mood'}"
-
-                    results.append({
-                        "name": item["name"],
-                        "price": item["price"],
-                        "image": "",
-                        "calories": ai_text.split("\n")[0],
-                        "desc": ai_text.split("\n")[1]
-                    })
-
-                return JsonResponse({"items": results})
-
-            # =====================================================
-            # 🟢 REAL DB
-            # =====================================================
-
-            filtered = items
-
-            if budget:
-                filtered = filtered.filter(price__lte=budget)
-
-            if veg == "veg" and hasattr(MenuItem, "is_veg"):
-                filtered = filtered.filter(is_veg=True)
-
-            # ⚠️ DB DOESN'T HAVE MOOD FIELD → so skip mood filtering
-            # otherwise you'll get empty results again
-
-            filtered = list(filtered)
-            random.shuffle(filtered)
-            filtered = filtered[:5]
-
-            results = []
-
-            for item in filtered:
-                image = ""
-                if item.image:
-                    try:
-                        image = item.image.url
-                    except:
-                        pass
-
-                results.append({
-                    "name": item.name,
-                    "price": item.price,
-                    "image": image,
-                    "calories": "300 kcal",
-                    "desc": "Recommended for you"
-                })
-
-            return JsonResponse({"items": results})
-
-        except Exception as e:
-            print("ERROR:", e)
-            return JsonResponse({"error": str(e)}, status=500)
-
-    return JsonResponse({"error": "Invalid request"}, status=400)
+    profile = MOOD_PROFILES[mood]
+    response = {
+        "items": results,
+        "mood": mood,
+        "detected_emotion": detected_emotion,
+        "detection_confidence": detection_confidence,
+        "insight": profile["description"],
+    }
+    return JsonResponse(response)

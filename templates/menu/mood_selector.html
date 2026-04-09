@@ -1,584 +1,166 @@
 {% extends "main/base.html" %}
 {% load static %}
 {% block content %}
-<link
-    href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700;800&family=Manrope:wght@400;500;600;700;800&display=swap"
-    rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700;800&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<script defer src="https://cdn.jsdelivr.net/npm/face-api.js@0.22.2/dist/face-api.min.js"></script>
+{{ emotion_to_mood|json_script:"emotion-to-mood-map" }}
 <style>
-    :root {
-        --zx-surface: rgba(255, 255, 255, .82);
-        --zx-card: #fff;
-        --zx-line: rgba(44, 60, 38, .12);
-        --zx-text: #1d231c;
-        --zx-muted: #677064;
-        --zx-green: #214d34;
-        --zx-green-soft: #e8f0e9;
-        --zx-gold: #df9a2e;
-        --zx-gold-deep: #bf7e14;
-        --zx-shadow: 0 18px 46px rgba(23, 30, 21, .08);
-        --zx-shadow-soft: 0 12px 28px rgba(23, 30, 21, .06);
-    }
-
-    body {
-        background: radial-gradient(circle at top left, rgba(223, 154, 46, .12), transparent 24%), radial-gradient(circle at top right, rgba(33, 77, 52, .08), transparent 20%), linear-gradient(180deg, #f8f4ec 0%, #f4eee5 100%) !important
-    }
-
-    .zx-ai {
-        font-family: 'Manrope', sans-serif;
-        color: var(--zx-text);
-        padding: 34px 0 90px
-    }
-
-    .zx-shell {
-        width: min(1320px, calc(100% - 48px));
-        margin: 0 auto
-    }
-
-    .zx-ai-hero {
-        overflow: hidden;
-        border-radius: 34px;
-        padding: clamp(28px, 5vw, 62px);
-        background: radial-gradient(circle at 85% 15%, rgba(223, 154, 46, .2), transparent 18%), radial-gradient(circle at 0% 100%, rgba(255, 255, 255, .08), transparent 28%), linear-gradient(135deg, #183a27 0%, #28553a 50%, #3d714c 100%);
-        border: 1px solid rgba(255, 255, 255, .35);
-        box-shadow: var(--zx-shadow)
-    }
-
-    .zx-ai-hero__grid,
-    .zx-ai-body {
-        display: grid;
-        gap: 24px
-    }
-
-    .zx-ai-hero__grid {
-        grid-template-columns: minmax(0, 1.3fr) minmax(290px, .9fr);
-        align-items: center
-    }
-
-    .zx-ai-body {
-        margin-top: 30px;
-        grid-template-columns: 340px 1fr;
-        align-items: start
-    }
-
-    .zx-ai-hero__eyebrow {
-        display: inline-flex;
-        align-items: center;
-        gap: 10px;
-        padding: 9px 14px;
-        border-radius: 999px;
-        background: rgba(255, 255, 255, .1);
-        color: #f4ca7e;
-        font-size: .8rem;
-        font-weight: 800;
-        letter-spacing: .16em;
-        text-transform: uppercase;
-        margin-bottom: 18px
-    }
-
-    .zx-ai-hero__eyebrow:before {
-        content: '';
-        width: 8px;
-        height: 8px;
-        border-radius: 50%;
-        background: currentColor
-    }
-
-    .zx-ai-hero h1 {
-        margin: 0 0 16px;
-        font-family: 'Playfair Display', serif;
-        font-size: clamp(3rem, 5.4vw, 5.2rem);
-        line-height: .97;
-        color: #fffdf7
-    }
-
-    .zx-ai-hero h1 em {
-        color: #f4ca7e;
-        font-style: normal
-    }
-
-    .zx-ai-hero__sub {
-        margin: 0;
-        max-width: 640px;
-        color: rgba(255, 255, 255, .78);
-        line-height: 1.85;
-        font-size: 1.03rem
-    }
-
-    .zx-ai-hero__panel {
-        display: grid;
-        gap: 14px
-    }
-
-    .zx-ai-hero__card,
-    .zx-filter-panel,
-    .zx-results-panel {
-        border-radius: 30px
-    }
-
-    .zx-ai-hero__card {
-        padding: 22px;
-        background: linear-gradient(180deg, rgba(255, 255, 255, .14), rgba(255, 255, 255, .08));
-        border: 1px solid rgba(255, 255, 255, .14);
-        backdrop-filter: blur(14px)
-    }
-
-    .zx-ai-hero__card h3 {
-        margin: 0 0 10px;
-        color: #fff;
-        font-size: 1.08rem
-    }
-
-    .zx-ai-hero__card p {
-        margin: 0;
-        color: rgba(255, 255, 255, .72);
-        font-size: .94rem;
-        line-height: 1.7
-    }
-
-    .zx-filter-panel,
-    .zx-results-panel {
-        background: var(--zx-surface);
-        border: 1px solid rgba(255, 255, 255, .65);
-        backdrop-filter: blur(14px);
-        box-shadow: var(--zx-shadow-soft)
-    }
-
-    .zx-filter-panel {
-        padding: 26px;
-        position: sticky;
-        top: 24px
-    }
-
-    .zx-results-panel {
-        padding: 26px;
-        min-height: 520px
-    }
-
-    .zx-filter-title {
-        margin-bottom: 22px;
-        font-family: 'Playfair Display', serif;
-        font-size: 1.5rem;
-        color: var(--zx-green)
-    }
-
-    .zx-fp-field {
-        margin-bottom: 24px
-    }
-
-    .zx-fp-label {
-        display: block;
-        margin-bottom: 10px;
-        color: var(--zx-green);
-        font-size: .78rem;
-        font-weight: 800;
-        text-transform: uppercase;
-        letter-spacing: .1em
-    }
-
-    .zx-mood-chips {
-        display: grid;
-        gap: 10px
-    }
-
-    .zx-mood-chip {
-        position: relative;
-        display: flex;
-        align-items: center;
-        gap: 12px;
-        padding: 14px 16px;
-        border-radius: 18px;
-        border: 1px solid var(--zx-line);
-        background: rgba(255, 255, 255, .7);
-        cursor: pointer;
-        transition: .2s ease
-    }
-
-    .zx-mood-chip input[type=radio] {
-        position: absolute;
-        opacity: 0;
-        pointer-events: none
-    }
-
-    .zx-mood-chip.selected,
-    .zx-mood-chip:hover {
-        border-color: rgba(223, 154, 46, .45);
-        transform: translateY(-1px);
-        box-shadow: var(--zx-shadow-soft)
-    }
-
-    .zx-mood-chip__emoji {
-        font-size: 1.4rem
-    }
-
-    .zx-mood-chip__text strong {
-        display: block;
-        color: var(--zx-text);
-        font-size: .95rem
-    }
-
-    .zx-mood-chip__text span {
-        color: var(--zx-muted);
-        font-size: .8rem
-    }
-
-    .zx-toggle {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 10px
-    }
-
-    .zx-toggle-btn,
-    .zx-budget-input {
-        width: 100%;
-        padding: 14px 16px;
-        border-radius: 16px;
-        border: 1px solid var(--zx-line);
-        background: rgba(255, 255, 255, .88);
-        color: var(--zx-text);
-        font: inherit;
-        transition: .18s ease
-    }
-
-    .zx-toggle-btn {
-        cursor: pointer;
-        font-weight: 700
-    }
-
-    .zx-toggle-btn.active,
-    .zx-toggle-btn:hover {
-        background: var(--zx-green);
-        color: #fff;
-        border-color: var(--zx-green)
-    }
-
-    .zx-budget-input:focus {
-        outline: none;
-        border-color: rgba(223, 154, 46, .55);
-        box-shadow: 0 0 0 4px rgba(223, 154, 46, .12)
-    }
-
-    .zx-slider {
-        width: 100%;
-        margin-top: 12px;
-        -webkit-appearance: none;
-        appearance: none;
-        height: 5px;
-        border-radius: 999px;
-        background: linear-gradient(to right, var(--zx-gold) 0%, var(--zx-gold) 30%, #ddd7ce 30%)
-    }
-
-    .zx-slider::-webkit-slider-thumb {
-        -webkit-appearance: none;
-        appearance: none;
-        width: 18px;
-        height: 18px;
-        border-radius: 50%;
-        background: var(--zx-gold);
-        border: 3px solid #fff;
-        box-shadow: 0 2px 8px rgba(223, 154, 46, .35)
-    }
-
-    .zx-suggest-btn {
-        width: 100%;
-        margin-top: 8px;
-        padding: 16px;
-        border: none;
-        border-radius: 16px;
-        background: linear-gradient(135deg, var(--zx-gold) 0%, var(--zx-gold-deep) 100%);
-        color: #fff;
-        font: inherit;
-        font-weight: 800;
-        cursor: pointer;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        gap: 10px
-    }
-
-    .zx-suggest-btn:disabled {
-        opacity: .7;
-        cursor: not-allowed
-    }
-
-    .zx-spinner {
-        width: 18px;
-        height: 18px;
-        border-radius: 50%;
-        border: 2.5px solid rgba(255, 255, 255, .35);
-        border-top-color: #fff;
-        animation: spin .7s linear infinite;
-        display: none
-    }
-
-    @keyframes spin {
-        to {
-            transform: rotate(360deg)
-        }
-    }
-
-    .zx-suggest-btn.loading .zx-spinner {
-        display: block
-    }
-
-    .zx-suggest-btn.loading .zx-btn-label {
-        display: none
-    }
-
-    .zx-results-header {
-        display: none;
-        align-items: center;
-        justify-content: space-between;
-        gap: 12px;
-        margin-bottom: 18px
-    }
-
-    .zx-results-header h2 {
-        font-family: 'Playfair Display', serif;
-        font-size: 1.65rem;
-        color: var(--zx-green)
-    }
-
-    .zx-results-count {
-        padding: 8px 12px;
-        border-radius: 999px;
-        background: var(--zx-green-soft);
-        color: var(--zx-green);
-        font-size: .84rem;
-        font-weight: 800
-    }
-
-    .zx-results-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-        gap: 18px
-    }
-
-    .zx-results-idle {
-        grid-column: 1/-1;
-        text-align: center;
-        padding: 80px 24px;
-        background: rgba(255, 255, 255, .6);
-        border-radius: 24px;
-        border: 1px dashed var(--zx-line);
-        color: var(--zx-muted)
-    }
-
-    .zx-results-idle__icon {
-        display: block;
-        margin-bottom: 18px;
-        font-size: 3.5rem
-    }
-
-    .zx-results-idle h3 {
-        margin-bottom: 10px;
-        font-family: 'Playfair Display', serif;
-        font-size: 1.9rem;
-        color: var(--zx-green)
-    }
-
-    .zx-results-idle h3 em {
-        color: var(--zx-gold-deep);
-        font-style: normal
-    }
-
-    .zx-result-card {
-        overflow: hidden;
-        border-radius: 24px;
-        background: var(--zx-card);
-        border: 1px solid var(--zx-line);
-        box-shadow: var(--zx-shadow-soft);
-        transition: .2s ease
-    }
-
-    .zx-result-card:hover {
-        transform: translateY(-4px);
-        box-shadow: var(--zx-shadow)
-    }
-
-    .zx-result-card__bar {
-        height: 5px;
-        background: linear-gradient(to right, var(--zx-green), var(--zx-gold))
-    }
-
-    .zx-result-card__body {
-        padding: 18px
-    }
-
-    .zx-result-card__name {
-        margin-bottom: 10px;
-        font-family: 'Playfair Display', serif;
-        font-size: 1.3rem;
-        color: var(--zx-text)
-    }
-
-    .zx-result-card__meta {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 8px;
-        margin-bottom: 12px
-    }
-
-    .zx-result-chip {
-        display: inline-flex;
-        align-items: center;
-        padding: 6px 10px;
-        border-radius: 999px;
-        font-size: .8rem;
-        font-weight: 800
-    }
-
-    .zx-chip-price {
-        background: #fff1da;
-        color: #805700
-    }
-
-    .zx-chip-cal {
-        background: var(--zx-green-soft);
-        color: var(--zx-green)
-    }
-
-    .zx-result-card__desc {
-        margin-bottom: 16px;
-        color: var(--zx-muted);
-        line-height: 1.7;
-        font-size: .9rem
-    }
-
-    .zx-result-card__cta {
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        width: 100%;
-        padding: 12px 14px;
-        border-radius: 14px;
-        background: var(--zx-green);
-        color: #fff;
-        text-decoration: none;
-        font-weight: 800
-    }
-
-    .zx-result-card__cta:hover {
-        color: #fff;
-        background: #2f6a46
-    }
-
-    .zx-error-msg {
-        display: none;
-        margin-bottom: 16px;
-        padding: 16px 18px;
-        border-radius: 18px;
-        background: #fff0ef;
-        border: 1px solid rgba(192, 57, 43, .18);
-        color: #c0392b;
-        font-weight: 700
-    }
-
-    @media (max-width:1080px) {
-
-        .zx-ai-hero__grid,
-        .zx-ai-body {
-            grid-template-columns: 1fr
-        }
-    }
-
-    @media (max-width:768px) {
-        .zx-ai {
-            padding: 18px 0 64px
-        }
-
-        .zx-shell {
-            width: min(100% - 24px, 1320px)
-        }
-
-        .zx-ai-hero {
-            border-radius: 24px;
-            padding: 24px 20px
-        }
-
-        .zx-filter-panel {
-            position: static
-        }
-    }
+    :root{--card:#ffffffeb;--line:#ddd6c9;--text:#1f241d;--muted:#66705f;--green:#214d34;--gold:#df9a2e;--soft:#f7efe0}
+    body{background:linear-gradient(180deg,#f8f4ec 0%,#f1eadf 100%)!important}
+    .zx{width:min(1280px,calc(100% - 32px));margin:28px auto 80px;font-family:'Manrope',sans-serif;color:var(--text)}
+    .hero,.box,.result,.banner,.flow{background:var(--card);border:1px solid var(--line);border-radius:28px;box-shadow:0 14px 34px rgba(23,30,21,.08)}
+    .hero{padding:34px;background:linear-gradient(135deg,#183a27,#376b48);color:#fff}
+    .hero h1,.title,.result h3{font-family:'Playfair Display',serif;margin:0}.hero h1{font-size:clamp(2.7rem,5vw,4.9rem);line-height:.98}.hero h1 em{color:#f4ca7e;font-style:normal}
+    .hero p,.muted,.status small,.result p,.idle p{color:var(--muted);line-height:1.7}.hero p{color:rgba(255,255,255,.84);max-width:760px}
+    .grid,.detect,.body,.moods,.actions,.status,.results,.flowgrid{display:grid;gap:20px}.grid{grid-template-columns:1.2fr .8fr;align-items:center}.detect{grid-template-columns:1.05fr .95fr;margin-top:22px}.body{grid-template-columns:340px 1fr;margin-top:22px}.flowgrid{grid-template-columns:repeat(3,1fr)}
+    .box,.banner,.flow{padding:22px}.banner{margin-top:22px;background:linear-gradient(135deg,rgba(33,77,52,.08),rgba(223,154,46,.14))}
+    .pill,.chip{display:inline-flex;align-items:center;justify-content:center;padding:8px 12px;border-radius:999px;font-size:.82rem;font-weight:800}
+    .pill{background:#e8f0e9;color:var(--green)}.pill.gold,.chip.price{background:#fff1da;color:#805700}.pill.blue,.chip.mood{background:#edf4ff;color:#1e5788}.chip.cal{background:#e8f0e9;color:var(--green)}
+    .chain{display:flex;gap:10px;flex-wrap:wrap;align-items:center}.chain .pill{background:#fff;border:1px solid rgba(33,77,52,.12)}.arrow{color:#8c7a52}
+    .video{position:relative;border-radius:22px;overflow:hidden;background:#102319;aspect-ratio:16/10}.video video,.video canvas{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}.video video{transform:scaleX(-1)}
+    .placeholder{position:absolute;inset:0;display:grid;place-items:center;text-align:center;padding:20px;color:#fff;background:linear-gradient(180deg,rgba(0,0,0,.1),rgba(0,0,0,.55))}
+    .actions{grid-template-columns:repeat(3,1fr);margin-top:14px}.btn,.submit,.input,.toggle{border-radius:16px;border:1px solid var(--line);padding:14px 16px;font:inherit}.btn,.toggle{cursor:pointer;background:#fff;font-weight:700}.btn:hover,.toggle:hover,.toggle.active{background:var(--green);color:#fff;border-color:var(--green)}
+    .submit{width:100%;border:none;cursor:pointer;color:#fff;font-weight:800;background:linear-gradient(135deg,var(--gold),#bf7e14)}.spin{display:none;width:18px;height:18px;border:2px solid rgba(255,255,255,.35);border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite}.submit.loading .label{display:none}.submit.loading .spin{display:inline-block}@keyframes spin{to{transform:rotate(360deg)}}
+    .mood{display:flex;gap:12px;align-items:center;padding:14px 16px;border:1px solid var(--line);border-radius:18px;cursor:pointer;background:#fff}.mood input{display:none}.mood.selected{border-color:#d7a24c;box-shadow:0 10px 24px rgba(23,30,21,.08)}
+    .status>div{padding:14px 16px;border:1px solid var(--line);border-radius:18px;background:#fff}.meter{height:10px;border-radius:999px;background:#e5e1d8;overflow:hidden}.meter span{display:block;width:0;height:100%;background:linear-gradient(90deg,var(--gold),var(--green))}
+    .subhead{display:none;margin-bottom:16px;padding:16px 18px;border-radius:18px;background:var(--soft);border:1px solid rgba(223,154,46,.22)}.header{display:none;justify-content:space-between;align-items:center;margin-bottom:16px}
+    .results{grid-template-columns:repeat(auto-fit,minmax(240px,1fr))}.idle,.result{overflow:hidden}.idle{text-align:center;padding:80px 24px;border:1px dashed var(--line);border-radius:24px;background:#fff}.imgfill,.result img{width:100%;height:180px;object-fit:cover;background:linear-gradient(135deg,rgba(33,77,52,.15),rgba(223,154,46,.2));display:block}.bar{height:5px;background:linear-gradient(90deg,var(--green),var(--gold))}.pad{padding:18px}.meta{display:flex;gap:8px;flex-wrap:wrap;margin:10px 0}.link{display:inline-flex;width:100%;justify-content:center;padding:12px 14px;border-radius:14px;background:var(--green);color:#fff;text-decoration:none;font-weight:800}
+    @media (max-width:1024px){.grid,.detect,.body,.flowgrid{grid-template-columns:1fr}}@media (max-width:768px){.actions{grid-template-columns:1fr}.zx{width:min(100% - 20px,1280px)}}
 </style>
-<section class="zx-ai">
-    <div class="zx-shell">
-        <div class="zx-ai-hero">
-            <div class="zx-ai-hero__grid">
-                <div class="zx-ai-hero__content">
-                    <div class="zx-ai-hero__eyebrow">Craving Assistant</div>
-                    <h1>Tell us your <em>mood</em>, we will suggest the meal.</h1>
-                    <p class="zx-ai-hero__sub">Whether you want something spicy, filling, light, or comforting, ZaikaX
-                        helps you discover dishes that match exactly what you are craving right now.</p>
-                </div>
-                <div class="zx-ai-hero__panel">
-                    <div class="zx-ai-hero__card">
-                        <h3>Made for real cravings</h3>
-                        <p>Find dishes that suit your mood, appetite, and budget without scrolling through the whole
-                            menu.</p>
-                    </div>
-                    <div class="zx-ai-hero__card">
-                        <h3>From hunger to comfort food</h3>
-                        <p>Pick a mood and let the recommender point you to bold flavors, lighter options, or indulgent
-                            favorites.</p>
-                    </div>
-                </div>
+<section class="zx">
+    <div class="hero">
+        <div class="grid">
+            <div>
+                <div class="pill gold" style="margin-bottom:14px">Face Mood Recommender</div>
+                <h1>Show your <em>face</em>, get the food vibe.</h1>
+                <p>Ab page clearly dikhata hai ki suggestion kis detected emotion aur food mood se aa rahi hai. Auto mode stable mood milte hi results refresh bhi kar sakta hai.</p>
             </div>
-        </div>
-        <div class="zx-ai-body">
-            <aside class="zx-filter-panel">
-                <div class="zx-filter-title">Choose Your Craving</div>
-                <div class="zx-fp-field"><label class="zx-fp-label">Mood</label>
-                    <div class="zx-mood-chips"><label class="zx-mood-chip selected" data-value="hungry"><input
-                                type="radio" id="mood" name="mood" value="hungry" checked><span
-                                class="zx-mood-chip__emoji">🍛</span>
-                            <div class="zx-mood-chip__text"><strong>Hungry</strong><span>Big meal, full
-                                    satisfaction</span></div>
-                        </label><label class="zx-mood-chip" data-value="healthy"><input type="radio" name="mood"
-                                value="healthy"><span class="zx-mood-chip__emoji">🥗</span>
-                            <div class="zx-mood-chip__text"><strong>Healthy</strong><span>Fresh and lighter picks</span>
-                            </div>
-                        </label><label class="zx-mood-chip" data-value="chill"><input type="radio" name="mood"
-                                value="chill"><span class="zx-mood-chip__emoji">🍜</span>
-                            <div class="zx-mood-chip__text"><strong>Chill</strong><span>Comfort food vibes</span></div>
-                        </label></div>
-                </div>
-                <div class="zx-fp-field"><label class="zx-fp-label">Preference</label>
-                    <div class="zx-toggle"><button class="zx-toggle-btn active" data-veg="all"
-                            type="button">All</button><button class="zx-toggle-btn" data-veg="veg" type="button">Veg
-                            Only</button></div><input type="hidden" id="veg" value="all">
-                </div>
-                <div class="zx-fp-field"><label class="zx-fp-label">Budget</label><input type="number" id="budget"
-                        class="zx-budget-input" placeholder="300" value="300" min="50" max="2000"><input type="range"
-                        id="budgetSlider" class="zx-slider" min="50" max="2000" value="300" step="50"></div><button
-                    class="zx-suggest-btn" onclick="getSuggestions()" id="suggestBtn">
-                    <div class="zx-spinner"></div><span class="zx-btn-label">Suggest My Meal</span>
-                </button>
-            </aside>
-            <div class="zx-results-panel">
-                <div class="zx-error-msg" id="errorMsg">Something went wrong. Please try again.</div>
-                <div class="zx-results-header" id="resultsHeader">
-                    <h2>Recommended For You</h2><span class="zx-results-count" id="resultsCount">0 dishes</span>
-                </div>
-                <div class="zx-results-grid" id="results">
-                    <div class="zx-results-idle" id="idleState" style="grid-column:1/-1"><span
-                            class="zx-results-idle__icon">🍽️</span>
-                        <h3>Pick a <em>mood</em> and start exploring</h3>
-                        <p>Set your mood, preference, and budget, then let ZaikaX suggest dishes that feel right for the
-                            moment.</p>
-                    </div>
-                </div>
+            <div class="box" style="background:linear-gradient(180deg,rgba(255,255,255,.14),rgba(255,255,255,.08));border-color:rgba(255,255,255,.2)">
+                <div style="color:#fff;font-weight:800;margin-bottom:8px">What is happening live</div>
+                <p style="color:rgba(255,255,255,.8);margin:0">Face emotion -> food mood -> current recommendations. Ye chain ab screen par directly visible rahegi.</p>
             </div>
         </div>
     </div>
+
+    <div class="banner">
+        <div style="display:flex;justify-content:space-between;gap:18px;align-items:center;flex-wrap:wrap">
+            <div>
+                <div class="pill">Live Recommendation Source</div>
+                <div class="title" id="liveTitle" style="font-size:2rem;margin:12px 0 8px;color:var(--green)">Manual mode is active right now</div>
+                <div class="muted" id="liveCopy">Start camera and switch to Auto Detect to suggest food directly from face mood.</div>
+            </div>
+            <div class="chain">
+                <span class="pill" id="bannerEmotion">Emotion: Waiting</span>
+                <span class="arrow">-></span>
+                <span class="pill" id="bannerMood">Food Mood: Manual</span>
+                <span class="arrow">-></span>
+                <span class="pill" id="bannerSource">Suggestions: Not loaded</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="flow">
+        <div class="title" style="font-size:1.45rem;margin-bottom:14px;color:var(--green)">How It Works</div>
+        <div class="flowgrid">
+            <div class="box" style="padding:16px 18px;background:#fff"><strong style="display:block;color:var(--green);margin-bottom:6px">1. Face detected</strong><small>Your live frame is scanned and the strongest expression is picked.</small></div>
+            <div class="box" style="padding:16px 18px;background:#fff"><strong style="display:block;color:var(--green);margin-bottom:6px">2. Mood converted</strong><small>Expression is mapped to healthy, chill, comfort, or hungry food mode.</small></div>
+            <div class="box" style="padding:16px 18px;background:#fff"><strong style="display:block;color:var(--green);margin-bottom:6px">3. Food suggested</strong><small>Result panel highlights that dishes are shown using the detected mood.</small></div>
+        </div>
+    </div>
+
+    <div class="detect">
+        <div class="box">
+            <div class="title" style="font-size:1.7rem;margin-bottom:12px;color:var(--green)">Live Mood Detection</div>
+            <div class="video">
+                <video id="cameraVideo" playsinline muted></video>
+                <canvas id="cameraOverlay"></canvas>
+                <div id="cameraPlaceholder" class="placeholder"><div><div style="font-size:3rem;margin-bottom:10px">📷</div><strong style="display:block;margin-bottom:6px">Camera is waiting</strong><div class="muted" style="color:#fff">Allow camera access to detect a face and infer your mood live.</div></div></div>
+            </div>
+            <div class="actions">
+                <button class="btn" id="startCameraBtn" type="button">Start Camera</button>
+                <button class="btn" id="scanMoodBtn" type="button" disabled>Scan Mood</button>
+                <button class="btn" id="stopCameraBtn" type="button" disabled>Stop</button>
+            </div>
+            <p class="muted" id="cameraNote">Best results come when one face is centered and clearly visible.</p>
+        </div>
+        <div class="box">
+            <div class="title" style="font-size:1.7rem;margin-bottom:12px;color:var(--green)">Detection Status</div>
+            <div class="status">
+                <div><strong>Face status</strong><br><small id="faceStatusText">Waiting for camera</small><br><span class="pill" id="faceStatusPill">Offline</span></div>
+                <div><strong>Detected emotion</strong><br><small id="emotionText">Not detected yet</small><br><span class="pill gold" id="emotionConfidence">0%</span></div>
+                <div><strong>Converted food mood</strong><br><small id="mappedMoodText">Manual selection active</small><br><span class="pill" id="mappedMoodPill">Manual</span></div>
+                <div><strong>Suggestion mode</strong><br><small id="suggestionModeText">Manual suggestion mode is active.</small><br><span class="pill blue" id="suggestionModePill">Manual</span></div>
+                <div><strong>Confidence meter</strong><div class="meter" style="margin-top:8px"><span id="confidenceMeter"></span></div></div>
+                <div><strong>AI insight</strong><br><small id="insightText">Mood-to-food AI is idle right now.</small></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="body">
+        <aside class="box">
+            <div class="title" style="font-size:1.7rem;color:var(--green)">Choose Your Craving</div>
+            <div class="muted" style="margin-top:8px">Pick manually or switch to auto-detect.</div>
+            <div class="moods" style="margin:12px 0 18px">
+                <label class="mood" data-value="auto"><input type="radio" name="mood" value="auto"><span>🎭</span><span><strong>Auto Detect</strong><br><small>Use your face scan to pick mood</small></span></label>
+                <label class="mood selected" data-value="hungry"><input type="radio" name="mood" value="hungry" checked><span>🍛</span><span><strong>Hungry</strong><br><small>Hearty and filling</small></span></label>
+                <label class="mood" data-value="healthy"><input type="radio" name="mood" value="healthy"><span>🥗</span><span><strong>Healthy</strong><br><small>Fresh and lighter</small></span></label>
+                <label class="mood" data-value="chill"><input type="radio" name="mood" value="chill"><span>🍜</span><span><strong>Chill</strong><br><small>Comforty snack vibes</small></span></label>
+                <label class="mood" data-value="comfort"><input type="radio" name="mood" value="comfort"><span>☕</span><span><strong>Comfort</strong><br><small>Warm and soothing</small></span></label>
+            </div>
+            <div style="font-size:.78rem;font-weight:800;text-transform:uppercase;letter-spacing:.1em;color:var(--green);margin-bottom:10px">Preference</div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:20px">
+                <button class="toggle active" data-veg="all" type="button">All</button>
+                <button class="toggle" data-veg="veg" type="button">Veg Only</button>
+            </div>
+            <input type="hidden" id="veg" value="all">
+            <div style="font-size:.78rem;font-weight:800;text-transform:uppercase;letter-spacing:.1em;color:var(--green);margin-bottom:10px">Budget</div>
+            <input id="budget" class="input" type="number" value="300" min="50" max="2000">
+            <input id="budgetSlider" type="range" min="50" max="2000" value="300" step="50" style="width:100%;margin:14px 0 20px">
+            <button class="submit" id="suggestBtn" onclick="getSuggestions()"><span class="spin"></span><span class="label">Suggest My Meal</span></button>
+        </aside>
+        <section class="box">
+            <div class="header" id="resultsHeader"><div class="title" style="font-size:1.6rem;color:var(--green)">Recommended For You</div><span class="pill" id="resultsCount">0 dishes</span></div>
+            <div class="subhead" id="resultsSubhead"><strong id="resultsSubheadTitle">Showing dishes for selected mood</strong><div class="muted" id="resultsSubheadCopy">These dishes are shown using your current mood selection.</div></div>
+            <div class="results" id="results">
+                <div class="idle">
+                    <div style="font-size:3rem;margin-bottom:16px">🍽️</div>
+                    <h3>Scan a face or pick a <em style="color:#bf7e14;font-style:normal">mood</em></h3>
+                    <p>Use auto-detect for live expression reading, or manually choose a craving and let ZaikaX build your plate.</p>
+                </div>
+            </div>
+        </section>
+    </div>
 </section>
 <script>
-    document.querySelectorAll('.zx-mood-chip').forEach(chip => { chip.addEventListener('click', () => { document.querySelectorAll('.zx-mood-chip').forEach(c => c.classList.remove('selected')); chip.classList.add('selected'); }); });
-    document.querySelectorAll('.zx-toggle-btn').forEach(btn => { btn.addEventListener('click', () => { document.querySelectorAll('.zx-toggle-btn').forEach(b => b.classList.remove('active')); btn.classList.add('active'); document.getElementById('veg').value = btn.dataset.veg; }); });
-    const budgetInput = document.getElementById('budget'); const budgetSlider = document.getElementById('budgetSlider');
-    budgetSlider.addEventListener('input', () => { budgetInput.value = budgetSlider.value; updateSliderFill(); });
-    budgetInput.addEventListener('input', () => { budgetSlider.value = Math.min(2000, Math.max(50, budgetInput.value || 50)); updateSliderFill(); });
-    function updateSliderFill() { const pct = ((budgetSlider.value - 50) / (2000 - 50)) * 100; budgetSlider.style.background = `linear-gradient(to right, var(--zx-gold) 0%, var(--zx-gold) ${pct}%, #ddd7ce ${pct}%)`; }
-    async function getSuggestions() { const mood = document.querySelector('input[name="mood"]:checked')?.value || 'hungry'; const veg = document.getElementById("veg").value; const budget = document.getElementById("budget").value || 500; const btn = document.getElementById('suggestBtn'); const errorMsg = document.getElementById('errorMsg'); const resultsHeader = document.getElementById('resultsHeader'); const resultsCount = document.getElementById('resultsCount'); const container = document.getElementById("results"); btn.classList.add('loading'); btn.disabled = true; errorMsg.style.display = 'none'; try { const res = await fetch("/menu/mood/suggest/", { method: "POST", headers: { "Content-Type": "application/json", "X-CSRFToken": document.cookie.split('csrftoken=')[1]?.split(';')[0] }, body: JSON.stringify({ mood, veg, budget }) }); if (!res.ok) { errorMsg.style.display = 'block'; return; } const data = await res.json(); container.innerHTML = ""; if (!data.items || data.items.length === 0) { container.innerHTML = `<div class="zx-results-idle" style="grid-column:1/-1"><span class="zx-results-idle__icon">😕</span><h3>No matching <em>dishes</em> found</h3><p>Try increasing your budget or changing your mood to discover more options.</p></div>`; resultsHeader.style.display = 'none'; return; } resultsHeader.style.display = 'flex'; resultsCount.textContent = `${data.items.length} dish${data.items.length !== 1 ? 'es' : ''}`; data.items.forEach((item) => { const card = document.createElement('div'); card.className = 'zx-result-card'; card.innerHTML = `<div class="zx-result-card__bar"></div><div class="zx-result-card__body"><div class="zx-result-card__name">${item.name}</div><div class="zx-result-card__meta"><span class="zx-result-chip zx-chip-price">&#8377;${item.price}</span>${item.calories ? `<span class="zx-result-chip zx-chip-cal">🔥 ${item.calories}</span>` : ''}</div><p class="zx-result-card__desc">${item.desc || 'A delicious dish crafted with fresh ingredients and authentic spices.'}</p><a href="/menu/" class="zx-result-card__cta">View on Menu</a></div>`; container.appendChild(card); }); } catch (err) { console.error(err); errorMsg.style.display = 'block'; } finally { btn.classList.remove('loading'); btn.disabled = false; } }
-    updateSliderFill();
+    const moodMap = JSON.parse(document.getElementById('emotion-to-mood-map').textContent);
+    const state = {stream:null,timer:null,modelsReady:false,detectedEmotion:'',detectionConfidence:0,lastDetectedMood:'',lastAutoKey:'',stableCount:0,lastEmotionSample:'',isFetching:false};
+    const $ = id => document.getElementById(id);
+    const video = $('cameraVideo'), overlay = $('cameraOverlay'), placeholder = $('cameraPlaceholder');
+    const budgetInput = $('budget'), budgetSlider = $('budgetSlider');
+    function capitalize(v){return v ? v.charAt(0).toUpperCase() + v.slice(1) : v}
+    function cookie(name){return document.cookie.split('; ').find(row => row.startsWith(`${name}=`))?.split('=')[1] || ''}
+    function selectedMood(){return document.querySelector('input[name="mood"]:checked')?.value || 'hungry'}
+    function autoMode(){return selectedMood() === 'auto'}
+    function updateSlider(){const pct=((budgetSlider.value-50)/1950)*100;budgetSlider.style.background=`linear-gradient(to right,var(--gold) 0%,var(--gold) ${pct}%,#ddd7ce ${pct}%)`}
+    function setMood(mood){const input=document.querySelector(`input[name="mood"][value="${mood}"]`);if(!input)return;input.checked=true;document.querySelectorAll('.mood').forEach(chip=>chip.classList.toggle('selected',chip.dataset.value===mood));updateModeCopy()}
+    function updateBanner(emotion,mood,source){$('bannerEmotion').textContent=`Emotion: ${emotion?capitalize(emotion):'Waiting'}`;$('bannerMood').textContent=`Food Mood: ${mood?capitalize(mood):'Manual'}`;$('bannerSource').textContent=source}
+    function updateModeCopy(){
+        if(autoMode()){ $('suggestionModeText').textContent='Auto suggestion mode is active. Stable detected mood can refresh results itself.'; $('suggestionModePill').textContent='Auto'; $('liveTitle').textContent=state.lastDetectedMood?`${capitalize(state.lastDetectedMood)} mood is driving the suggestions`:'Auto mode is waiting for a stable face mood'; $('liveCopy').textContent=state.lastDetectedMood?`ZaikaX is using your detected ${state.detectedEmotion || 'live'} expression for the recommendations below.`:'Keep your face centered. Once the same emotion is stable, suggestions can refresh automatically.'; updateBanner(state.detectedEmotion,state.lastDetectedMood,'Suggestions: Auto detected'); }
+        else { $('suggestionModeText').textContent='Manual suggestion mode is active.'; $('suggestionModePill').textContent='Manual'; $('liveTitle').textContent=`${capitalize(selectedMood())} mood is selected manually`; $('liveCopy').textContent='Suggestions will follow the mood chip you selected unless you switch back to Auto Detect.'; updateBanner(state.detectedEmotion,selectedMood(),'Suggestions: Manual selected'); }
+    }
+    function updateDetection({faceFound=false,emotion='',confidence=0,mood='',note=''}){ $('faceStatusText').textContent=faceFound?'Face detected in live frame':'No face detected yet'; $('faceStatusPill').textContent=faceFound?'Live':'Searching'; $('emotionText').textContent=emotion?capitalize(emotion):'Not detected yet'; $('emotionConfidence').textContent=`${Math.round(confidence*100)}%`; $('mappedMoodText').textContent=mood?`${capitalize(mood)} mood selected from expression`:'Manual selection active'; $('mappedMoodPill').textContent=mood?capitalize(mood):'Manual'; $('confidenceMeter').style.width=`${Math.round(confidence*100)}%`; if(note) $('insightText').textContent=note; updateBanner(emotion,mood || (!autoMode()?selectedMood():''),autoMode()?'Suggestions: Auto detected':'Suggestions: Manual selected') }
+    async function loadModels(){ if(state.modelsReady)return true; if(!window.faceapi){$('cameraNote').textContent='Face detection library failed to load. Manual mood still works.'; return false;} try{const root='https://justadudewhohacks.github.io/face-api.js/models'; await Promise.all([faceapi.nets.tinyFaceDetector.loadFromUri(root),faceapi.nets.faceExpressionNet.loadFromUri(root)]); state.modelsReady=true; $('cameraNote').textContent='Face models loaded. Start camera to begin scanning.'; return true;}catch(e){console.error(e);$('cameraNote').textContent='Expression models could not load. Manual mood still works.'; return false;}}
+    async function startCamera(){const ok=await loadModels(); if(!navigator.mediaDevices?.getUserMedia){$('cameraNote').textContent='Camera is not supported in this browser.'; return;} try{state.stream=await navigator.mediaDevices.getUserMedia({video:{facingMode:'user'},audio:false}); video.srcObject=state.stream; await video.play(); placeholder.style.display='none'; $('startCameraBtn').disabled=true; $('stopCameraBtn').disabled=false; $('scanMoodBtn').disabled=!ok; $('faceStatusText').textContent='Camera active. Waiting for a face.'; $('faceStatusPill').textContent='Ready'; if(ok) state.timer=window.setInterval(scanMoodFrame,1800);}catch(e){console.error(e);$('cameraNote').textContent='Camera permission denied or unavailable.';}}
+    function stopCamera(){ if(state.timer){clearInterval(state.timer);state.timer=null;} if(state.stream){state.stream.getTracks().forEach(track=>track.stop());state.stream=null;} const ctx=overlay.getContext('2d'); ctx.clearRect(0,0,overlay.width,overlay.height); video.srcObject=null; placeholder.style.display='grid'; $('startCameraBtn').disabled=false; $('stopCameraBtn').disabled=true; $('scanMoodBtn').disabled=true; state.stableCount=0; state.lastEmotionSample=''; updateDetection({note:'Mood-to-food AI is idle right now.'}); $('faceStatusText').textContent='Waiting for camera'; $('faceStatusPill').textContent='Offline'; updateModeCopy(); }
+    function drawBox(box){ overlay.width=video.videoWidth||video.clientWidth; overlay.height=video.videoHeight||video.clientHeight; const ctx=overlay.getContext('2d'); ctx.clearRect(0,0,overlay.width,overlay.height); ctx.strokeStyle='#f4ca7e'; ctx.lineWidth=3; ctx.strokeRect(overlay.width-box.x-box.width,box.y,box.width,box.height); }
+    function topEmotion(expressions){ return Object.entries(expressions||{}).sort((a,b)=>b[1]-a[1])[0] || ['',0]; }
+    async function scanMoodFrame(){ if(!state.modelsReady||!state.stream||video.readyState<2)return; try{ const detection=await faceapi.detectSingleFace(video,new faceapi.TinyFaceDetectorOptions({inputSize:224,scoreThreshold:.45})).withFaceExpressions(); if(!detection){ overlay.getContext('2d').clearRect(0,0,overlay.width,overlay.height); state.stableCount=0; state.lastEmotionSample=''; updateDetection({faceFound:false,note:'Keep your face centered so ZaikaX can read the mood.'}); return; } drawBox(detection.detection.box); const [emotion,confidence]=topEmotion(detection.expressions); const mood=moodMap[emotion]||'hungry'; state.detectedEmotion=emotion; state.detectionConfidence=confidence; state.lastDetectedMood=mood; state.stableCount=state.lastEmotionSample===emotion?state.stableCount+1:1; state.lastEmotionSample=emotion; updateDetection({faceFound:true,emotion,confidence,mood,note:state.stableCount>=2?`Expression "${emotion}" is stable and maps to ${mood} food mode.`:`Expression "${emotion}" maps to ${mood}. Waiting one more stable read.`}); updateModeCopy(); if(autoMode() && state.stableCount>=2 && state.lastAutoKey!==`${emotion}:${mood}` && !state.isFetching){ state.lastAutoKey=`${emotion}:${mood}`; await getSuggestions(true); }}catch(e){console.error(e);$('cameraNote').textContent='Scanning failed in this session. You can still use manual mood.';}}
+    async function getSuggestions(autoTriggered=false){ const btn=$('suggestBtn'), head=$('resultsHeader'), count=$('resultsCount'), container=$('results'); state.isFetching=true; btn.classList.add('loading'); btn.disabled=true; try{ const res=await fetch('/menu/mood/suggest/',{method:'POST',headers:{'Content-Type':'application/json','X-CSRFToken':cookie('csrftoken')},body:JSON.stringify({mood:selectedMood(),veg:$('veg').value,budget:$('budget').value||500,detectedEmotion:state.detectedEmotion,detectionConfidence:state.detectionConfidence})}); if(!res.ok)return; const data=await res.json(); const mood=data.mood||state.lastDetectedMood||selectedMood(); const source=(autoTriggered||selectedMood()==='auto')?'detected face mood':'selected manual mood'; $('resultsSubhead').style.display='block'; $('resultsSubheadTitle').textContent=`Showing dishes for ${capitalize(mood)} mood`; $('resultsSubheadCopy').textContent=`These dishes are being suggested from your ${source}${data.detected_emotion?`: ${capitalize(data.detected_emotion)} -> ${capitalize(mood)}`:'.'}`; $('liveTitle').textContent=`${capitalize(mood)} mood is driving the current suggestions`; $('liveCopy').textContent=data.detected_emotion?`Face emotion ${capitalize(data.detected_emotion)} was converted to ${capitalize(mood)} food mood, and the results below follow that.`:`The results below are based on your manually selected ${capitalize(mood)} mood.`; updateBanner(data.detected_emotion||state.detectedEmotion,mood,selectedMood()==='auto'?'Suggestions: Auto detected':'Suggestions: Manual selected'); container.innerHTML=''; if(!data.items||!data.items.length){ head.style.display='none'; container.innerHTML=`<div class="idle"><div style="font-size:3rem;margin-bottom:16px">😕</div><h3>No matching <em style="color:#bf7e14;font-style:normal">dishes</em> found</h3><p>Try increasing your budget, changing veg preference, or rescanning your mood.</p></div>`; return; } head.style.display='flex'; count.textContent=`${data.items.length} dish${data.items.length!==1?'es':''}`; data.items.forEach(item=>{ const card=document.createElement('article'); card.className='result'; const image=item.image?`<img src="${item.image}" alt="${item.name}">`:'<div class="imgfill"></div>'; card.innerHTML=`<div class="bar"></div>${image}<div class="pad"><h3>${item.name}</h3><div class="meta"><span class="chip mood">${capitalize(mood)} match</span><span class="chip price">₹${item.price}</span><span class="chip cal">${item.calories||'Chef pick'}</span></div><p>${item.desc||'A delicious dish crafted for your vibe.'}</p><a href="/menu/" class="link">View on Menu</a></div>`; container.appendChild(card); }); }catch(e){console.error(e);} finally{ state.isFetching=false; btn.classList.remove('loading'); btn.disabled=false; }}
+    document.querySelectorAll('.mood').forEach(chip=>chip.addEventListener('click',()=>{ setMood(chip.dataset.value); if(chip.dataset.value!=='auto') state.lastAutoKey=''; }));
+    document.querySelectorAll('.toggle').forEach(btn=>btn.addEventListener('click',()=>{ document.querySelectorAll('.toggle').forEach(node=>node.classList.remove('active')); btn.classList.add('active'); $('veg').value=btn.dataset.veg; }));
+    budgetSlider.addEventListener('input',()=>{ budgetInput.value=budgetSlider.value; updateSlider(); });
+    budgetInput.addEventListener('input',()=>{ budgetSlider.value=Math.min(2000,Math.max(50,budgetInput.value||50)); updateSlider(); });
+    $('startCameraBtn').addEventListener('click',startCamera); $('scanMoodBtn').addEventListener('click',scanMoodFrame); $('stopCameraBtn').addEventListener('click',stopCamera);
+    updateSlider(); updateModeCopy();
 </script>
 {% endblock %}
