@@ -226,18 +226,18 @@
                 <h2>Login</h2>
                 <p class="zx-login-note">Sign in and continue with the dishes you already love.</p>
 
-                <form method="POST" novalidate>
+                <form method="POST">
                     {% csrf_token %}
                     <div class="zx-form-group">
                         <label for="id_username">Username</label>
                         <input id="id_username" type="text" name="username" class="form-control"
-                            placeholder="Enter your username" required>
+                            placeholder="Enter your username" minlength="3" maxlength="150" autocomplete="username" required>
                     </div>
 
                     <div class="zx-form-group">
                         <label for="id_password">Password</label>
                         <input id="id_password" type="password" name="password" class="form-control"
-                            placeholder="Enter your password" required>
+                            placeholder="Enter your password" minlength="8" autocomplete="current-password" required>
                     </div>
 
                     <button class="submit-btn" type="submit">Login</button>

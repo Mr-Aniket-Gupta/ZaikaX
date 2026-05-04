@@ -330,42 +330,38 @@
         <div class="zx-grid">
             <div class="zx-card">
                 <h2>Account Details</h2>
-                <form method="POST" novalidate>{% csrf_token %}<input type="hidden" name="form_type" value="profile">
+                <form method="POST">{% csrf_token %}<input type="hidden" name="form_type" value="profile">
+                    {% if profile_form.non_field_errors %}<div class="field-errors">{{ profile_form.non_field_errors|striptags }}</div>{% endif %}
                     <div class="zx-form-row">
                         <div class="zx-form-group"><label>Username</label><input class="form-control"
                                 value="{{ profile_user.username }}" disabled></div>
-                        <div class="zx-form-group">{{ profile_form.email.label_tag }}{{ profile_form.email }}{% if profile_form.email.errors %}<div class="field-errors">{{ profile_form.email.errors|striptags
-                                }}</div>{% endif %}</div>
+                        <div class="zx-form-group">{{ profile_form.email.label_tag }}{{ profile_form.email }}{% if profile_form.email.errors %}<div class="field-errors">{{ profile_form.email.errors|striptags }}</div>{% endif %}</div>
                     </div>
                     <div class="zx-form-row">
-                        <div class="zx-form-group">{{ profile_form.first_name.label_tag }}{{ profile_form.first_name
-                            }}{% if profile_form.first_name.errors %}<div class="field-errors">{{
-                                profile_form.first_name.errors|striptags }}</div>{% endif %}</div>
-                        <div class="zx-form-group">{{ profile_form.last_name.label_tag }}{{ profile_form.last_name }}{% if profile_form.last_name.errors %}<div class="field-errors">{{
-                                profile_form.last_name.errors|striptags }}</div>{% endif %}</div>
+                        <div class="zx-form-group">{{ profile_form.first_name.label_tag }}{{ profile_form.first_name }}{% if profile_form.first_name.errors %}<div class="field-errors">{{ profile_form.first_name.errors|striptags }}</div>{% endif %}</div>
+                        <div class="zx-form-group">{{ profile_form.last_name.label_tag }}{{ profile_form.last_name }}{% if profile_form.last_name.errors %}<div class="field-errors">{{ profile_form.last_name.errors|striptags }}</div>{% endif %}</div>
                     </div><button class="submit-btn" type="submit">Save Profile</button>
                 </form>
             </div>
             <div class="zx-card">
                 <h2>Add Address</h2>
-                <form method="POST" novalidate>{% csrf_token %}<input type="hidden" name="form_type"
+                <form method="POST">{% csrf_token %}<input type="hidden" name="form_type"
                         value="address_add">
-                    <div class="zx-form-group">{{ address_form.full_name.label_tag }}{{ address_form.full_name }}</div>
+                    {% if address_form.non_field_errors %}<div class="field-errors">{{ address_form.non_field_errors|striptags }}</div>{% endif %}
+                    <div class="zx-form-group">{{ address_form.full_name.label_tag }}{{ address_form.full_name }}{% if address_form.full_name.errors %}<div class="field-errors">{{ address_form.full_name.errors|striptags }}</div>{% endif %}</div>
                     <div class="zx-form-row">
-                        <div class="zx-form-group">{{ address_form.email.label_tag }}{{ address_form.email }}</div>
-                        <div class="zx-form-group">{{ address_form.phone.label_tag }}{{ address_form.phone }}</div>
+                        <div class="zx-form-group">{{ address_form.email.label_tag }}{{ address_form.email }}{% if address_form.email.errors %}<div class="field-errors">{{ address_form.email.errors|striptags }}</div>{% endif %}</div>
+                        <div class="zx-form-group">{{ address_form.phone.label_tag }}{{ address_form.phone }}{% if address_form.phone.errors %}<div class="field-errors">{{ address_form.phone.errors|striptags }}</div>{% endif %}</div>
                     </div>
-                    <div class="zx-form-group">{{ address_form.address_line1.label_tag }}{{ address_form.address_line1
-                        }}</div>
-                    <div class="zx-form-group">{{ address_form.address_line2.label_tag }}{{ address_form.address_line2
-                        }}</div>
+                    <div class="zx-form-group">{{ address_form.address_line1.label_tag }}{{ address_form.address_line1 }}{% if address_form.address_line1.errors %}<div class="field-errors">{{ address_form.address_line1.errors|striptags }}</div>{% endif %}</div>
+                    <div class="zx-form-group">{{ address_form.address_line2.label_tag }}{{ address_form.address_line2 }}{% if address_form.address_line2.errors %}<div class="field-errors">{{ address_form.address_line2.errors|striptags }}</div>{% endif %}</div>
                     <div class="zx-form-row">
-                        <div class="zx-form-group">{{ address_form.city.label_tag }}{{ address_form.city }}</div>
-                        <div class="zx-form-group">{{ address_form.state.label_tag }}{{ address_form.state }}</div>
+                        <div class="zx-form-group">{{ address_form.city.label_tag }}{{ address_form.city }}{% if address_form.city.errors %}<div class="field-errors">{{ address_form.city.errors|striptags }}</div>{% endif %}</div>
+                        <div class="zx-form-group">{{ address_form.state.label_tag }}{{ address_form.state }}{% if address_form.state.errors %}<div class="field-errors">{{ address_form.state.errors|striptags }}</div>{% endif %}</div>
                     </div>
                     <div class="zx-form-row">
-                        <div class="zx-form-group">{{ address_form.pincode.label_tag }}{{ address_form.pincode }}</div>
-                        <div class="zx-form-group">{{ address_form.country.label_tag }}{{ address_form.country }}</div>
+                        <div class="zx-form-group">{{ address_form.pincode.label_tag }}{{ address_form.pincode }}{% if address_form.pincode.errors %}<div class="field-errors">{{ address_form.pincode.errors|striptags }}</div>{% endif %}</div>
+                        <div class="zx-form-group">{{ address_form.country.label_tag }}{{ address_form.country }}{% if address_form.country.errors %}<div class="field-errors">{{ address_form.country.errors|striptags }}</div>{% endif %}</div>
                     </div><label class="zx-check-row">{{ address_form.is_default }} <span>Set as default
                             address</span></label><button class="submit-btn" type="submit">Add Address</button>
                 </form>
@@ -374,10 +370,8 @@
         <div class="zx-card zx-card-full">
             <h2>Recent Orders</h2>{% if recent_orders %}<div class="zx-address-grid">{% for order in recent_orders %}
                 <div class="zx-address-item">
-                    <div class="zx-address-head"><strong>Order #{{ order.id }}</strong><span class="zx-default-badge">{{
-                            order.status }}</span></div>
-                    <p>{{ order.created_at|date:"d M Y, h:i A" }}<br>{{ order.payment_method }} / {{
-                        order.payment_status }}<br>Total: &#8377;{{ order.total_price }}</p>
+                    <div class="zx-address-head"><strong>Order #{{ order.id }}</strong><span class="zx-default-badge">{{ order.status }}</span></div>
+                    <p>{{ order.created_at|date:"d M Y, h:i A" }}<br>{{ order.payment_method }} / {{ order.payment_status }}<br>Total: &#8377;{{ order.total_price }}</p>
                     <div class="zx-address-actions"><a href="{% url 'order_detail' order.id %}"
                             class="zx-btn zx-btn-default">Track Order</a></div>
                 </div>{% endfor %}</div>{% else %}<p class="zx-empty-note">No orders placed yet.</p>{% endif %}
@@ -386,8 +380,7 @@
             <h2>Saved Addresses</h2>{% if addresses %}<div class="zx-address-grid">{% for address in addresses %}<div
                     class="zx-address-item">
                     <div class="zx-address-head"><strong>{{ address.full_name }}</strong>{% if address.is_default %}<span class="zx-default-badge">Default</span>{% endif %}</div>
-                    <p>{{ address.address_line1 }}{% if address.address_line2 %}, {{ address.address_line2 }}{% endif %}<br>{{ address.city }}, {{ address.state }} - {{ address.pincode }}<br>{{ address.country
-                        }}<br>{{ address.phone }}</p>
+                    <p>{{ address.address_line1 }}{% if address.address_line2 %}, {{ address.address_line2 }}{% endif %}<br>{{ address.city }}, {{ address.state }} - {{ address.pincode }}<br>{{ address.country }}<br>{{ address.phone }}</p>
                     <div class="zx-address-actions"><a href="{% url 'user_profile' %}?edit={{ address.id }}"
                             class="zx-btn zx-btn-edit">Edit</a>{% if not address.is_default %}<form method="POST"
                             action="{% url 'set_default_address' address.id %}">{% csrf_token %}<button type="submit"
@@ -399,30 +392,23 @@
                 </div>{% endfor %}</div>{% else %}<p class="zx-empty-note">No addresses saved yet.</p>{% endif %}
         </div>{% if edit_address and edit_address_form %}<div class="zx-card zx-card-full">
             <h2>Edit Address</h2>
-            <form method="POST" novalidate>{% csrf_token %}<input type="hidden" name="form_type"
+            <form method="POST">{% csrf_token %}<input type="hidden" name="form_type"
                     value="address_edit"><input type="hidden" name="address_id" value="{{ edit_address.id }}">
-                <div class="zx-form-group">{{ edit_address_form.full_name.label_tag }}{{ edit_address_form.full_name }}
+                {% if edit_address_form.non_field_errors %}<div class="field-errors">{{ edit_address_form.non_field_errors|striptags }}</div>{% endif %}
+                <div class="zx-form-group">{{ edit_address_form.full_name.label_tag }}{{ edit_address_form.full_name }}{% if edit_address_form.full_name.errors %}<div class="field-errors">{{ edit_address_form.full_name.errors|striptags }}</div>{% endif %}</div>
+                <div class="zx-form-row">
+                    <div class="zx-form-group">{{ edit_address_form.email.label_tag }}{{ edit_address_form.email }}{% if edit_address_form.email.errors %}<div class="field-errors">{{ edit_address_form.email.errors|striptags }}</div>{% endif %}</div>
+                    <div class="zx-form-group">{{ edit_address_form.phone.label_tag }}{{ edit_address_form.phone }}{% if edit_address_form.phone.errors %}<div class="field-errors">{{ edit_address_form.phone.errors|striptags }}</div>{% endif %}</div>
+                </div>
+                <div class="zx-form-group">{{ edit_address_form.address_line1.label_tag }}{{ edit_address_form.address_line1 }}{% if edit_address_form.address_line1.errors %}<div class="field-errors">{{ edit_address_form.address_line1.errors|striptags }}</div>{% endif %}</div>
+                <div class="zx-form-group">{{ edit_address_form.address_line2.label_tag }}{{ edit_address_form.address_line2 }}{% if edit_address_form.address_line2.errors %}<div class="field-errors">{{ edit_address_form.address_line2.errors|striptags }}</div>{% endif %}</div>
+                <div class="zx-form-row">
+                    <div class="zx-form-group">{{ edit_address_form.city.label_tag }}{{ edit_address_form.city }}{% if edit_address_form.city.errors %}<div class="field-errors">{{ edit_address_form.city.errors|striptags }}</div>{% endif %}</div>
+                    <div class="zx-form-group">{{ edit_address_form.state.label_tag }}{{ edit_address_form.state }}{% if edit_address_form.state.errors %}<div class="field-errors">{{ edit_address_form.state.errors|striptags }}</div>{% endif %}</div>
                 </div>
                 <div class="zx-form-row">
-                    <div class="zx-form-group">{{ edit_address_form.email.label_tag }}{{ edit_address_form.email }}
-                    </div>
-                    <div class="zx-form-group">{{ edit_address_form.phone.label_tag }}{{ edit_address_form.phone }}
-                    </div>
-                </div>
-                <div class="zx-form-group">{{ edit_address_form.address_line1.label_tag }}{{
-                    edit_address_form.address_line1 }}</div>
-                <div class="zx-form-group">{{ edit_address_form.address_line2.label_tag }}{{
-                    edit_address_form.address_line2 }}</div>
-                <div class="zx-form-row">
-                    <div class="zx-form-group">{{ edit_address_form.city.label_tag }}{{ edit_address_form.city }}</div>
-                    <div class="zx-form-group">{{ edit_address_form.state.label_tag }}{{ edit_address_form.state }}
-                    </div>
-                </div>
-                <div class="zx-form-row">
-                    <div class="zx-form-group">{{ edit_address_form.pincode.label_tag }}{{ edit_address_form.pincode }}
-                    </div>
-                    <div class="zx-form-group">{{ edit_address_form.country.label_tag }}{{ edit_address_form.country }}
-                    </div>
+                    <div class="zx-form-group">{{ edit_address_form.pincode.label_tag }}{{ edit_address_form.pincode }}{% if edit_address_form.pincode.errors %}<div class="field-errors">{{ edit_address_form.pincode.errors|striptags }}</div>{% endif %}</div>
+                    <div class="zx-form-group">{{ edit_address_form.country.label_tag }}{{ edit_address_form.country }}{% if edit_address_form.country.errors %}<div class="field-errors">{{ edit_address_form.country.errors|striptags }}</div>{% endif %}</div>
                 </div><label class="zx-check-row">{{ edit_address_form.is_default }} <span>Set as default
                         address</span></label>
                 <div class="zx-edit-actions"><button class="submit-btn" type="submit">Update Address</button><a

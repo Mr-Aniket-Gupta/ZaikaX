@@ -844,8 +844,7 @@
                             <span class="zx-suggestion-card__price">&#8377;{{ card.dish.price }}</span>
                         </div>
                         <h3>{{ card.dish.name }}</h3>
-                        <p>{{ card.dish.description|default:"A delicious pick chosen from real customer ordering
-                            patterns."|truncatechars:95 }}</p>
+                        <p>{{ card.dish.description|default:"A delicious pick chosen from real customer ordering patterns."|truncatechars:95 }}</p>
                         <div class="zx-suggestion-note" style="margin-bottom:14px;">{{ card.reason }}</div>
                         <a href="{% url 'add_to_cart' card.dish.id %}" class="zx-dish-card__cta">Add to cart</a>
                         <a href="{% url 'menu_item_detail' card.dish.id %}" class="zx-dish-card__cta"

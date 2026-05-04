@@ -275,7 +275,7 @@
                 <h2>Sign Up</h2>
                 <p class="zx-panel-note">Create your ZaikaX account and save your details for quick ordering.</p>
 
-                <form method="POST" novalidate>
+                <form method="POST">
                     {% csrf_token %}
                     {% if form.non_field_errors %}
                     <div class="zx-form-alert">{{ form.non_field_errors|striptags }}</div>
@@ -316,8 +316,7 @@
                         <div class="zx-form-group zx-col-2">
                             {{ form.full_name.label_tag }}
                             {{ form.full_name }}
-                            {% if form.full_name.errors %}<div class="field-errors">{{ form.full_name.errors|striptags
-                                }}</div>{% endif %}
+                            {% if form.full_name.errors %}<div class="field-errors">{{ form.full_name.errors|striptags }}</div>{% endif %}
                         </div>
 
                         <div class="zx-form-group">
