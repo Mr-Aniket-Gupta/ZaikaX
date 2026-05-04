@@ -232,3 +232,131 @@ So in simple terms, the backend manages the business intelligence, the frontend 
 
 ### One-Minute Ending Line
 In conclusion, ZaikaX combines a strong Django backend, a modern interactive frontend, and algorithm-inspired recommendation logic such as Market Basket Analysis and Apriori-style pattern mining to deliver a practical and scalable restaurant ordering experience.
+
+## Role Speech (Simple English)
+
+Hello, my name is [your name], and I work on recommendations, recipes, and mood tracking for ZaikaX. Here is a simple explanation of my work and how it helps the product.
+
+- Recommendation System:
+  - We study real orders to find patterns of which dishes are ordered together. This is like Market Basket Analysis and Apriori-style co-occurrence. 
+  - We use simple, clear signals: recent orders, items bought together, favorite categories, and overall popularity. These signals are combined into a score to rank dishes.
+  - Each suggestion shows a short reason (for example: "Often bought with X" or "Popular in Y") so users understand why we suggested it.
+
+- Recipe Development:
+  - We add useful tags and metadata to each dish: category, mood labels (hungry, comfort, chill, healthy), price, veg/non-veg, and keywords.
+  - This makes it easy to match menu items to a user's mood, budget, and preferences.
+  - We test new or changed recipes with small pilots, collect feedback, and update tags and prices as needed.
+
+- Mood Tracking:
+  - On the frontend we use `face-api.js` to detect a face and estimate the most likely expression.
+  - We map that expression to a food mood using a fixed map, for example: "happy -> chill", "sad -> comfort".
+  - We wait for a stable read (repeatable high-confidence results) before auto-suggesting dishes. Users can always choose mood manually.
+  - Privacy: camera use is optional, and the app uses the emotion label only (not saving images) for suggestions.
+
+- How it helps the business:
+  - Better suggestions increase add-to-cart and conversions.
+  - Mood-based suggestions create a friendly, personal experience.
+  - Clear reasons for suggestions build user trust.
+
+- Next steps I work on:
+  - Run small A/B tests to measure uplift from recommendation changes.
+  - Improve tags and metadata for new recipes.
+  - Add safe caching and lightweight offline precomputation to keep results fast.
+
+Thank you — I can also make this into a 1-minute elevator pitch or a short viva answer if you want.
+
+## Recipe Sharing & Custom Order System
+
+### Overview
+We built a complete user-generated recipe sharing system where users can post recipes and other users can order custom prepared versions of those recipes. This creates a two-sided marketplace inside ZaikaX.
+
+### How It Works
+
+**Step 1: User Shares a Recipe**
+- Logged-in user goes to `/recipes/share/` and fills a form:
+  - Recipe title, short description, and story
+  - Ingredients list (one per line)
+  - Cooking steps (one per line)
+  - Servings, prep time, and image URL
+  - Checkbox: "Allow custom orders" (author decides if others can order this)
+- Recipe is published immediately and appears in the recipe feed.
+
+**Step 2: Other Users React and Rate**
+- Users browse recipes and see likes, dislikes, and average ratings.
+- They can like or dislike a recipe and leave a 1-5 star rating using `RecipeReaction`.
+- Each user can only react once per recipe (unique constraint enforced).
+- Recipe author sees engagement metrics on their published recipe.
+
+**Step 3: Request a Custom Order**
+- If a user likes a recipe and the author allows custom orders, they click "Order This Recipe".
+- They specify:
+  - Quantity (how many servings)
+  - Serving notes (e.g., "extra spicy" or "mild")
+  - Custom notes (e.g., "allergies" or "special requests")
+- This creates a `RecipeOrderRequest` in "requested" status.
+
+**Step 4: Admin Reviews and Quotes**
+- Admin views pending recipe order requests.
+- Admin calculates the cost (ingredients + prep + delivery) and sends a quote.
+- Request moves to "quoted" status with a `quoted_price`.
+- User sees the quote and decides to approve or reject.
+
+**Step 5: Payment and Preparation**
+- If user approves, they pay online (payment status: "awaiting" → "paid").
+- Request moves to "in_progress" (chef starts cooking).
+- Once ready, status is "completed".
+- User collects or receives the custom-prepared dish.
+
+### Database Model Structure
+
+**RecipeShare**
+- `author` (FK to User) — who published
+- `title`, `short_description`, `story` — recipe info
+- `ingredients`, `steps` — text (one per line)
+- `servings`, `prep_time_minutes` — metadata
+- `allow_custom_orders` — controls if users can order this recipe
+- `is_published` — visibility flag
+
+**RecipeReaction**
+- `recipe` (FK), `user` (FK) — connects user to recipe
+- `reaction` — "like" or "dislike"
+- `rating` — 1–5 stars (optional)
+- Unique constraint: one reaction per (recipe, user) pair
+
+**RecipeOrderRequest**
+- `recipe` (FK), `requester` (FK) — links recipe and orderer
+- `quantity`, `serving_note`, `custom_notes` — order details
+- `status` — workflow: requested → quoted → approved → rejected → in_progress → completed
+- `quoted_price` — cost set by admin
+- `payment_status` — pending → awaiting → paid
+
+### Business Value
+
+1. **Community Engagement**: Users feel heard; their recipes are celebrated and monetized.
+2. **Revenue Stream**: Custom recipe orders create new revenue, separate from the standard menu.
+3. **Content Creation**: Recipe sharing builds social proof and organic discovery (word-of-mouth).
+4. **Data for Recommendations**: Popular recipes and reactions feed back into recommendation logic.
+5. **User Retention**: Gamified engagement (likes, ratings, featured recipes) keeps users coming back.
+
+### User Experience Flow
+
+```
+Browse Recipes → Like/Rate → See Custom Order Option → Place Order Request 
+→ Admin Quotes → User Approves & Pays → Dish Prepared → Order Completed
+```
+
+### Admin Workflow
+
+```
+Pending Recipe Orders → Review & Calculate Cost → Send Quote 
+→ Track Payment → Move to In-Progress → Mark Completed → Track Revenue
+```
+
+### Future Improvements
+
+- Recommend recipes based on user's mood and past ratings.
+- Auto-quote logic (ML model to predict cost based on ingredients).
+- Recipe subscription (monthly special dishes from favorite cooks).
+- Social leaderboard (top recipe creators by engagement).
+- Video tutorials linked to recipes.
+- Dietary filter tags (gluten-free, vegan, keto, etc.) for recipe discovery.
